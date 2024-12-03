@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <style>
+        header .header-profile-pic {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #888;
+            background-size: cover;
+            background-size: 80px;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-left: 20px;
+            object-fit: cover; 
+        }
+
+        header .header-profile-pic:hover {
+            transform: scale(1.1);
+        }
+
+        section.content-section {
+            margin-top: 30px;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-pic {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            background-color: #888;
+            background-size: 120%;
+            background-position: center;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-button i {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        #profileImageUpload {
+            display: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #00c3ff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0086cc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
+
+    <section class="content-section">
+        <h1>Profil Pengguna</h1>
+        <div class="profile-container">
+            <!-- Foto Profil -->
+            <div class="profile-pic" id="profilePic">
+                <!-- Tombol yang berubah -->
+                <div class="icon-button" id="profileActionButton" onclick="handleProfileAction()">
+                    <i id="actionIcon">✏️</i>
+                </div>
+            </div>
+            <input type="file" id="profileImageUpload" accept="image/*" onchange="uploadProfileImage()">
+        </div>
+
+        <div id="userProfile">
+            <p><strong>Nama Pengguna: </strong><span id="username"></span></p>
+            <p><strong>Email: </strong><span id="userEmail"></span></p>
+        </div>
+        <div>
+            <button onclick="window.location.href='reset-password.html'">Reset Password</button>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        // Cek apakah pengguna sudah login
+        function checkLogin() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser) {
+                window.location.href = "login.html"; 
+            }
+            return loggedInUser;
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = "login.html";
+        }
+
+        // Load data profil pengguna
+        function loadUserProfile() {
+            const loggedInUser = checkLogin();
+            document.getElementById('username').textContent = loggedInUser.username;
+            document.getElementById('userEmail').textContent = loggedInUser.email;
+            const userProfiles = JSON.parse(localStorage.getItem('userProfiles')) || {};
+            const profilePic = userProfiles[loggedInUser.username] || "default-profile.png";
+            document.getElementById('profilePic').style.backgroundImage = `url('${profilePic}')`;
+
+            // Update tombol berdasarkan foto profil
+            const isDefaultProfile = profilePic === "default-profile.png";
+            const actionIcon = document.getElementById('actionIcon');
+            actionIcon.textContent = isDefaultProfile ? '✏️' : '❌';
+        }
+
+        function loadHeaderProfilePic() {
+            const loggedInUser = checkLogin();
+            const userProfiles = JSON.parse(localStorage.getItem('userProfiles')) || {};
+            const profilePic = userProfiles[loggedInUser.username] || "default-profile.png";
+            document.getElementById('headerProfilePic').style.backgroundImage = `url('${profilePic}')`;
+        }
+
+        function handleProfileAction() {
+            const actionIcon = document.getElementById('actionIcon');
+            if (actionIcon.textContent === '✏️') {
+                triggerFileInput();
+            } else {
+                resetProfilePicture();
+            }
+        }
+
+        function triggerFileInput() {
+            document.getElementById('profileImageUpload').click();
+        }
+
+        function uploadProfileImage() {
+            const fileInput = document.getElementById('profileImageUpload');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const loggedInUser = checkLogin();
+                    const userProfiles = JSON.parse(localStorage.getItem('userProfiles')) || {};
+                    userProfiles[loggedInUser.username] = event.target.result;
+                    localStorage.setItem('userProfiles', JSON.stringify(userProfiles));
+
+                    document.getElementById('profilePic').style.backgroundImage = `url('${event.target.result}')`;
+                    document.getElementById('headerProfilePic').style.backgroundImage = `url('${event.target.result}')`;
+                    alert('Foto profil berhasil diperbarui!');
+                    loadUserProfile();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Pilih file gambar terlebih dahulu.');
+            }
+        }
+
+        function resetProfilePicture() {
+            const loggedInUser = checkLogin();
+            const userProfiles = JSON.parse(localStorage.getItem('userProfiles')) || {};
+            userProfiles[loggedInUser.username] = "default-profile.png";
+            localStorage.setItem('userProfiles', JSON.stringify(userProfiles));
+
+            document.getElementById('profilePic').style.backgroundImage = `url('default-profile.png')`;
+            document.getElementById('headerProfilePic').style.backgroundImage = `url('default-profile.png')`;
+            alert('Foto profil berhasil dihapus!');
+            loadUserProfile();
+        }
+
+        window.onload = function() {
+            loadUserProfile();
+            loadHeaderProfilePic();
+        };
+    </script>
+</body>
+</html>

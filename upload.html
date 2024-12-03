@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Buku - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <style>
+
+.book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 3px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html" class="active">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a> <!-- Logout button added here -->
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
+
+    <section class="content-section">
+        <h1>Upload Buku</h1><br><br><br>
+
+        <form id="upload-form" method="POST" enctype="multipart/form-data">
+            <label for="judul-buku">Judul Buku:</label>
+            <input type="text" id="judul-buku" name="judul-buku" required><br><br>
+
+            <label for="jenis-buku">Jenis Buku:</label>
+            <select id="jenis-buku" name="jenis-buku" required>
+                <option value="">Pilih Jenis Buku</option>
+                <option value="fiksi">Fiksi</option>
+                <option value="nonfiksi">Nonfiksi</option>
+                <option value="akademis">Akademis</option>
+                <option value="komik">Komik</option>
+                <option value="novel">Novel</option>
+            </select><br><br>
+
+            <label for="genre-buku">Genre Buku:</label>
+            <input type="text" id="genre-buku" name="genre-buku" placeholder="Masukkan genre, pisahkan dengan koma" required><br><br>
+
+            <label for="deskripsi-buku">Deskripsi Buku:</label>
+            <textarea id="deskripsi-buku" name="deskripsi-buku" rows="4" required></textarea><br><br>
+
+            <label for="file-buku">Unggah Buku (Harus diisi):</label>
+            <input type="file" id="fileInput" name="file-buku" accept=".pdf" required><br><br>
+
+            <label for="cover-buku">Unggah Cover Buku (Format JPG/PNG):</label>
+            <input type="file" id="coverInput" name="cover-buku" accept=".jpg, .jpeg, .png" required><br><br>
+
+            <input type="submit" value="Upload Buku"><br>
+        </form>
+
+        <h2>Daftar Buku yang Di-upload</h2>
+        <div id="bookList" class="book-list"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        // Cek apakah pengguna sudah login
+        function checkLogin() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser) {
+                window.location.href = "login.html"; // Jika belum login, arahkan ke halaman login
+            }
+            return loggedInUser;
+        }
+
+        // Logout function: clear user data and redirect to login page
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = "login.html"; // Redirect to login page
+        }
+
+        // Fungsi untuk menghitung waktu yang lalu
+        function timeAgo(date) {
+            const now = new Date();
+            const diff = now - new Date(date); // Selisih dalam milidetik
+
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (seconds < 60) {
+                return `${seconds} detik yang lalu`;
+            } else if (minutes < 60) {
+                return `${minutes} menit yang lalu`;
+            } else if (hours < 24) {
+                return `${hours} jam yang lalu`;
+            } else if (days < 7) {
+                return `${days} hari yang lalu`;
+            } else if (weeks < 4) {
+                return `${weeks} minggu yang lalu`;
+            } else if (months < 12) {
+                return `${months} bulan yang lalu`;
+            } else {
+                return `${years} tahun yang lalu`;
+            }
+        }
+
+        // Muat daftar buku yang hanya milik pengguna yang login
+        function loadBookList() {
+            const loggedInUser = checkLogin(); // Pastikan pengguna login
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const bookListDiv = document.getElementById('bookList');
+            bookListDiv.innerHTML = ''; // Clear existing list
+
+            books.forEach((book, index) => {
+                if (book.user === loggedInUser.username) {
+                    const bookItem = document.createElement('div');
+                    bookItem.classList.add('book-item');
+
+                    const bookCover = document.createElement('img');
+                    bookCover.src = book.coverData;
+                    bookCover.alt = 'Cover Buku';
+                    bookCover.classList.add('book-cover');
+
+                    const bookDetails = document.createElement('div');
+                    bookDetails.classList.add('book-details');
+                    bookDetails.innerHTML = `
+                        <strong>${book.title}</strong><br>
+                        Genre: ${book.genre.join(', ')}<br>
+                        Pengupload: ${book.user}<br>
+                        <em>${timeAgo(book.updatedAt)}</em>
+                    `;
+
+                    const bookButtons = document.createElement('div');
+                    bookButtons.classList.add('book-buttons');
+                    bookButtons.innerHTML = `
+                        <button onclick="deleteBook(${index})" class="delete-button">Hapus Buku</button>
+                    `;
+                    bookItem.addEventListener('click', () => viewBook(index));
+                    bookItem.appendChild(bookCover);
+                    bookItem.appendChild(bookDetails);
+                    bookItem.appendChild(bookButtons);
+                    bookListDiv.appendChild(bookItem);
+                }
+            });
+        }
+
+           // Fungsi untuk menambahkan buku ke daftar dan menyimpannya ke localStorage
+           document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const loggedInUser = checkLogin(); // Pastikan pengguna login
+
+            const title = document.getElementById('judul-buku').value;
+            const type = document.getElementById('jenis-buku').value;
+            const genreInput = document.getElementById('genre-buku').value;
+            const genre = genreInput.split(',').map(g => g.trim()); // Memisahkan genre yang dimasukkan dengan koma
+            const description = document.getElementById('deskripsi-buku').value;
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const coverInput = document.getElementById('coverInput');
+            const cover = coverInput.files[0];
+
+            if (file && file.type === 'application/pdf' && cover && ['image/jpeg', 'image/png'].includes(cover.type)) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const coverReader = new FileReader();
+                    coverReader.onload = function(coverEvent) {
+                        const bookData = {
+                        title: title,
+                        type: type,
+                        genre: genre,
+                        description: description,
+                        pdfData: e.target.result,
+                        coverData: coverEvent.target.result,
+                        user: loggedInUser.username,
+                        updatedAt: new Date().toISOString() //
+                        };
+
+
+          // Ambil buku yang sudah ada dari localStorage dan tambahkan buku baru
+          const books = JSON.parse(localStorage.getItem('books')) || [];
+                        books.push(bookData);
+                        localStorage.setItem('books', JSON.stringify(books));
+
+                        // Reset form
+                        document.getElementById('upload-form').reset();
+
+                        // Muat ulang daftar buku
+                        loadBookList();
+                    };
+
+                    coverReader.readAsDataURL(cover); // Mengonversi file cover menjadi base64
+                };
+
+                reader.readAsDataURL(file); // Mengonversi file PDF menjadi format base64
+            } else {
+                alert('Harap unggah file PDF dan cover gambar dengan format JPG/PNG.');
+            }
+        });
+
+
+        // Fungsi untuk membuka buku berdasarkan index
+        function openBook(index) {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const book = books[index];
+
+            // Menyimpan data PDF dan cover ke localStorage dan membuka halaman untuk menampilkan buku
+            localStorage.setItem('pdfData', book.pdfData);
+            localStorage.setItem('coverData', book.coverData);
+            window.location.href = 'readbook.html'; // Arahkan ke halaman untuk membuka PDF
+        }
+
+    function viewBook(index) {
+        const books = JSON.parse(localStorage.getItem('books')) || [];
+        const book = books[index]; // Fix: Use books[index] to get the selected book
+
+        // Simpan detail buku ke localStorage
+        localStorage.setItem('selectedBook', JSON.stringify(book));
+
+        // Arahkan ke halaman lihat buku
+        window.location.href = 'lihatbuku.html'; // Fix: Ensure the correct page
+    }
+
+        // Fungsi untuk menghapus buku dari daftar
+        function deleteBook(index) {
+            event.stopPropagation();
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            books.splice(index, 1);
+            localStorage.setItem('books', JSON.stringify(books));
+            loadBookList(); // Muat ulang daftar setelah menghapus buku
+        }
+        
+        // Load books when the page is loaded
+        window.onload = function() {
+            loadBookList();
+            loadHeaderProfilePic();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lupa Password - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">BUKITKACA</div>
+    </header>
+
+    <section class="content-section">
+        <h1>Lupa Password</h1>
+        <form id="reset-password-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <button type="submit">Kirim Permintaan Reset</button>
+        </form>
+        <p id="status-message"></p>
+    </section>
+
+    <script>
+        document.getElementById('reset-password-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah form untuk dikirimkan secara default
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            let userFound = false;
+
+            // Mencari pengguna yang sesuai dengan username dan email
+            users.forEach(user => {
+                if (user.username === username && user.email === email) {
+                    userFound = true;
+                }
+            });
+
+            const statusMessage = document.getElementById('status-message');
+            if (userFound) {
+                statusMessage.textContent = 'Permintaan reset password telah dikirim. Silakan cek email Anda.';
+                statusMessage.style.color = 'green';
+            } else {
+                statusMessage.textContent = 'Username atau email tidak ditemukan.';
+                statusMessage.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

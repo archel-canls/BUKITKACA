@@ -1,0 +1,74 @@
+<!DOCTYPE html> 
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="developer.html">Profil</a> 
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="login.html" id="auth-link" class="active">Login</a> <!-- Tombol Login/Logout -->
+        </nav>
+    </header>
+
+    <section class="content-section">
+        <h1>Login</h1>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <input type="submit" value="Login">
+        </form>
+        <p>Belum punya akun? <a href="register.html">Daftar di sini</a></p>
+        <p>Lupa Pasword? <a href="lupapasword.html">Reset di sini</a></p>
+    </section>
+    <p id="error-message" style="color: red; display: none;"></p>
+
+    <script>
+        // Fungsi untuk menangani login
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Mengambil nilai input
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Ambil data pengguna yang ada di localStorage
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Cek apakah pengguna ada dan password sesuai
+            let user = users.find(user => user.username === username && user.password === password);
+
+            if (user) {
+                // Simpan data pengguna yang login di localStorage
+                localStorage.setItem('loggedInUser', JSON.stringify(user));
+
+                // Cek jika username adalah "Archel", arahkan ke developer.html, selain itu ke index.html
+                if (username === "Archel") {
+                    window.location.href = "developer.html";
+                } else {
+                    window.location.href = "index.html";
+                }
+            } else {
+                document.getElementById("error-message").textContent = "Username atau password salah.";
+                document.getElementById("error-message").style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>

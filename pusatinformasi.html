@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Informasi - BUKITKACA</title>
+    <script src="script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html" class="active">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
+
+    <section class="content-section">
+    <main>
+        <h1>Pusat Informasi</h1><br>
+        <section>
+            <h2>Tentang Kami</h2>
+            <p>BUKITKACA (Buku Kita Kalian Baca) adalah platform untuk berbagi dan membaca buku digital. Kami menyediakan berbagai fitur seperti Pojok Baca, Upload Buku, Rak Buku, dan Bookmark untuk memudahkan pengguna mengakses literatur favorit mereka.</p>
+        </section>
+
+        <section>
+            <h2>Panduan Pengguna</h2>
+                <li><strong>Beranda:</strong> Lihat update terbaru dan rekomendasi buku.</li>
+                <li><strong>Pojok Baca:</strong> Jelajahi koleksi buku populer.</li>
+                <li><strong>Bookmarks:</strong> Simpan buku favorit Anda dan cek history baca Anda.</li>
+                <li><strong>Rak Buku:</strong> Cari buku berdasarkan jenisnya.</li>
+                <li><strong>Upload:</strong> Unggah buku Anda untuk dibagikan ke komunitas.</li>
+                <li><strong>Bookmarks:</strong> Tandai halaman favorit untuk kembali dengan mudah.</li>
+        </section>
+
+        <section>
+            <h2>kontak</h2>
+            <p>Jika Anda memiliki pertanyaan atau masukan, silakan hubungi kami melalui email di <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
+        </section>
+        <section>
+            <h2>Author:</h2>
+            <p>Arif Alfian Choirul Anwar (23670119) 3E Informatika</p>
+            <p>Rizqi Dian Saputra (23670122) 3D Informatika</p>
+        </section>
+    </main>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+    
+<script>
+     // Fungsi untuk memuat gambar profil di header
+     function loadHeaderProfilePic() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            const userProfiles = JSON.parse(localStorage.getItem('userProfiles')) || {};
+            const profilePic = userProfiles[loggedInUser.username] || "default-profile.png";
+            document.getElementById('headerProfilePic').style.backgroundImage = `url('${profilePic}')`;
+        }
+
+        loadHeaderProfilePic();
+</script>
+
+</body>
+</html>

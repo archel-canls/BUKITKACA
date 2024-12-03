@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lihat Buku - BUKITKACA</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Kontainer detail buku */
+        .bookview-detail-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            width: 90%;
+            padding: 15px;
+        }
+
+        /* Gaya untuk cover buku */
+        .bookview-cover {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .bookview-cover img {
+            width: 250px;
+            height: 300px;
+            background-color: #222;
+            border-radius: 3px 15px 15px 3px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+       
+        }
+
+        .action-button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 250px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .read-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .read-button:hover {
+            background-color: #218838;
+        }
+
+        .bookmark-button {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .bookmark-button:hover {
+            background-color: #e0a800;
+        }
+
+        .bookview-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            color: #fff;
+            max-width: 70%;
+        }
+
+        .bookview-info h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .bookview-info p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .bookview-detail-container {
+                flex-direction: column;
+                align-items: center;
+                margin-left: 5.1%;
+            }
+
+            .bookview-cover {
+                margin-right: 0;
+                margin-bottom: 15px;
+
+            }
+
+            .bookview-info {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="profile.html">Profil</a>
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+    </header>
+
+    <section class="content-section">
+        <div class="bookview-title">
+            <h1 id="bookTitle"></h1>
+        </div>
+        <div class="bookview-detail-container">
+            <div class="bookview-cover">
+                <img id="bookCoverImg" src="#" alt="Cover Buku">
+                <button class="action-button read-button" onclick="openBook()">Baca Buku</button>
+                <button class="action-button bookmark-button" id="bookmarkButton" onclick="toggleBookmark()">Tambahkan ke Bookmark</button>
+            </div>
+            <div class="bookview-info">
+                <p><strong>Jenis Buku:</strong> <span id="bookType">Fiksi</span></p>
+                <p><strong>Genre:</strong> <span id="bookGenre"></span></p>
+                <p><strong>Pengupload:</strong> <span id="bookUploader"></span></p>
+                <p><strong>Deskripsi:</strong></p>
+                <p id="bookDescription"></p>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        function checkLogin() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser) {
+                window.location.href = "login.html";
+            }
+        }
+
+        function loadBookDetails() {
+            checkLogin();
+
+            const book = JSON.parse(localStorage.getItem('selectedBook'));
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+            if (book) {
+                document.getElementById('bookCoverImg').src = book.coverData;
+                document.getElementById('bookTitle').textContent = book.title;
+                document.getElementById('bookType').textContent = book.type;
+                document.getElementById('bookGenre').textContent = book.genre.join(', ');
+                document.getElementById('bookUploader').textContent = book.user;
+                document.getElementById('bookDescription').textContent = book.description;
+
+                updateBookmarkButton(book, loggedInUser.username);
+            } else {
+                alert('Tidak ada buku yang dipilih.');
+                window.location.href = 'upload.html';
+            }
+        }
+
+        function openBook() {
+            const book = JSON.parse(localStorage.getItem('selectedBook'));
+            if (book && book.pdfData) {
+                localStorage.setItem('pdfData', book.pdfData);
+                window.location.href = 'readbook.html';
+            } else {
+                alert('Buku tidak dapat dibaca. Pastikan PDF telah diupload.');
+            }
+        }
+
+        function toggleBookmark() {
+            const book = JSON.parse(localStorage.getItem('selectedBook'));
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks = bookmarks.filter(b => b.username === loggedInUser.username);
+
+            const isBookmarked = bookmarks.some(b => b.title === book.title);
+
+            if (isBookmarked) {
+                bookmarks = bookmarks.filter(b => b.title !== book.title);
+                alert("Buku telah dihapus dari bookmark!");
+            } else {
+                bookmarks.push({ ...book, username: loggedInUser.username });
+                alert("Buku telah ditambahkan ke bookmark!");
+            }
+
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkButton(book, loggedInUser.username);
+        }
+
+        function updateBookmarkButton(book, username) {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            const isBookmarked = bookmarks.some(b => b.title === book.title && b.username === username);
+            const bookmarkButton = document.getElementById('bookmarkButton');
+
+            bookmarkButton.textContent = isBookmarked ? 'Hapus dari Bookmark' : 'Tambahkan ke Bookmark';
+        }
+
+        window.onload = loadBookDetails;
+    </script>
+</body>
+</html>

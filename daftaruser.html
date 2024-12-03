@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Pengguna - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <header>
+            <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+            <div class="logo">BUKITKACA</div>
+            <nav id="navMenu">
+                <a href="developer.html" >Developer</a>
+                <a href="daftaruser.html"class="active>Daftar User</a>
+                <a href="#" id="logout" onclick="logout()">Logout</a>
+            </nav>
+        </header>
+    </header>
+
+    <section class="content-section">
+        <h1>Daftar Pengguna yang Terdaftar</h1>
+        <div id="user-list">
+            <!-- Daftar pengguna akan ditampilkan di sini -->
+        </div>
+    </section>
+
+    <script>
+        // Menampilkan daftar pengguna yang terdaftar
+        window.onload = function() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userListDiv = document.getElementById('user-list');
+
+            if (users.length === 0) {
+                userListDiv.innerHTML = "<p>Tidak ada pengguna yang terdaftar.</p>";
+            } else {
+                let listHTML = "<ul>";
+                users.forEach((user, index) => {
+                    listHTML += `
+                        <li>
+                            ${user.username} 
+                            <button onclick="deleteUser(${index})" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">Hapus</button>
+                        </li>
+                    `;
+                });
+                listHTML += "</ul>";
+                userListDiv.innerHTML = listHTML;
+            }
+        }
+
+        // Fungsi untuk menghapus pengguna dari daftar
+        function deleteUser(index) {
+            // Ambil data pengguna yang sudah terdaftar dari localStorage
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Hapus pengguna dari array berdasarkan index
+            users.splice(index, 1);
+
+            // Simpan kembali data pengguna yang sudah diupdate ke localStorage
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Perbarui tampilan daftar pengguna setelah penghapusan
+            window.onload();
+        }
+    </script>
+</body>
+</html>

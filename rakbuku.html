@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rak Buku - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <style>
+.book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 5px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+ .filter-section {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .filter-section select {
+        padding: 10px;
+        font-size: 1rem;
+        background-color: #007bff; /* Warna biru saat tombol normal */
+        color: white; /* Warna teks putih */
+        border: 1px solid #007bff; /* Border biru */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .filter-section select:hover {
+        background-color: #0056b3; /* Warna biru lebih gelap saat hover */
+        border-color: #0056b3; /* Border lebih gelap saat hover */
+    }
+
+    .filter-section select:focus {
+        background-color: #007bff; /* Tetap biru saat fokus (klik) */
+        color: white; /* Teks tetap putih saat fokus */
+        border-color: #0056b3; /* Border sedikit lebih gelap saat fokus */
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html" class="active">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
+
+    <section class="content-section">
+        <h1>Rak Buku</h1>
+        <div class="filter-section">
+            <label for="bookFilter">Pilih Jenis Buku:</label>
+            <select id="bookFilter" onchange="filterBooks()">
+                <option value="">Semua</option>
+                <option value="fiksi">Fiksi</option>
+                <option value="nonfiksi">Nonfiksi</option>
+                <option value="akademis">Akademis</option>
+                <option value="komik">Komik</option>
+                <option value="novel">Novel</option>
+            </select>
+        </div>
+
+        <div id="bookList" class="book-list"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+           // Cek apakah pengguna sudah login
+           function checkLogin() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser) {
+                window.location.href = "login.html";
+            }
+            return loggedInUser;
+        }
+        // Logout function: clear user data and redirect to login page
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = "login.html"; // Redirect to login page
+        } 
+
+        // Fungsi untuk memuat daftar buku dari localStorage
+        function loadBookList(filterType = '') {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const bookListDiv = document.getElementById('bookList');
+            bookListDiv.innerHTML = ''; // Kosongkan daftar sebelumnya
+
+            const filteredBooks = filterType 
+                ? books.filter(book => book.type === filterType) 
+                : books;
+
+            if (filteredBooks.length === 0) {
+                bookListDiv.innerHTML = '<p>Tidak ada buku yang sesuai dengan filter.</p>';
+                return;
+            }
+
+            filteredBooks.forEach((book, index) => {
+                const bookItem = document.createElement('div');
+                bookItem.classList.add('book-item');
+
+                const bookCover = document.createElement('div');
+                bookCover.classList.add('book-cover');
+                bookCover.innerHTML = `<img src="${book.coverData}" alt="Cover Buku">`;
+
+                const bookDetails = document.createElement('div');
+                bookDetails.classList.add('book-details');
+                bookDetails.innerHTML = `
+                    <strong>${book.title}</strong><br>
+                    Genre: ${book.genre.join(', ')}<br>
+                    Jenis: ${book.type}<br>
+                    <em>Diunggah oleh: ${book.user}</em><br>
+                `;
+
+                // Tambahkan event listener pada keseluruhan item
+                bookItem.addEventListener('click', () => viewBook(index, filterType));
+
+                bookItem.appendChild(bookCover);
+                bookItem.appendChild(bookDetails);
+                bookListDiv.appendChild(bookItem);
+            });
+        }
+
+        // Fungsi untuk melihat detail buku
+        function viewBook(index, filterType) {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const filteredBooks = filterType 
+                ? books.filter(book => book.type === filterType) 
+                : books;
+
+            const book = filteredBooks[index];
+            if (!book) return;
+
+            // Simpan detail buku ke localStorage
+            localStorage.setItem('selectedBook', JSON.stringify(book));
+
+            // Arahkan ke halaman lihat buku
+            window.location.href = 'lihatbuku.html';
+        }
+
+        // Fungsi untuk memfilter buku berdasarkan jenis
+        function filterBooks() {
+            const filterType = document.getElementById('bookFilter').value;
+            loadBookList(filterType);
+        }
+
+        // Fungsi untuk logout
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = "login.html";
+        }
+        // Muat daftar buku saat halaman dimuat
+        window.onload = function() {
+            loadBookList();
+            loadHeaderProfilePic();
+
+        };
+    </script>
+</body>
+</html>

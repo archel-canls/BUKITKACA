@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarks - BUKITKACA</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #bookmarkList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .book-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #222;
+            width: 210px;
+            border-radius: 5px 15px 15px 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .book-buttons {
+            text-align: center;
+            margin: 0px;
+        }
+
+        .book-buttons button {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .book-buttons button:hover {
+            background-color: #d32f2f;
+        }
+
+        .history-list {
+            margin: 20px;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .history-item {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .history-item h2 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .history-item p {
+            margin: 5px 0;
+        }
+
+        .history-item .info {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-item .info .title {
+            font-weight: bold;
+        }
+
+        .history-item .info .page {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html" class="active">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
+
+    <section class="content-section bookmark-container">
+        <h1 class="bookmark-title">Daftar Bookmark</h1>
+        <div id="bookmarkList"></div><br>
+
+        <h1>Riwayat Membaca</h1>
+        <ul class="history-list" id="historyList">
+            <!-- History items will be injected here by JavaScript -->
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+           // Cek apakah pengguna sudah login
+           function checkLogin() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser) {
+                window.location.href = "login.html";
+            }
+            return loggedInUser;
+        }
+        // Logout function: clear user data and redirect to login page
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = "login.html"; // Redirect to login page
+        }
+        // Load and display Bookmarks
+        function loadBookmarkList() {
+            checkLogin();
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            const bookmarkListDiv = document.getElementById('bookmarkList');
+
+            bookmarkListDiv.innerHTML = '';
+
+            const userBookmarks = bookmarks.filter(book => book.username === loggedInUser.username);
+
+            if (userBookmarks.length === 0) {
+                bookmarkListDiv.innerHTML = '<p>Belum ada buku yang dibookmark.</p>';
+            } else {
+                userBookmarks.forEach((book, index) => {
+                    const bookItem = document.createElement('div');
+                    bookItem.classList.add('book-item');
+
+                    const bookCover = document.createElement('img');
+                    bookCover.src = book.coverData;
+                    bookCover.alt = 'Cover Buku';
+                    bookCover.classList.add('book-cover');
+
+                    const bookDetails = document.createElement('div');
+                    bookDetails.classList.add('book-details');
+                    bookDetails.innerHTML = `
+                        <strong>${book.title}</strong><br>
+                        Genre: ${book.genre.join(', ')}<br>
+                        Pengupload: ${book.user}<br>
+                    `;
+
+                    const bookButtons = document.createElement('div');
+                    bookButtons.classList.add('book-buttons');
+                    bookButtons.innerHTML = `
+                        <button onclick="removeBookmark(${index})">Hapus dari Bookmark</button>
+                    `;
+                    bookItem.onclick = function() {
+                        viewBook(index);
+                    };
+                    bookItem.appendChild(bookCover);
+                    bookItem.appendChild(bookDetails);
+                    bookItem.appendChild(bookButtons);
+                    bookmarkListDiv.appendChild(bookItem);
+                });
+            }
+        }
+
+        function viewBook(index) {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            const book = bookmarks[index];
+            localStorage.setItem('selectedBook', JSON.stringify(book));
+            window.location.href = 'lihatbuku.html';
+        }
+
+        function removeBookmark(index) {
+            event.stopPropagation();
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+            bookmarks = bookmarks.filter(book => book.username === loggedInUser.username);
+            bookmarks.splice(index, 1);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+            alert('Buku berhasil dihapus dari bookmark!');
+            loadBookmarkList();
+        }
+
+        // Load and display Reading History
+        window.onload = function() {
+            const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
+
+            const limitedHistory = history.slice(0, 17);
+
+            if (limitedHistory.length === 0) {
+                const noHistoryMessage = document.createElement('p');
+                noHistoryMessage.textContent = "Anda belum membaca buku apapun.";
+                document.querySelector('.content-section').appendChild(noHistoryMessage);
+            } else {
+                const historyList = document.getElementById('historyList');
+
+                limitedHistory.forEach(function(item) {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('history-item');
+
+                    const infoDiv = document.createElement('div');
+                    infoDiv.classList.add('info');
+
+                    const titleDiv = document.createElement('div');
+                    titleDiv.classList.add('title');
+                    titleDiv.textContent = item.title;
+
+                    const pageDiv = document.createElement('div');
+                    pageDiv.classList.add('page');
+                    pageDiv.textContent = "Halaman: " + item.page;
+
+                    infoDiv.appendChild(titleDiv);
+                    infoDiv.appendChild(pageDiv);
+
+                    listItem.appendChild(infoDiv);
+                    historyList.appendChild(listItem);
+                });
+            }
+        };
+
+        loadBookmarkList();
+        loadHeaderProfilePic();
+    </script>
+</body>
+</html>

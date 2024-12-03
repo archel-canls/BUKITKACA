@@ -1,0 +1,9 @@
+// Fungsi untuk menghapus buku
+function deleteBook(index) {
+    if (confirm('Apakah Anda yakin ingin menghapus buku ini?')) {
+        const books = JSON.parse(localStorage.getItem('books')) || [];
+        books.splice(index, 1);
+        localStorage.setItem('books', JSON.stringify(books));
+        loadBookList(); // Refresh the book list
+    }
+}

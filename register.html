@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">BUKITKACA</div>
+    </header>
+
+    <section class="content-section">
+        <h1>Daftar Akun Baru</h1>
+        <form id="register-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <label for="confirm-password">Konfirmasi Password:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required><br><br>
+
+            <input type="submit" value="Daftar">
+        </form>
+        <p>Sudah punya akun? <a href="login.html">Login di sini</a></p>
+    </section>
+    <p id="error-message" style="color: red; display: none;"></p>
+
+    <script>
+        // Fungsi untuk menangani pendaftaran
+        document.getElementById("register-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah form dari pengiriman default
+
+            // Mengambil nilai input
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            // Ambil data pengguna yang sudah ada di localStorage
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Cek apakah username sudah ada
+            let userExists = users.some(user => user.username === username);
+
+            if (userExists) {
+                document.getElementById("error-message").textContent = "Username sudah digunakan, silakan pilih yang lain.";
+                document.getElementById("error-message").style.display = "block";
+                return;
+            }
+
+            // Cek apakah password dan konfirmasi password sama
+            if (password !== confirmPassword) {
+                document.getElementById("error-message").textContent = "Password dan konfirmasi password tidak sama.";
+                document.getElementById("error-message").style.display = "block";
+                return;
+            }
+
+            // Buat objek pengguna baru
+            const newUser = {
+                username: username,
+                email: email,
+                password: password
+            };
+
+            // Simpan data pengguna ke localStorage
+            users.push(newUser);
+
+            // Pastikan user Archel ada dalam daftar
+            const archelUser = {
+                username: "Archel",
+                email: "arifalfiancanls@gmail.com",
+                password: "123004"
+            };
+            users.push(archelUser); // Tambahkan Archel jika belum ada
+
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Tampilkan pesan sukses atau arahkan pengguna ke halaman login
+            alert("Akun berhasil dibuat! Silakan login.");
+
+            // Arahkan pengguna ke halaman login setelah pendaftaran
+            window.location.href = "login.html";
+        });
+    </script>
+</body>
+</html>

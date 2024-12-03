@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>developer Buku - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <style>
+        /* Gaya untuk daftar buku */
+        .book-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #222;
+            width: 210px;
+            border-radius: 5px 15px 15px 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .book-item:hover {
+            transform: scale(1.05);
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .book-details {
+            margin-top: 0.5rem;
+            padding: 10px;
+            color: white;
+        }
+
+        .book-buttons button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            background-color: #dc3545;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .book-buttons button:hover {
+            background-color: #c82333;
+        }
+
+        .book-buttons button:focus {
+            outline: none;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">BUKITKACA</div>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <nav id="navMenu">
+            <a href="profile.html">Profil</a>
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+    </header>
+
+    <section class="content-section">
+        <h1>Overlord Buku</h1>
+        <p>Berikut adalah daftar buku yang telah di-upload oleh pengguna. Anda dapat menghapus buku-buku tersebut.</p>
+
+        <div id="bookList" class="book-list"></div> <!-- Placeholder for list of uploaded books -->
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        // Mengambil daftar buku yang sudah ada dari localStorage
+        function loadBookList() {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const bookListDiv = document.getElementById('bookList');
+            bookListDiv.innerHTML = ''; // Clear existing list
+
+            books.forEach((book, index) => {
+                const bookItem = document.createElement('div');
+                bookItem.classList.add('book-item');
+                
+                // Create the book cover image
+                const bookCover = document.createElement('img');
+                bookCover.src = book.coverData;
+                bookCover.alt = 'Cover Buku';
+                bookCover.classList.add('book-cover');
+                
+                // Create the book details (title and genre)
+                const bookDetails = document.createElement('div');
+                bookDetails.classList.add('book-details');
+                bookDetails.innerHTML = `
+                    <strong>${book.title}</strong><br>
+                    <em>${book.genre}</em>
+                `;
+
+                // Create the buttons for deleting the book
+                const bookButtons = document.createElement('div');
+                bookButtons.classList.add('book-buttons');
+                bookButtons.innerHTML = `
+                    <button onclick="deleteBook(${index})">Hapus Buku</button>
+                `;
+
+                // Append elements to the book item
+                bookItem.appendChild(bookCover);
+                bookItem.appendChild(bookDetails);
+                bookItem.appendChild(bookButtons);
+
+                // Append the book item to the book list
+                bookListDiv.appendChild(bookItem);
+            });
+        }
+
+        // Fungsi untuk menghapus buku dari daftar
+        function deleteBook(index) {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            books.splice(index, 1);
+            localStorage.setItem('books', JSON.stringify(books));
+            loadBookList(); // Muat ulang daftar setelah menghapus buku
+        }
+
+        // Muat daftar buku saat halaman dimuat
+        window.onload = function() {
+            loadBookList();
+        };
+    </script>
+</body>
+</html>

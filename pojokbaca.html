@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pojok Baca - BUKITKACA</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .book-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #222;
+            width: 210px;
+            border-radius: 5px 15px 15px 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .search-bar input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .search-bar input::placeholder {
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        .search-bar .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 10px;
+            font-size: 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html" class="active">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
+
+    <section class="content-section">
+        <h1>Pojok Baca</h1><br>
+        <p>Di bawah ini adalah daftar semua buku yang telah di-upload. Anda dapat mencari buku yang diinginkan.</p>
+
+        <div class="search-bar">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Cari berdasarkan Judul, Genre, atau Pengupload..." 
+                onkeydown="checkEnterKey(event)">
+            <button class="search-button" onclick="searchBooks()">
+                🔍
+            </button>
+        </div>
+
+        <div id="bookList" class="book-list"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        let loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+        if (!loggedInUser) {
+            window.location.href = "login.html";
+        }
+
+        function loadBookList() {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const bookListDiv = document.getElementById('bookList');
+            bookListDiv.innerHTML = '';
+
+            books.forEach((book, index) => {
+                const bookItem = document.createElement('div');
+                bookItem.classList.add('book-item');
+                
+                const bookCover = document.createElement('img');
+                bookCover.src = book.coverData;
+                bookCover.alt = 'Cover Buku';
+                bookCover.classList.add('book-cover');
+                
+                const bookDetails = document.createElement('div');
+                bookDetails.classList.add('book-details');
+                bookDetails.innerHTML = `
+                    <strong>${book.title}</strong><br>
+                    Genre: ${book.genre.join(', ')}<br>
+                    Pengupload: ${book.user}<br>
+                    <em>${timeAgo(book.updatedAt)}</em>
+                `;
+                
+                bookItem.addEventListener('click', () => viewBook(index));
+                bookItem.appendChild(bookCover);
+                bookItem.appendChild(bookDetails);
+                bookListDiv.appendChild(bookItem);
+            });
+        }
+        function viewBook(index) {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+
+            // Filter buku sesuai pencarian
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(searchInput) || 
+                book.genre.some(genre => genre.toLowerCase().includes(searchInput)) || 
+                book.user.toLowerCase().includes(searchInput)
+            );
+
+            // Ambil buku yang sesuai dengan index pencarian
+            const book = filteredBooks[index];
+
+            // Simpan detail buku ke localStorage
+            localStorage.setItem('selectedBook', JSON.stringify(book));
+
+            // Arahkan ke halaman lihat buku
+            window.location.href = 'lihatbuku.html';
+        }
+
+        function searchBooks() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(searchInput) || 
+                book.genre.some(genre => genre.toLowerCase().includes(searchInput)) || 
+                book.user.toLowerCase().includes(searchInput)
+            );
+
+            const bookListDiv = document.getElementById('bookList');
+            bookListDiv.innerHTML = '';
+
+            filteredBooks.forEach((book, index) => {
+                const bookItem = document.createElement('div');
+                bookItem.classList.add('book-item');
+                
+                const bookCover = document.createElement('img');
+                bookCover.src = book.coverData;
+                bookCover.alt = 'Cover Buku';
+                bookCover.classList.add('book-cover');
+                
+                const bookDetails = document.createElement('div');
+                bookDetails.classList.add('book-details');
+                bookDetails.innerHTML = `
+                    <strong>${book.title}</strong><br>
+                    Genre: ${book.genre.join(', ')}<br>
+                    Pengupload: ${book.user}<br>
+                    <em>${timeAgo(book.updatedAt)}</em>
+                `;
+             
+                bookItem.addEventListener('click', () => viewBook(index));
+                bookItem.appendChild(bookCover);
+                bookItem.appendChild(bookDetails);
+                bookListDiv.appendChild(bookItem);
+            });
+        }
+
+        function checkEnterKey(event) {
+            if (event.key === "Enter") {
+                searchBooks();
+            }
+        }
+
+        loadHeaderProfilePic();
+        loadBookList();
+    </script>
+</body>
+</html>

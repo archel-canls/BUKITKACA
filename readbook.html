@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Baca Buku - BUKITKACA</title> <!-- This will be dynamically updated -->
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #pdfViewer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .controls button {
+            margin: 0 5px;
+        }
+        .page-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="profile.html">Profil</a>
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="login.html" id="logout">Logout</a>
+        </nav>
+    </header>
+
+    <section class="content-section">
+        <h1 id="bookTitle"></h1> <!-- Title will be updated here -->
+        <div class="controls">
+            <button id="zoomOut">Zoom Out</button>
+            <button id="zoomIn">Zoom In</button>
+            <button id="prevPage">Sebelumnya</button>
+            <button id="nextPage">Selanjutnya</button>
+        </div>
+
+        <div id="pdfViewer"></div>
+
+        <div class="page-info">
+            <span id="pageNumber">Halaman: 1</span> / <span id="totalPages">0</span>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+        let pdfDoc = null;
+        let currentPage = 1;
+        let scale = 1.0;
+
+        window.onload = function() {
+            const book = JSON.parse(localStorage.getItem('selectedBook'));
+            const pageTitle = document.getElementById('pageTitle');
+            const bookTitleElement = document.getElementById('bookTitle');
+            
+            const bookTitle = book ? book.title : 'Baca Buku - BUKITKACA';
+            pageTitle.textContent = bookTitle;
+            bookTitleElement.textContent = bookTitle;
+
+            const pdfData = localStorage.getItem('pdfData');
+
+            if (pdfData) {
+                const loadingTask = pdfjsLib.getDocument({data: atob(pdfData.split(',')[1])});
+                
+                loadingTask.promise.then(function(pdf) {
+                    pdfDoc = pdf;
+                    document.getElementById('totalPages').textContent = pdfDoc.numPages;
+                    renderPage(currentPage);
+                }).catch(function(error) {
+                    console.error('Error saat memuat PDF: ', error);
+                });
+            } else {
+                document.body.innerHTML = 'File PDF tidak ditemukan.';
+            }
+
+            document.getElementById('zoomIn').addEventListener('click', function() {
+                scale += 0.2;
+                renderPage(currentPage);
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', function() {
+                if (scale > 0.4) {
+                    scale -= 0.2;
+                    renderPage(currentPage);
+                }
+            });
+
+            document.getElementById('prevPage').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                    updateHistory();
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', function() {
+                if (currentPage < pdfDoc.numPages) {
+                    currentPage++;
+                    renderPage(currentPage);
+                    updateHistory();
+                }
+            });
+
+            // Load saved history if it exists for this book
+            loadHistory();
+        };
+
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                const viewport = page.getViewport({scale: scale});
+
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.classList.add('page');
+
+                page.render({canvasContext: context, viewport: viewport}).promise.then(function() {
+                    const pdfViewer = document.getElementById('pdfViewer');
+                    pdfViewer.innerHTML = '';
+                    pdfViewer.appendChild(canvas);
+
+                    document.getElementById('pageNumber').textContent = "Halaman: " + pageNum;
+                });
+            });
+        }
+
+        function updateHistory() {
+    const bookTitle = document.getElementById('bookTitle').textContent;
+    const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
+
+    // Check if the book already exists in the history
+    const existingIndex = history.findIndex(item => item.title === bookTitle);
+
+    if (existingIndex > -1) {
+        // If the book exists in history, update its page number
+        history[existingIndex].page = currentPage;
+
+        // Remove the old entry and add the updated one at the top
+        const updatedItem = history.splice(existingIndex, 1)[0];
+        history.unshift(updatedItem); // Add to the front (most recent)
+    } else {
+        // If the book doesn't exist in history, add it at the top
+        history.unshift({ title: bookTitle, page: currentPage });
+    }
+
+    // Save the updated history back to localStorage
+    localStorage.setItem('readingHistory', JSON.stringify(history));
+}
+
+
+        function loadHistory() {
+            const bookTitle = document.getElementById('bookTitle').textContent;
+            const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
+            const bookHistory = history.find(item => item.title === bookTitle);
+
+            if (bookHistory) {
+                currentPage = bookHistory.page;
+                renderPage(currentPage);
+            }
+        }
+    </script>
+</body>
+</html>

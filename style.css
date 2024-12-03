@@ -1,0 +1,455 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Tampilan Umum */
+body {
+    background: linear-gradient(135deg, #091015, #441672);
+    color: #f8f2f2;
+    padding: 20px;
+    min-height: 100vh;
+    text-align: center;
+}
+
+/* Header */
+header {
+    background-color: #0056b3;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    white-space: nowrap;
+}
+
+header .logo {
+    margin-right: auto; /* M
+    font-size: 2.5rem;
+    font-family: 'Cinzel', serif; /* Font gaya Latin */
+    color: #f30f0f;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-left: 20px;
+    padding-right: 2rem;
+    text-shadow: 
+    0 0 5px #ffffff, 
+    0 0 10px #ffffff, 
+    0 0 15px #00bfff, /* Warna biru muda */
+    0 0 20px #00bfff, 
+    0 0 25px #0073e6, /* Warna biru lebih gelap */
+    0 0 30px #004d99;
+}
+
+/* Navigasi */
+.menu-toggle {
+    font-size: 2.6rem;
+    cursor: pointer;
+    display: none;
+    background-color: #004a99;
+    padding: 0px 20px; /* Tambahkan padding horizontal lebih besar */
+    padding-bottom: 1px;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+/* Menu navigation */
+nav {
+    display: flex;
+    gap: 0.2rem;
+    transition: all 0.3s ease-in-out;
+}
+
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+    background-color: #003f7f;
+}
+
+#logout {
+    color: white; /* Warna teks putih */
+    background-color: red; /* Latar belakang merah */
+    border: none; /* Menghilangkan border default */
+    padding: 10px; /* Memberikan padding untuk membuat tombol lebih besar */
+    border-radius: 5px; /* Memberikan sudut melengkung pada tombol */
+    font-size: 16px; /* Ukuran font */
+    font-weight: bold; /* Membuat font lebih tebal */
+    cursor: pointer; /* Mengubah kursor menjadi pointer saat hover */
+    transition: background-color 0.3s, transform 0.2s; /* Efek transisi saat hover */
+}
+
+#logout:hover {
+    background-color: darkred; /* Mengubah latar belakang menjadi merah tua saat hover */
+}
+
+nav a.active {
+    background-color: #0a3a74;
+}
+
+       /* Mobile responsiveness */
+       @media (max-width: 1220px) {
+        nav {
+            display: none;
+            flex-direction: column;
+            background-color: #004a99;
+            position: absolute;
+            bottom: 0;
+            top: 110px;
+            left: 20px;
+            width: 250px;
+            height: 380px;
+            padding-top: 15px;
+            z-index: 1000;
+        }
+
+        nav.show {
+            display: flex;
+ 
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+
+        nav a {
+            padding: 10px 15px;
+            text-align: center;
+       
+        }
+    }
+
+    header .header-profile-pic {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background-color: #888;
+        background-size: cover;
+        background-size: 80px;
+        background-position: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        margin-left: 20px;
+        object-fit: cover; 
+    }
+
+    header .header-profile-pic:hover {
+        transform: scale(1.1);
+    }
+
+    section.content-section {
+        margin-top: 30px;
+    }
+
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-pic {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 4px solid #fff;
+        background-color: #888;
+        background-size: cover;
+        background-position: center;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .profile-pic:hover {
+        transform: scale(1.1);
+    }
+
+    .edit-icon {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .edit-icon i {
+        color: #fff;
+        font-size: 20px;
+    }
+
+    #profileImageUpload {
+        display: none;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin-top: 20px;
+        background-color: #00c3ff;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0086cc;
+    }
+
+    /* Profil menu untuk tampilan mobile */
+    .profile-menu {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #444;
+        padding: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .profile-menu p {
+        color: white;
+        margin: 0;
+    }
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    background-color: #343a40; /* Hitam */
+    color: white;
+  }
+  
+/* Konten */
+.content-section {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 900px;
+    margin: 15px auto;
+}
+
+h1, h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #fff;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form label {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+form input, form select, form textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    background-color: #333;
+    color: #fff;
+}
+
+form input[type="file"] {
+    border: 1px solid #444;
+}
+
+form input[type="submit"] {
+    background-color: #0099ff;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+form input[type="submit"]:hover {
+    background-color: #0066cc;
+}
+
+/* Daftar Buku yang Diupload */
+  /* Gaya untuk daftar buku */
+  .book-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 5px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.book-item:hover {
+transform: scale(1.05);
+box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.book-cover {
+width: 210px;
+height: 252px;
+display: flex;
+justify-content: center;
+border-radius: 5px 15px 15px 5px;
+align-items: center;
+background-color: #333; /* Placeholder background when no image */
+}
+
+.book-cover img {
+width: 210px;
+height: 252px;
+object-fit: cover;
+display: block;
+}
+
+.book-details {
+    margin-top: 0,5rem;
+    padding: 10px;
+    color: white;
+    flex-grow: 1; /* This makes the details section take up remaining space */
+    text-align: justify
+}
+
+.book-details {
+    text-align: center;
+    margin-top: 0rem;
+    padding: 3px;
+    color: white;
+    flex-grow: 1; /* This makes the details section take up remaining space */
+}
+.book-cover img:empty {
+background-image: url('path/to/default-image.jpg'); /* Gambar default jika tidak ada gambar */
+background-color: #444; /* Warna latar jika gambar tidak ada */
+}
+
+.book-details strong {
+    font-size: 1.5em;
+    color: #fff;
+    }
+
+.book-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #333;
+    border-top: 1px solid #444;
+}
+
+.book-buttons button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.view-button {
+    background-color: #007BFF;
+}
+
+.view-button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    background-color: #FF3B30; /* Red color */
+}
+
+.delete-button:hover {
+    background-color: #D32F2F;
+}
+
+.book-buttons button:focus {
+    outline: none;
+}
+        /* Gaya untuk select dropdown */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filters select {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #2266cb;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .filters select:hover {
+            background-color: #226fc1;
+        }
+
+        /* Gaya untuk input pencarian */
+        .filters input {
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            background-color: #ffffff;
+            color: #060101;
+            width: 360px;
+        }
+
+/* Responsif */
+@media (max-width: 768px) {
+    .content-section {
+        width: 90%;
+    }
+
+    .book-list-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .book-item {
+        width: 90%;
+        margin-bottom: 20px;
+    }
+}
+
+
+
