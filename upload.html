@@ -7,17 +7,19 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
     <style>
-        .book-item {
-            display: flex;
-            flex-direction: column;
-            background-color: #222;
-            width: 210px;
-            border-radius: 3px 15px 15px 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
+
+.book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 3px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
     </style>
 </head>
 <body>
@@ -162,8 +164,8 @@
             });
         }
 
-        // Fungsi untuk menambahkan buku ke daftar dan menyimpannya ke localStorage
-        document.getElementById('upload-form').addEventListener('submit', function(event) {
+           // Fungsi untuk menambahkan buku ke daftar dan menyimpannya ke localStorage
+           document.getElementById('upload-form').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const loggedInUser = checkLogin(); // Pastikan pengguna login
@@ -184,18 +186,19 @@
                     const coverReader = new FileReader();
                     coverReader.onload = function(coverEvent) {
                         const bookData = {
-                            title: title,
-                            type: type,
-                            genre: genre,
-                            description: description,
-                            pdfData: e.target.result,
-                            coverData: coverEvent.target.result,
-                            user: loggedInUser.username,
-                            updatedAt: new Date().toISOString() //
+                        title: title,
+                        type: type,
+                        genre: genre,
+                        description: description,
+                        pdfData: e.target.result,
+                        coverData: coverEvent.target.result,
+                        user: loggedInUser.username,
+                        updatedAt: new Date().toISOString() //
                         };
 
-                        // Ambil buku yang sudah ada dari localStorage dan tambahkan buku baru
-                        const books = JSON.parse(localStorage.getItem('books')) || [];
+
+          // Ambil buku yang sudah ada dari localStorage dan tambahkan buku baru
+          const books = JSON.parse(localStorage.getItem('books')) || [];
                         books.push(bookData);
                         localStorage.setItem('books', JSON.stringify(books));
 
@@ -206,31 +209,52 @@
                         loadBookList();
                     };
 
-                    coverReader.readAsDataURL(cover); // Konversi cover gambar ke DataURL
+                    coverReader.readAsDataURL(cover); // Mengonversi file cover menjadi base64
                 };
-                reader.readAsDataURL(file); // Konversi file PDF ke DataURL
+
+                reader.readAsDataURL(file); // Mengonversi file PDF menjadi format base64
             } else {
                 alert('Harap unggah file PDF dan cover gambar dengan format JPG/PNG.');
             }
         });
 
-        // Fungsi untuk membuka buku
-        function viewBook(index) {
+
+        // Fungsi untuk membuka buku berdasarkan index
+        function openBook(index) {
             const books = JSON.parse(localStorage.getItem('books')) || [];
             const book = books[index];
-            alert(`Buku: ${book.title}\nDeskripsi: ${book.description}`);
+
+            // Menyimpan data PDF dan cover ke localStorage dan membuka halaman untuk menampilkan buku
+            localStorage.setItem('pdfData', book.pdfData);
+            localStorage.setItem('coverData', book.coverData);
+            window.location.href = 'readbook.html'; // Arahkan ke halaman untuk membuka PDF
         }
+
+    function viewBook(index) {
+        const books = JSON.parse(localStorage.getItem('books')) || [];
+        const book = books[index]; // Fix: Use books[index] to get the selected book
+
+        // Simpan detail buku ke localStorage
+        localStorage.setItem('selectedBook', JSON.stringify(book));
+
+        // Arahkan ke halaman lihat buku
+        window.location.href = 'lihatbuku.html'; // Fix: Ensure the correct page
+    }
 
         // Fungsi untuk menghapus buku dari daftar
         function deleteBook(index) {
+            event.stopPropagation();
             const books = JSON.parse(localStorage.getItem('books')) || [];
             books.splice(index, 1);
             localStorage.setItem('books', JSON.stringify(books));
-            loadBookList();
+            loadBookList(); // Muat ulang daftar setelah menghapus buku
         }
-
-        // Memuat daftar buku ketika halaman dimuat
-        loadBookList();
+        
+        // Load books when the page is loaded
+        window.onload = function() {
+            loadBookList();
+            loadHeaderProfilePic();
+        };
     </script>
 </body>
 </html>
