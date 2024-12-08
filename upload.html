@@ -102,7 +102,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getDatabase, ref as dbRef, set, push, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-    
+        
         const firebaseConfig = {
             apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
             authDomain: "bukitkaca-65e92.firebaseapp.com",
@@ -113,44 +113,33 @@
             appId: "1:848017575081:web:756445e54749aa261cadb8",
             measurementId: "G-YLP8GC5T3J"
         };
-    
+        
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
     
-        // Function to check if the user is logged in (from localStorage)
-        function checkLoginStatus() {
-            const user = localStorage.getItem('loggedInUser');
-            if (!user) {
-                alert('Anda harus login terlebih dahulu.');
-                window.location.href = 'login.html';  // Redirect to login if not logged in
-            }
-            return JSON.parse(user);  // Return the logged-in user details
-        }
-    
-        // Function to load books uploaded by the logged-in user
+        // Fungsi untuk memuat daftar buku
         async function loadBookList() {
-            const loggedInUser = checkLoginStatus();  // Check if the user is logged in
+            const loggedInUser = checkLoginStatus();
             const bookListContainer = document.getElementById('bookList');
+            bookListContainer.innerHTML = '';  // Hapus konten sebelumnya
             const loadingMessage = document.createElement('p');
             loadingMessage.textContent = 'Memuat Buku...';
-            bookListContainer.innerHTML = ''; // Clear any existing content
-            bookListContainer.appendChild(loadingMessage); // Show the loading message
+            bookListContainer.appendChild(loadingMessage);  // Menampilkan pesan loading sementara
     
             const bookDataRef = dbRef(database, 'books/');
             const snapshot = await get(bookDataRef);
     
             if (snapshot.exists()) {
                 const books = snapshot.val();
-                bookListContainer.innerHTML = ''; // Clear the loading message
+                bookListContainer.innerHTML = '';  // Bersihkan pesan loading
+                let foundBooks = false;  // Cek apakah ada buku yang cocok
     
-                // Filter books uploaded by the logged-in user
+                // Tampilkan buku yang di-upload oleh pengguna yang login
                 for (const key in books) {
                     const book = books[key];
                     if (book.uploadedBy === loggedInUser.username) {
                         const bookItem = document.createElement('div');
                         bookItem.className = 'book-item';
-    
-                        // Creating the book item with base64 image for cover
                         bookItem.innerHTML = `
                             <div class="book-cover">
                                 <img src="${book.coverBase64}" alt="Cover Buku">
@@ -160,20 +149,34 @@
                             <p>${book.description}</p>
                             Pengupload: ${book.uploadedBy}<br>
                         `;
-    
                         bookListContainer.appendChild(bookItem);
+                        foundBooks = true;
                     }
+                }
+    
+                if (!foundBooks) {
+                    bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
                 }
             } else {
                 bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
             }
         }
     
-        // Event listener for the form submission
+        // Fungsi untuk memeriksa apakah pengguna sudah login
+        function checkLoginStatus() {
+            const user = localStorage.getItem('loggedInUser');
+            if (!user) {
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'login.html';  // Redirect ke halaman login jika belum login
+            }
+            return JSON.parse(user);
+        }
+    
+        // Menangani pengiriman form upload buku
         document.getElementById('upload-form').addEventListener('submit', async function(event) {
             event.preventDefault();
     
-            const loggedInUser = checkLoginStatus();  // Get the logged-in user
+            const loggedInUser = checkLoginStatus();  // Mendapatkan pengguna yang login
             const title = document.getElementById('judul-buku').value;
             const jenisBuku = document.getElementById('jenis-buku').value;
             const genreInput = document.getElementById('genre-buku').value;
@@ -186,24 +189,24 @@
     
             if (file && file.type === 'application/pdf' && cover && ['image/jpeg', 'image/png'].includes(cover.type)) {
                 try {
-                    // Convert book file to base64 and handle error
                     const fileBase64 = await convertToBase64(file);
-                    const coverBase64 = await resizeImage(cover, 210, 252); // Resize the cover to 210x252 px with high quality
+                    const coverBase64 = await resizeImage(cover, 210, 252);  // Resize cover image
     
                     const bookData = {
                         title: title,
                         jenisBuku: jenisBuku,
                         genre: genre,
                         description: description,
-                        fileBase64: fileBase64, // Menyimpan base64 buku
-                        coverBase64: coverBase64, // Menyimpan base64 cover
-                        uploadedBy: loggedInUser.username  // Store the username of the uploader
+                        fileBase64: fileBase64,
+                        coverBase64: coverBase64,
+                        uploadedBy: loggedInUser.username
                     };
     
                     const newBookRef = push(dbRef(database, 'books/'));
                     await set(newBookRef, bookData);
-                    loadBookList();
+    
                     alert('Buku berhasil di-upload!');
+                    loadBookList();  // Memuat ulang daftar buku setelah upload berhasil
                 } catch (error) {
                     console.error('Terjadi kesalahan saat mengonversi file:', error);
                     alert('Terjadi kesalahan saat mengonversi file. Periksa konsol untuk rincian.');
@@ -213,7 +216,17 @@
             }
         });
     
-        // Function to resize and convert image to base64 with high quality
+        // Fungsi untuk mengonversi file menjadi base64
+        function convertToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = (error) => reject('Error membaca file: ' + error);
+                reader.readAsDataURL(file);
+            });
+        }
+    
+        // Fungsi untuk mengubah ukuran gambar
         function resizeImage(file, width, height) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -235,8 +248,7 @@
     
                     ctx.drawImage(img, 0, 0, width, height);
     
-                    // Use a higher quality for image export
-                    const resizedBase64 = canvas.toDataURL("image/jpeg", 0.95); // Set quality to 95% for better clarity
+                    const resizedBase64 = canvas.toDataURL("image/jpeg", 0.95);
                     resolve(resizedBase64);
                 };
     
@@ -246,18 +258,11 @@
             });
         }
     
-        // Function to convert file to base64
-        function convertToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = (error) => reject('Error membaca file: ' + error);
-                reader.readAsDataURL(file);
-            });
-        }
-    
-        document.addEventListener('DOMContentLoaded', loadBookList);  // Load books on page load
+        // Memuat buku saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadBookList);
     </script>
+    
+    
     
 </body>
 </html>
