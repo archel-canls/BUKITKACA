@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -35,11 +35,28 @@
             <input type="submit" value="Login">
         </form>
         <p>Belum punya akun? <a href="register.html">Daftar di sini</a></p>
-        <p>Lupa Pasword? <a href="lupapasword.html">Reset di sini</a></p>
+        <p>Lupa Password? <a href="lupapasword.html">Reset di sini</a></p>
     </section>
     <p id="error-message" style="color: red; display: none;"></p>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
         // Fungsi untuk menangani login
         document.getElementById("login-form").addEventListener("submit", function(event) {
             event.preventDefault();
@@ -48,26 +65,39 @@
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
-            // Ambil data pengguna yang ada di localStorage
-            let users = JSON.parse(localStorage.getItem('users')) || [];
+            // Referensi ke data pengguna di Firebase Realtime Database
+            const userRef = dbRef(database, 'users/' + username);  // Mengambil data berdasarkan username
 
-            // Cek apakah pengguna ada dan password sesuai
-            let user = users.find(user => user.username === username && user.password === password);
+            get(userRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
 
-            if (user) {
-                // Simpan data pengguna yang login di localStorage
-                localStorage.setItem('loggedInUser', JSON.stringify(user));
+                    // Cek apakah password sesuai
+                    if (userData.password === password) {
+                        // Simpan data pengguna yang login di localStorage
+                        localStorage.setItem('loggedInUser', JSON.stringify(userData));
 
-                // Cek jika username adalah "Archel", arahkan ke developer.html, selain itu ke index.html
-                if (username === "Archel") {
-                    window.location.href = "developer.html";
+                        // Cek jika username adalah "Archel", arahkan ke developer.html, selain itu ke index.html
+                        if (username === "Archel") {
+                            window.location.href = "developer.html";
+                        } else {
+                            window.location.href = "index.html";
+                        }
+                    } else {
+                        // Password salah
+                        document.getElementById("error-message").textContent = "Username atau password salah.";
+                        document.getElementById("error-message").style.display = "block";
+                    }
                 } else {
-                    window.location.href = "index.html";
+                    // Pengguna tidak ditemukan
+                    document.getElementById("error-message").textContent = "Username atau password salah.";
+                    document.getElementById("error-message").style.display = "block";
                 }
-            } else {
-                document.getElementById("error-message").textContent = "Username atau password salah.";
+            }).catch((error) => {
+                console.error("Error retrieving data: ", error);
+                document.getElementById("error-message").textContent = "Terjadi kesalahan saat login.";
                 document.getElementById("error-message").style.display = "block";
-            }
+            });
         });
     </script>
 </body>

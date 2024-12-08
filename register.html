@@ -33,7 +33,24 @@
     </section>
     <p id="error-message" style="color: red; display: none;"></p>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, set, get, child } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
         // Fungsi untuk menangani pendaftaran
         document.getElementById("register-form").addEventListener("submit", function(event) {
             event.preventDefault(); // Mencegah form dari pengiriman default
@@ -44,50 +61,50 @@
             const password = document.getElementById("password").value;
             const confirmPassword = document.getElementById("confirm-password").value;
 
-            // Ambil data pengguna yang sudah ada di localStorage
-            let users = JSON.parse(localStorage.getItem('users')) || [];
+            // Referensi ke data pengguna di Firebase Realtime Database
+            const usersRef = dbRef(database, 'users/' + username);  // Mengambil data berdasarkan username
 
             // Cek apakah username sudah ada
-            let userExists = users.some(user => user.username === username);
+            get(usersRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    document.getElementById("error-message").textContent = "Username sudah digunakan, silakan pilih yang lain.";
+                    document.getElementById("error-message").style.display = "block";
+                    return;
+                }
 
-            if (userExists) {
-                document.getElementById("error-message").textContent = "Username sudah digunakan, silakan pilih yang lain.";
+                // Cek apakah password dan konfirmasi password sama
+                if (password !== confirmPassword) {
+                    document.getElementById("error-message").textContent = "Password dan konfirmasi password tidak sama.";
+                    document.getElementById("error-message").style.display = "block";
+                    return;
+                }
+
+                // Buat objek pengguna baru
+                const newUser = {
+                    username: username,
+                    email: email,
+                    password: password
+                };
+
+                // Simpan data pengguna ke Firebase Realtime Database
+                set(usersRef, newUser)
+                    .then(() => {
+                        // Tampilkan pesan sukses atau arahkan pengguna ke halaman login
+                        alert("Akun berhasil dibuat! Silakan login.");
+
+                        // Arahkan pengguna ke halaman login setelah pendaftaran
+                        window.location.href = "login.html";
+                    })
+                    .catch((error) => {
+                        console.error("Error writing new user to database: ", error);
+                        document.getElementById("error-message").textContent = "Terjadi kesalahan saat membuat akun.";
+                        document.getElementById("error-message").style.display = "block";
+                    });
+            }).catch((error) => {
+                console.error("Error checking user existence: ", error);
+                document.getElementById("error-message").textContent = "Terjadi kesalahan saat memeriksa username.";
                 document.getElementById("error-message").style.display = "block";
-                return;
-            }
-
-            // Cek apakah password dan konfirmasi password sama
-            if (password !== confirmPassword) {
-                document.getElementById("error-message").textContent = "Password dan konfirmasi password tidak sama.";
-                document.getElementById("error-message").style.display = "block";
-                return;
-            }
-
-            // Buat objek pengguna baru
-            const newUser = {
-                username: username,
-                email: email,
-                password: password
-            };
-
-            // Simpan data pengguna ke localStorage
-            users.push(newUser);
-
-            // Pastikan user Archel ada dalam daftar
-            const archelUser = {
-                username: "Archel",
-                email: "arifalfiancanls@gmail.com",
-                password: "123004"
-            };
-            users.push(archelUser); // Tambahkan Archel jika belum ada
-
-            localStorage.setItem('users', JSON.stringify(users));
-
-            // Tampilkan pesan sukses atau arahkan pengguna ke halaman login
-            alert("Akun berhasil dibuat! Silakan login.");
-
-            // Arahkan pengguna ke halaman login setelah pendaftaran
-            window.location.href = "login.html";
+            });
         });
     </script>
 </body>
