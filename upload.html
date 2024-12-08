@@ -102,7 +102,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getDatabase, ref as dbRef, set, push, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-
+    
         const firebaseConfig = {
             apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
             authDomain: "bukitkaca-65e92.firebaseapp.com",
@@ -113,51 +113,67 @@
             appId: "1:848017575081:web:756445e54749aa261cadb8",
             measurementId: "G-YLP8GC5T3J"
         };
-
+    
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-
-        // Function to resize and convert image to base64 with high quality
-        function resizeImage(file, width, height) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-
-                img.onload = function() {
-                    const canvas = document.createElement("canvas");
-                    const ctx = canvas.getContext("2d");
-
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    // Use a higher quality for image export
-                    const resizedBase64 = canvas.toDataURL("image/jpeg", 0.95); // Set quality to 95% for better clarity
-                    resolve(resizedBase64);
-                };
-            });
+    
+        // Function to check if the user is logged in (from localStorage)
+        function checkLoginStatus() {
+            const user = localStorage.getItem('loggedInUser');
+            if (!user) {
+                alert('Anda harus login terlebih dahulu.');
+                window.location.href = 'login.html';  // Redirect to login if not logged in
+            }
+            return JSON.parse(user);  // Return the logged-in user details
         }
-
-        // Function to convert file to base64
-        function convertToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
+    
+        // Function to load books uploaded by the logged-in user
+        async function loadBookList() {
+            const loggedInUser = checkLoginStatus();  // Check if the user is logged in
+            const bookListContainer = document.getElementById('bookList');
+            const loadingMessage = document.createElement('p');
+            loadingMessage.textContent = 'Memuat Buku...';
+            bookListContainer.innerHTML = ''; // Clear any existing content
+            bookListContainer.appendChild(loadingMessage); // Show the loading message
+    
+            const bookDataRef = dbRef(database, 'books/');
+            const snapshot = await get(bookDataRef);
+    
+            if (snapshot.exists()) {
+                const books = snapshot.val();
+                bookListContainer.innerHTML = ''; // Clear the loading message
+    
+                // Filter books uploaded by the logged-in user
+                for (const key in books) {
+                    const book = books[key];
+                    if (book.uploadedBy === loggedInUser.username) {
+                        const bookItem = document.createElement('div');
+                        bookItem.className = 'book-item';
+    
+                        // Creating the book item with base64 image for cover
+                        bookItem.innerHTML = `
+                            <div class="book-cover">
+                                <img src="${book.coverBase64}" alt="Cover Buku">
+                            </div>
+                            <h3>${book.title}</h3>
+                            <p><strong>Genre:</strong> ${book.genre.join(', ')}</p>
+                            <p>${book.description}</p>
+                            Pengupload: ${book.uploadedBy}<br>
+                        `;
+    
+                        bookListContainer.appendChild(bookItem);
+                    }
+                }
+            } else {
+                bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+            }
         }
-
+    
         // Event listener for the form submission
         document.getElementById('upload-form').addEventListener('submit', async function(event) {
             event.preventDefault();
-
+    
+            const loggedInUser = checkLoginStatus();  // Get the logged-in user
             const title = document.getElementById('judul-buku').value;
             const jenisBuku = document.getElementById('jenis-buku').value;
             const genreInput = document.getElementById('genre-buku').value;
@@ -167,12 +183,13 @@
             const file = fileInput.files[0];
             const coverInput = document.getElementById('coverInput');
             const cover = coverInput.files[0];
-
+    
             if (file && file.type === 'application/pdf' && cover && ['image/jpeg', 'image/png'].includes(cover.type)) {
                 try {
+                    // Convert book file to base64 and handle error
                     const fileBase64 = await convertToBase64(file);
                     const coverBase64 = await resizeImage(cover, 210, 252); // Resize the cover to 210x252 px with high quality
-
+    
                     const bookData = {
                         title: title,
                         jenisBuku: jenisBuku,
@@ -180,58 +197,67 @@
                         description: description,
                         fileBase64: fileBase64, // Menyimpan base64 buku
                         coverBase64: coverBase64, // Menyimpan base64 cover
+                        uploadedBy: loggedInUser.username  // Store the username of the uploader
                     };
-
+    
                     const newBookRef = push(dbRef(database, 'books/'));
                     await set(newBookRef, bookData);
                     loadBookList();
                     alert('Buku berhasil di-upload!');
                 } catch (error) {
-                    alert('Terjadi kesalahan saat mengonversi file.');
+                    console.error('Terjadi kesalahan saat mengonversi file:', error);
+                    alert('Terjadi kesalahan saat mengonversi file. Periksa konsol untuk rincian.');
                 }
             } else {
                 alert('Harap unggah file PDF dan cover gambar dengan format JPG/PNG.');
             }
         });
-
-// Function to load book list from Firebase
-async function loadBookList() {
-    const bookListContainer = document.getElementById('bookList');
-    const loadingMessage = document.createElement('p');
-    loadingMessage.textContent = 'Memuat Buku...';
-    bookListContainer.innerHTML = ''; // Clear any existing content
-    bookListContainer.appendChild(loadingMessage); // Show the loading message
-
-    const bookDataRef = dbRef(database, 'books/');
-    const snapshot = await get(bookDataRef);
-
-    if (snapshot.exists()) {
-        const books = snapshot.val();
-        bookListContainer.innerHTML = ''; // Clear the loading message
-
-        for (const key in books) {
-            const book = books[key];
-            const bookItem = document.createElement('div');
-            bookItem.className = 'book-item';
-
-            // Creating the book item with base64 image for cover
-            bookItem.innerHTML = `
-                <div class="book-cover">
-                    <img src="${book.coverBase64}" alt="Cover Buku">
-                </div>
-                <h3>${book.title}</h3>
-                <p><strong>Genre:</strong> ${book.genre.join(', ')}</p>
-                <p>${book.description}</p>
-            `;
-
-            bookListContainer.appendChild(bookItem);
+    
+        // Function to resize and convert image to base64 with high quality
+        function resizeImage(file, width, height) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.onerror = function(error) {
+                    reject('Gagal membaca file gambar: ' + error);
+                };
+                reader.readAsDataURL(file);
+    
+                img.onload = function() {
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d");
+    
+                    canvas.width = width;
+                    canvas.height = height;
+    
+                    ctx.drawImage(img, 0, 0, width, height);
+    
+                    // Use a higher quality for image export
+                    const resizedBase64 = canvas.toDataURL("image/jpeg", 0.95); // Set quality to 95% for better clarity
+                    resolve(resizedBase64);
+                };
+    
+                img.onerror = function() {
+                    reject('Gagal memuat gambar untuk resize');
+                };
+            });
         }
-    } else {
-        bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
-    }
-}
-
-        document.addEventListener('DOMContentLoaded', loadBookList);
+    
+        // Function to convert file to base64
+        function convertToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = (error) => reject('Error membaca file: ' + error);
+                reader.readAsDataURL(file);
+            });
+        }
+    
+        document.addEventListener('DOMContentLoaded', loadBookList);  // Load books on page load
     </script>
+    
 </body>
 </html>
