@@ -88,7 +88,7 @@
             <label for="cover-buku">Unggah Cover Buku (Format JPG/PNG):</label>
             <input type="file" id="coverInput" name="cover-buku" accept=".jpg, .jpeg, .png" required><br><br>
 
-            <input type="submit" value="Upload Buku"><br>
+            <input type="submit" id="uploadButton" value="Upload Buku"><br>
         </form>
 
         <h2>Daftar Buku yang Di-upload</h2>
@@ -118,103 +118,198 @@
         const database = getDatabase(app);
     
         // Fungsi untuk memuat daftar buku
-        async function loadBookList() {
-            const loggedInUser = checkLoginStatus();
-            const bookListContainer = document.getElementById('bookList');
-            bookListContainer.innerHTML = '';  // Hapus konten sebelumnya
-            const loadingMessage = document.createElement('p');
-            loadingMessage.textContent = 'Memuat Buku...';
-            bookListContainer.appendChild(loadingMessage);  // Menampilkan pesan loading sementara
-    
-            const bookDataRef = dbRef(database, 'books/');
-            const snapshot = await get(bookDataRef);
-    
-            if (snapshot.exists()) {
-                const books = snapshot.val();
-                bookListContainer.innerHTML = '';  // Bersihkan pesan loading
-                let foundBooks = false;  // Cek apakah ada buku yang cocok
-    
-                // Tampilkan buku yang di-upload oleh pengguna yang login
-                for (const key in books) {
-                    const book = books[key];
-                    if (book.uploadedBy === loggedInUser.username) {
-                        const bookItem = document.createElement('div');
-                        bookItem.className = 'book-item';
-                        bookItem.innerHTML = `
-                            <div class="book-cover">
-                                <img src="${book.coverBase64}" alt="Cover Buku">
-                            </div>
-                            <h3>${book.title}</h3>
-                            <p><strong>Genre:</strong> ${book.genre.join(', ')}</p>
-                            <p>${book.description}</p>
-                            Pengupload: ${book.uploadedBy}<br>
-                        `;
-                        bookListContainer.appendChild(bookItem);
-                        foundBooks = true;
-                    }
-                }
-    
-                if (!foundBooks) {
-                    bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
-                }
-            } else {
-                bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+      // Fungsi untuk memuat daftar buku
+// Fungsi untuk memuat daftar buku
+async function loadBookList() {
+    const loggedInUser = checkLoginStatus();
+    if (!loggedInUser) return; // Jika tidak ada yang login, hentikan eksekusi
+
+    const bookListContainer = document.getElementById('bookList');
+    bookListContainer.innerHTML = '';  // Hapus konten sebelumnya
+    const loadingMessage = document.createElement('p');
+    loadingMessage.textContent = 'Memuat Buku...';
+    bookListContainer.appendChild(loadingMessage);  // Menampilkan pesan loading sementara
+
+    const bookDataRef = dbRef(database, 'books/');
+    const snapshot = await get(bookDataRef);
+
+    if (snapshot.exists()) {
+        const books = snapshot.val();
+        bookListContainer.innerHTML = '';  // Bersihkan pesan loading
+        let foundBooks = false;  // Cek apakah ada buku yang cocok
+
+        // Tampilkan buku yang di-upload oleh pengguna yang login
+        for (const key in books) {
+            const book = books[key];
+            if (book.uploadedBy === loggedInUser.username) {
+                const bookItem = document.createElement('div');
+                bookItem.className = 'book-item';
+                bookItem.innerHTML = `
+                    <div class="book-cover">
+                        <img src="${book.coverBase64}" alt="Cover Buku">
+                    </div>
+                    <h3>${book.title}</h3>
+                    <p><strong>Genre:</strong> ${book.genre.join(', ')}</p>
+                    <p>${book.description}</p>
+                    Pengupload: ${book.uploadedBy}<br>
+                    <em>${timeAgo(book.updatedAt)}</em><br>
+                    <button class="lihat-buku-button" data-book-key="${key}">Lihat Buku</button>
+                    <button class="delete-button" data-book-key="${key}">Hapus Buku</button>
+
+                `;
+                bookListContainer.appendChild(bookItem);
+                foundBooks = true;
             }
         }
-    
-        // Fungsi untuk memeriksa apakah pengguna sudah login
-        function checkLoginStatus() {
-            const user = localStorage.getItem('loggedInUser');
-            if (!user) {
-                alert('Anda harus login terlebih dahulu.');
-                window.location.href = 'login.html';  // Redirect ke halaman login jika belum login
-            }
-            return JSON.parse(user);
+
+        if (!foundBooks) {
+            bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
         }
+                // Add event listener for "Lihat Buku"
+                document.querySelectorAll('.lihat-buku-button').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const bookKey = button.getAttribute('data-book-key');
+                        window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
+                    });
+                });
+        // Menambahkan event listener untuk tombol hapus
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const bookKey = button.getAttribute('data-book-key');
+                deleteBook(bookKey);
+            });
+        });
+    } else {
+        bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+    }
+}
+
+
+    // Fungsi untuk menghapus buku
+async function deleteBook(bookKey) {
+    const confirmDelete = confirm('Apakah Anda yakin ingin menghapus buku ini?');
+    if (confirmDelete) {
+        const bookDataRef = dbRef(database, 'books/' + bookKey);
+        await set(bookDataRef, null);  // Menghapus data buku dari Firebase
+        alert('Buku berhasil dihapus!');
+        loadBookList();  // Memuat ulang daftar buku setelah penghapusan
+    }
+}
+
+       // Fungsi untuk memeriksa login status
+    function checkLoginStatus() {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (!loggedInUser) {
+            // Jika tidak ada pengguna yang login, arahkan ke halaman login
+            window.location.href = "login.html";
+            return null;
+        }
+        return JSON.parse(loggedInUser);
+    }
     
         // Menangani pengiriman form upload buku
-        document.getElementById('upload-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-    
-            const loggedInUser = checkLoginStatus();  // Mendapatkan pengguna yang login
-            const title = document.getElementById('judul-buku').value;
-            const jenisBuku = document.getElementById('jenis-buku').value;
-            const genreInput = document.getElementById('genre-buku').value;
-            const genre = genreInput.split(',').map(g => g.trim());
-            const description = document.getElementById('deskripsi-buku').value;
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            const coverInput = document.getElementById('coverInput');
-            const cover = coverInput.files[0];
-    
-            if (file && file.type === 'application/pdf' && cover && ['image/jpeg', 'image/png'].includes(cover.type)) {
-                try {
-                    const fileBase64 = await convertToBase64(file);
-                    const coverBase64 = await resizeImage(cover, 210, 252);  // Resize cover image
-    
-                    const bookData = {
-                        title: title,
-                        jenisBuku: jenisBuku,
-                        genre: genre,
-                        description: description,
-                        fileBase64: fileBase64,
-                        coverBase64: coverBase64,
-                        uploadedBy: loggedInUser.username
-                    };
-    
-                    const newBookRef = push(dbRef(database, 'books/'));
-                    await set(newBookRef, bookData);
-    
-                    alert('Buku berhasil di-upload!');
-                    loadBookList();  // Memuat ulang daftar buku setelah upload berhasil
-                } catch (error) {
-                    console.error('Terjadi kesalahan saat mengonversi file:', error);
-                    alert('Terjadi kesalahan saat mengonversi file. Periksa konsol untuk rincian.');
+   // Menangani pengiriman form upload buku
+document.getElementById('upload-form').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const uploadButton = document.getElementById('uploadButton');
+    uploadButton.disabled = true;
+    uploadButton.value = "Sedang Meng-upload...";
+
+    const loggedInUser = checkLoginStatus();
+    const title = document.getElementById('judul-buku').value.trim().toLowerCase(); // Judul dibuat lowercase untuk perbandingan
+    const jenisBuku = document.getElementById('jenis-buku').value;
+    const genreInput = document.getElementById('genre-buku').value;
+    const genre = genreInput.split(',').map(g => g.trim());
+    const description = document.getElementById('deskripsi-buku').value;
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const coverInput = document.getElementById('coverInput');
+    const cover = coverInput.files[0];
+
+    if (file && file.type === 'application/pdf' && cover && ['image/jpeg', 'image/png'].includes(cover.type)) {
+        try {
+            // Ambil semua buku dari database
+            const bookDataRef = dbRef(database, 'books/');
+            const snapshot = await get(bookDataRef);
+
+            // Pengecekan duplikasi
+            if (snapshot.exists()) {
+                const books = snapshot.val();
+                const isDuplicate = Object.values(books).some(book => book.title.toLowerCase() === title);
+                if (isDuplicate) {
+                    alert('Buku dengan judul yang sama sudah ada. Harap gunakan judul yang berbeda.');
+                    uploadButton.disabled = false;
+                    uploadButton.value = "Upload Buku";
+                    return;
                 }
-            } else {
-                alert('Harap unggah file PDF dan cover gambar dengan format JPG/PNG.');
             }
-        });
+
+            const fileBase64 = await convertToBase64(file);
+            const coverBase64 = await resizeImage(cover, 210, 252);
+
+            const bookData = {
+                title: title,
+                jenisBuku: jenisBuku,
+                genre: genre,
+                description: description,
+                fileBase64: fileBase64,
+                coverBase64: coverBase64,
+                uploadedBy: loggedInUser.username,
+                updatedAt: new Date().toISOString()
+            };
+
+            const newBookRef = push(bookDataRef);
+            await set(newBookRef, bookData);
+
+            alert('Buku berhasil di-upload!');
+            loadBookList();
+        } catch (error) {
+            console.error('Terjadi kesalahan saat mengunggah buku:', error);
+            alert('Terjadi kesalahan. Periksa konsol untuk rincian.');
+        } finally {
+            uploadButton.disabled = false;
+            uploadButton.value = "Upload Buku";
+        }
+    } else {
+        alert('Harap unggah file PDF dan cover gambar dengan format JPG/PNG.');
+        uploadButton.disabled = false;
+        uploadButton.value = "Upload Buku";
+    }
+});
+
+
+
+             // Fungsi untuk menghitung waktu yang lalu
+             function timeAgo(date) {
+            const now = new Date();
+            const diff = now - new Date(date); // Selisih dalam milidetik
+
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (seconds < 60) {
+                return `${seconds} detik yang lalu`;
+            } else if (minutes < 60) {
+                return `${minutes} menit yang lalu`;
+            } else if (hours < 24) {
+                return `${hours} jam yang lalu`;
+            } else if (days < 7) {
+                return `${days} hari yang lalu`;
+            } else if (weeks < 4) {
+                return `${weeks} minggu yang lalu`;
+            } else if (months < 12) {
+                return `${months} bulan yang lalu`;
+            } else {
+                return `${years} tahun yang lalu`;
+            }
+        }
     
         // Fungsi untuk mengonversi file menjadi base64
         function convertToBase64(file) {
