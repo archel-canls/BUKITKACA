@@ -47,13 +47,13 @@ header .logo {
 /* Responsif untuk ukuran logo pada layar kecil */
 @media (max-width: 768px) {
     header .logo {
-        font-size: 2rem; /* Ukuran logo lebih kecil */
+        font-size: 1.5rem; /* Ukuran logo lebih kecil */
     }
 }
 
 @media (max-width: 480px) {
     header .logo {
-        font-size: 1.5rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
+        font-size: 1rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
     }
 }
 
