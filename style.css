@@ -100,29 +100,32 @@ header .header-profile-pic:hover {
     background-color: #004a99;
     padding: 0px 20px;
     border-radius: 5px;
-    margin-left: auto; /* Menggunakan auto untuk penataan margin kiri */
-    margin-right: 20px; /* Memberikan sedikit ruang di kanan */
 }
 
-/* Responsif: Menyesuaikan posisi menu toggle pada layar kecil */
+/* Responsif: Menyesuaikan ukuran menu toggle pada layar kecil */
 @media (max-width: 1220px) {
     .menu-toggle {
-        right: 10px; /* Menurunkan sedikit jarak kanan pada layar lebih kecil */
-        left: 20px; /* Geser ke kiri pada layar lebih kecil */
+        font-size: 2.2rem; /* Ukuran font lebih kecil */
+        padding: 0px 15px; /* Padding lebih kecil */
     }
 }
 
 @media (max-width: 768px) {
     .menu-toggle {
-        left: 5px; /* Geser lebih jauh ke kiri pada layar lebih kecil */
+        font-size: 1.8rem; /* Ukuran font lebih kecil */
+        padding: 0px 10px; /* Padding lebih kecil */
     }
 }
 
 @media (max-width: 480px) {
     .menu-toggle {
-        left: 0; /* Pindahkan ke kiri paling dekat pada layar yang sangat kecil */
+        font-size: 1.5rem; /* Ukuran font lebih kecil */
+        padding: 0px 8px; /* Padding lebih kecil */
     }
 }
+
+
+
 
 /* Navigasi */
 nav {
