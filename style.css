@@ -67,8 +67,26 @@ header .header-profile-pic {
     background-position: center;
     cursor: pointer;
     transition: transform 0.3s ease;
+    margin-left: 20px;
     object-fit: cover;
+    aspect-ratio: 1; /* Menjaga agar tetap lingkaran */
 }
+
+/* Responsif: Mengubah ukuran gambar profil pada layar lebih kecil */
+@media (max-width: 768px) {
+    header .header-profile-pic {
+        width: 50px; /* Ukuran lebih kecil untuk layar kecil */
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    header .header-profile-pic {
+        width: 40px; /* Ukuran lebih kecil lagi untuk layar yang sangat kecil */
+        height: 40px;
+    }
+}
+
 
 header .header-profile-pic:hover {
     transform: scale(1.1);
