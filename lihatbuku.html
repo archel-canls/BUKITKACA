@@ -170,31 +170,31 @@
             const urlParams = new URLSearchParams(window.location.search);
             const bookKey = urlParams.get('bookKey');
 
-            // Cek apakah data buku sudah ada di sessionStorage
-            const storedBook = sessionStorage.getItem('currentBook');
-            if (storedBook && JSON.parse(storedBook).key === bookKey) {
-                const book = JSON.parse(storedBook);
-                displayBookDetails(book);
-                return;
-            }
+           // Cek apakah data buku sudah ada di sessionStorage
+const storedBook = sessionStorage.getItem('currentBook');
+if (storedBook && JSON.parse(storedBook).key === bookKey) {
+    const book = JSON.parse(storedBook);
+    displayBookDetails(book);
+    return;
+}
 
-            // Jika data buku tidak ada di sessionStorage, ambil dari Firebase
-            if (!bookKey) {
-                alert('Buku tidak ditemukan!');
-                return;
-            }
+// Jika data buku tidak ada di sessionStorage, ambil dari Firebase
+if (!bookKey) {
+    alert('Buku tidak ditemukan!');
+    return;
+}
 
-            const bookDataRef = dbRef(database, 'books/' + bookKey);
-            const snapshot = await get(bookDataRef);
-            if (snapshot.exists()) {
-                const book = snapshot.val();
-                book.key = bookKey; // Tambahkan key untuk identifikasi
-                sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
-                displayBookDetails(book);
-            } else {
-                alert('Buku tidak ditemukan!');
-                window.location.href = 'rakbuku.html';
-            }
+const bookDataRef = dbRef(database, 'books/' + bookKey);
+const snapshot = await get(bookDataRef);
+if (snapshot.exists()) {
+    const book = snapshot.val();
+    book.key = bookKey; // Tambahkan key untuk identifikasi
+    sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
+    displayBookDetails(book);
+} else {
+    alert('Buku tidak ditemukan!');
+    window.history.back(); // Kembali ke halaman sebelumnya
+}
         }
 
         // Fungsi untuk menampilkan detail buku
@@ -213,6 +213,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadBookDetails);
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
     </script>
 
 </body>
