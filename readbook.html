@@ -7,15 +7,15 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <style>
-        /* Tampilan kontainer buku */
         #pdfViewer {
             width: 100%;
-            height: 80vh;
+            height: 100vh;
             margin: 0 auto;
             display: block;
             text-align: center;
             overflow: hidden;
-            touch-action: none; /* Menghindari efek default geser dan zoom */
+            touch-action: none;
+            position: relative;
         }
 
         .navigation-buttons {
@@ -93,9 +93,10 @@
         const bookKey = urlParams.get('bookKey');
         let currentPage = 1;
         let pdfDoc = null;
-        let scale = 1.0;  // Mulai dengan ukuran skala 1 (100%)
-        let viewerWidth = 0;
-        let viewerHeight = 0;
+        let scale = 1.0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
 
         async function loadBook() {
             if (!bookKey) {
@@ -113,49 +114,18 @@
             const pdfData = book.fileBase64;  // Pastikan ini adalah URL file PDF atau URL yang valid
 
             if (pdfData) {
-                const loadingTask = pdfjsLib.getDocument({data: atob(pdfData.split(',')[1])});
-                
+                const loadingTask = pdfjsLib.getDocument({data: atob(pdfData.split(',')[1])});  // Decode base64 PDF
+
                 loadingTask.promise.then(function(pdf) {
                     pdfDoc = pdf;
-                    document.getElementById('totalPages').textContent = pdfDoc.numPages;
-                    renderPage(currentPage);
-                    loadHistory(); // Memuat riwayat halaman terakhir yang dibaca
+                    renderPage(currentPage);  // Render halaman pertama langsung
+                    loadHistory();  // Memuat riwayat halaman terakhir yang dibaca
                 }).catch(function(error) {
                     console.error('Error saat memuat PDF: ', error);
                 });
             } else {
                 document.body.innerHTML = 'File PDF tidak ditemukan.';
             }
-
-            // Event Listener untuk tombol zoom in dan zoom out
-            document.getElementById('zoomIn').addEventListener('click', function() {
-                scale += 0.2;
-                renderPage(currentPage);
-            });
-
-            document.getElementById('zoomOut').addEventListener('click', function() {
-                if (scale > 0.4) {
-                    scale -= 0.2;
-                    renderPage(currentPage);
-                }
-            });
-
-            // Event Listener untuk tombol navigasi halaman
-            document.getElementById('prevPage').addEventListener('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderPage(currentPage);
-                    updateHistory();
-                }
-            });
-
-            document.getElementById('nextPage').addEventListener('click', function() {
-                if (currentPage < pdfDoc.numPages) {
-                    currentPage++;
-                    renderPage(currentPage);
-                    updateHistory();
-                }
-            });
         }
 
         function renderPage(pageNum) {
@@ -166,11 +136,10 @@
 
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
-                canvas.classList.add('page');
 
                 page.render({canvasContext: context, viewport: viewport}).promise.then(function() {
                     const pdfViewer = document.getElementById('pdfViewer');
-                    pdfViewer.innerHTML = '';
+                    pdfViewer.innerHTML = '';  // Clear previous content
                     pdfViewer.appendChild(canvas);
 
                     document.getElementById('pageNumber').textContent = "Halaman: " + pageNum;
@@ -214,8 +183,78 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadBook);
+        // Fungsi untuk navigasi halaman
+        function goToPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+                updateHistory();
+            }
+        }
 
+        function goToNextPage() {
+            if (currentPage < pdfDoc.numPages) {
+                currentPage++;
+                renderPage(currentPage);
+                updateHistory();
+            }
+        }
+
+        // Fungsi Zoom
+        function zoomIn() {
+            scale += 0.2;
+            renderPage(currentPage);
+        }
+
+        function zoomOut() {
+            if (scale > 0.4) {
+                scale -= 0.2;
+                renderPage(currentPage);
+            }
+        }
+
+        // Geser dengan Mouse (klik kiri)
+        document.getElementById('pdfViewer').addEventListener('mousedown', function(e) {
+            if (e.button === 0) { // hanya klik kiri (button 0)
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+        });
+
+        document.getElementById('pdfViewer').addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                const deltaX = startX - e.clientX;
+                const deltaY = startY - e.clientY;
+
+                if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0 && currentPage < pdfDoc.numPages) {
+                        goToNextPage();
+                    } else if (deltaX < 0 && currentPage > 1) {
+                        goToPrevPage();
+                    }
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+            }
+        });
+
+        document.getElementById('pdfViewer').addEventListener('mouseup', function(e) {
+            if (e.button === 0) { // hanya klik kiri (button 0)
+                isDragging = false;
+            }
+        });
+
+        // Zoom dengan Mouse Wheel (Page Up/Down)
+        document.getElementById('pdfViewer').addEventListener('wheel', function(e) {
+            if (e.deltaY < 0) {  // scroll ke atas
+                zoomIn();
+            } else {  // scroll ke bawah
+                zoomOut();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadBook);
     </script>
 
 </body>

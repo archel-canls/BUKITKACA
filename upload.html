@@ -101,8 +101,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref as dbRef, set, push, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-        
+import { getStorage, ref, uploadBytes, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
+import { getDatabase, ref as dbRef, set, push, get} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
         const firebaseConfig = {
             apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
             authDomain: "bukitkaca-65e92.firebaseapp.com",

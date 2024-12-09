@@ -149,7 +149,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
+        import { getDatabase, ref as dbRef, set, push, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
@@ -168,6 +169,16 @@
         async function loadBookDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const bookKey = urlParams.get('bookKey');
+
+            // Cek apakah data buku sudah ada di sessionStorage
+            const storedBook = sessionStorage.getItem('currentBook');
+            if (storedBook && JSON.parse(storedBook).key === bookKey) {
+                const book = JSON.parse(storedBook);
+                displayBookDetails(book);
+                return;
+            }
+
+            // Jika data buku tidak ada di sessionStorage, ambil dari Firebase
             if (!bookKey) {
                 alert('Buku tidak ditemukan!');
                 return;
@@ -177,21 +188,28 @@
             const snapshot = await get(bookDataRef);
             if (snapshot.exists()) {
                 const book = snapshot.val();
-                document.getElementById('bookTitle').textContent = book.title;
-                document.getElementById('bookGenre').textContent = 'Genre: ' + book.genre.join(', ');
-                document.getElementById('bookDescription').textContent = book.description;
-                document.getElementById('bookUploader').textContent = book.uploadedBy;
-                document.getElementById('bookCoverImg').src = book.coverBase64;
-                
-                // Mengubah tombol Baca Buku untuk mengarahkan ke halaman readbook.html
-                const readButton = document.querySelector('.read-button');
-                readButton.onclick = function() {
-                    window.location.href = 'readbook.html?bookKey=' + bookKey;
-                };
+                book.key = bookKey; // Tambahkan key untuk identifikasi
+                sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
+                displayBookDetails(book);
             } else {
                 alert('Buku tidak ditemukan!');
                 window.location.href = 'rakbuku.html';
             }
+        }
+
+        // Fungsi untuk menampilkan detail buku
+        function displayBookDetails(book) {
+            document.getElementById('bookTitle').textContent = book.title;
+            document.getElementById('bookGenre').textContent = 'Genre: ' + book.genre.join(', ');
+            document.getElementById('bookDescription').textContent = book.description;
+            document.getElementById('bookUploader').textContent = book.uploadedBy;
+            document.getElementById('bookCoverImg').src = book.coverBase64;
+
+            // Mengubah tombol Baca Buku untuk mengarahkan ke halaman readbook.html
+            const readButton = document.querySelector('.read-button');
+            readButton.onclick = function () {
+                window.location.href = 'readbook.html?bookKey=' + book.key;
+            };
         }
 
         document.addEventListener('DOMContentLoaded', loadBookDetails);
