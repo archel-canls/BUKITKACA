@@ -54,10 +54,25 @@ header .logo {
 
 @media (max-width: 480px) {
     header .logo {
-        font-size: 1.5rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
+        font-size: 1.8rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
     }
 }
 
+/* Header */
+header {
+    background-color: #0056b3;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between; /* Membagi ruang antara logo dan profil */
+    align-items: center;
+    height: 80px; /* Tetap tinggi untuk header */
+    padding-left: 20px;
+    padding-right: 120px;
+    position: relative; /* Untuk memastikan elemen di dalam header terstruktur dengan baik */
+}
+
+/* Profil gambar dalam header */
 header .header-profile-pic {
     width: 70px;
     height: 70px;
@@ -67,30 +82,31 @@ header .header-profile-pic {
     background-position: center;
     cursor: pointer;
     transition: transform 0.3s ease;
-    margin-left: 20px;
     object-fit: cover;
-    aspect-ratio: 1; /* Menjaga agar tetap lingkaran */
+    aspect-ratio: 1;
+    position: absolute; /* Pastikan profil berada di dalam header */
+    right: 2%; /* Tempatkan profil di sebelah kanan */
 }
 
 /* Responsif: Mengubah ukuran gambar profil pada layar lebih kecil */
 @media (max-width: 768px) {
     header .header-profile-pic {
-        width: 60px; /* Ukuran lebih kecil untuk layar kecil */
+        width: 60px;
         height: 60px;
     }
 }
 
 @media (max-width: 480px) {
     header .header-profile-pic {
-        width: 40px; /* Ukuran lebih kecil lagi untuk layar yang sangat kecil */
+        width: 50px;
         height: 50px;
     }
 }
 
-
 header .header-profile-pic:hover {
     transform: scale(1.1);
 }
+
 
 /* Menu Toggle */
 .menu-toggle {
@@ -112,14 +128,14 @@ header .header-profile-pic:hover {
 
 @media (max-width: 768px) {
     .menu-toggle {
-        font-size: 1.8rem; /* Ukuran font lebih kecil */
+        font-size: 2rem; /* Ukuran font lebih kecil */
         padding: 0px 10px; /* Padding lebih kecil */
     }
 }
 
 @media (max-width: 480px) {
     .menu-toggle {
-        font-size: 1.5rem; /* Ukuran font lebih kecil */
+        font-size: 1.8rem; /* Ukuran font lebih kecil */
         padding: 0px 8px; /* Padding lebih kecil */
     }
 }
