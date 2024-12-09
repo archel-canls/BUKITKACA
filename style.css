@@ -23,24 +23,40 @@ header {
     justify-content: start;
     align-items: center;
     white-space: nowrap;
-    flex-wrap: wrap; /* Ensures content wraps on small screens */
+    height: 80px; /* Tentukan tinggi tetap untuk header */
 }
 
 header .logo {
     margin-right: auto;
     font-size: 2.5rem;
-    font-family: 'Cinzel', serif;
+    font-family: 'Cinzel', serif; 
     color: #f30f0f;
     font-weight: bold;
+    margin-left: 20px;
     padding-right: 2rem;
     text-shadow: 
-        0 0 5px #ffffff, 
-        0 0 10px #ffffff, 
-        0 0 15px #00bfff,
-        0 0 20px #00bfff, 
-        0 0 25px #0073e6,
-        0 0 30px #004d99;
+    0 0 5px #ffffff, 
+    0 0 10px #ffffff, 
+    0 0 15px #00bfff, 
+    0 0 20px #00bfff, 
+    0 0 25px #0073e6, 
+    0 0 30px #004d99;
+    transition: font-size 0.3s ease; /* Menambahkan transisi untuk font-size */
 }
+
+/* Responsif untuk ukuran logo pada layar kecil */
+@media (max-width: 768px) {
+    header .logo {
+        font-size: 2rem; /* Ukuran logo lebih kecil */
+    }
+}
+
+@media (max-width: 480px) {
+    header .logo {
+        font-size: 1.5rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
+    }
+}
+
 
 header .logo {
     font-size: 3rem;
