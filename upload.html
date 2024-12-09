@@ -106,7 +106,7 @@
     </footer>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
 import { getDatabase, ref as dbRef, set, push, get} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
         const firebaseConfig = {
@@ -122,74 +122,76 @@ import { getDatabase, ref as dbRef, set, push, get} from "https://www.gstatic.co
         
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-    
-        // Fungsi untuk memuat daftar buku
-      // Fungsi untuk memuat daftar buku
+
 // Fungsi untuk memuat daftar buku
 async function loadBookList() {
-            const loggedInUser = checkLoginStatus();
-            if (!loggedInUser) return;
+    const loggedInUser = checkLoginStatus();
+    if (!loggedInUser) return;
 
-            const bookListContainer = document.getElementById('bookList');
-            bookListContainer.innerHTML = '';
-            const loadingMessage = document.createElement('p');
-            loadingMessage.textContent = 'Memuat Buku...';
-            bookListContainer.appendChild(loadingMessage);
+    const bookListContainer = document.getElementById('bookList');
+    bookListContainer.innerHTML = '';
+    const loadingMessage = document.createElement('p');
+    loadingMessage.textContent = 'Memuat Buku...';
+    bookListContainer.appendChild(loadingMessage);
 
-            const bookDataRef = dbRef(database, 'books/');
-            const snapshot = await get(bookDataRef);
+    const bookDataRef = dbRef(database, 'books/');
+    const snapshot = await get(bookDataRef);
 
-            if (snapshot.exists()) {
-                const books = snapshot.val();
-                bookListContainer.innerHTML = '';
-                let foundBooks = false;
+    if (snapshot.exists()) {
+        const books = snapshot.val();
+        bookListContainer.innerHTML = '';
+        let foundBooks = false;
 
-                for (const key in books) {
-                    const book = books[key];
-                    if (book.uploadedBy === loggedInUser.username) {
-                        const bookItem = document.createElement('div');
-                        bookItem.className = 'book-item';
-                        bookItem.innerHTML = `
-                            <div class="book-cover">
-                                <img src="${book.coverBase64}" alt="Cover Buku">
-                            </div>
-                            <div class="book-details">
-                                <strong>${book.title}</strong><br>
-                                Genre: ${book.genre.join(', ')}<br>
-                                Pengupload: ${book.uploadedBy}<br>
-                                <em>${timeAgo(book.updatedAt)}</em><br>
-                                <button class="lihat-buku-button" data-book-key="${key}">Lihat Buku</button>
-                                <button class="delete-button" data-book-key="${key}">Hapus Buku</button>
-                            </div>
-                        `;
-                        bookListContainer.appendChild(bookItem);
-                        foundBooks = true;
-                    }
-                }
-
-                if (!foundBooks) {
-                    bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
-                }
-
-                document.querySelectorAll('.lihat-buku-button').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const bookKey = button.getAttribute('data-book-key');
-                        window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
-                    });
-                });
-
-                const deleteButtons = document.querySelectorAll('.delete-button');
-                deleteButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        const bookKey = button.getAttribute('data-book-key');
-                        deleteBook(bookKey);
-                    });
-                });
-            } else {
-                bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+        for (const key in books) {
+            const book = books[key];
+            if (book.uploadedBy === loggedInUser.username) {
+                const bookItem = document.createElement('div');
+                bookItem.className = 'book-item';
+                bookItem.innerHTML = `
+                    <div class="book-cover">
+                        <img src="${book.coverBase64}" alt="Cover Buku">
+                    </div>
+                    <div class="book-details">
+                        <strong>${book.title}</strong><br>
+                        Jenis: ${book.jenisBuku}<br>
+                        Genre: ${book.genre.join(', ')}<br>
+                        Pengupload: ${book.uploadedBy}<br>
+                        <em>${timeAgo(book.updatedAt)}</em><br>
+                        <button class="delete-button" data-book-key="${key}">Hapus Buku</button>
+                    </div>
+                `;
+                bookListContainer.appendChild(bookItem);
+                foundBooks = true;
             }
         }
 
+        if (!foundBooks) {
+            bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+        }
+
+        // Event listener untuk tombol hapus buku tetap ada
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation(); // Mencegah event klik pada .book-item
+                const bookKey = button.getAttribute('data-book-key');
+                deleteBook(bookKey);
+            });
+        });
+
+        // Tambahkan event listener untuk klik pada book-item
+        document.querySelectorAll('.book-item').forEach(bookItem => {
+            bookItem.addEventListener('click', function(event) {
+                // Mengarahkan ke Lihat Buku ketika buku diklik
+                const bookKey = bookItem.querySelector('.delete-button').getAttribute('data-book-key');
+                window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
+            });
+        });
+
+    } else {
+        bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+    }
+}
 
 
     // Fungsi untuk menghapus buku
@@ -361,6 +363,7 @@ document.getElementById('upload-form').addEventListener('submit', async function
     
         // Memuat buku saat halaman dimuat
         document.addEventListener('DOMContentLoaded', loadBookList);
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
     </script>
     
     

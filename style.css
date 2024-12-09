@@ -9,8 +9,8 @@
 body {
     background: linear-gradient(135deg, #091015, #441672);
     color: #f8f2f2;
-    padding: 16px 0px 16px 14px;
     min-height: 100vh;
+    padding: 8px;
     text-align: center;
 }
 
@@ -515,9 +515,6 @@ form input[type="submit"]:hover {
         font-size: 0.5em; /* Ukuran font lebih kecil untuk genre dan author */
     }
 }
-
-
-
 
 /* Gaya untuk select dropdown */
 .filters {

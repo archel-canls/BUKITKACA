@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
     <style>
-.book-item {
+        .book-item {
     display: flex;
     flex-direction: column;
     background-color: #222;
@@ -45,6 +45,32 @@
         color: white; /* Teks tetap putih saat fokus */
         border-color: #0056b3; /* Border sedikit lebih gelap saat fokus */
     }
+
+        @media (max-width: 768px) {
+            .book-item {
+                width: 150px;
+            }
+            .book-cover img {
+                width: 150px;
+                height: 180px;
+                object-fit: cover;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .book-item {
+                width: 120px;
+            }
+            .book-cover {
+                width: 120px;
+                height: 140px;
+            }
+            .book-cover img {
+                width: 120px;
+                height: 140px;
+                object-fit: cover;
+            }
+        }
     </style>
 </head>
 <body>
@@ -58,7 +84,7 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html" class="active">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
+            <!-- Hapus atau nonaktifkan logout jika tidak diperlukan -->
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
@@ -66,17 +92,18 @@
     <section class="content-section">
         <h1>Rak Buku</h1>
         <div class="filter-section">
-            <label for="bookFilter">Pilih Jenis Buku:</label>
-            <select id="bookFilter" onchange="filterBooks()">
-                <option value="">Semua</option>
-                <option value="fiksi">Fiksi</option>
-                <option value="nonfiksi">Nonfiksi</option>
-                <option value="akademis">Akademis</option>
-                <option value="komik">Komik</option>
-                <option value="novel">Novel</option>
-            </select>
-        </div>
+        <!-- Dropdown untuk memilih jenis buku -->
+        <label for="jenis-buku-filter"><strong>Pilih Jenis Buku:</strong></label>
+        <select id="jenis-buku-filter">
+            <option value="all">Semua</option>
+            <option value="fiksi">Fiksi</option>
+            <option value="nonfiksi">Nonfiksi</option>
+            <option value="akademis">Akademis</option>
+            <option value="komik">Komik</option>
+            <option value="novel">Novel</option>
+        </select><br><br>
 
+        <h2>Daftar Buku</h2>
         <div id="bookList" class="book-list"></div>
     </section>
 
@@ -84,96 +111,112 @@
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
     </footer>
 
-    <script>
-           // Cek apakah pengguna sudah login
-           function checkLogin() {
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            if (!loggedInUser) {
-                window.location.href = "login.html";
-            }
-            return loggedInUser;
-        }
-        // Logout function: clear user data and redirect to login page
-        function logout() {
-            localStorage.removeItem('loggedInUser');
-            window.location.href = "login.html"; // Redirect to login page
-        } 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
-        // Fungsi untuk memuat daftar buku dari localStorage
-        function loadBookList(filterType = '') {
-            const books = JSON.parse(localStorage.getItem('books')) || [];
-            const bookListDiv = document.getElementById('bookList');
-            bookListDiv.innerHTML = ''; // Kosongkan daftar sebelumnya
-
-            const filteredBooks = filterType 
-                ? books.filter(book => book.type === filterType) 
-                : books;
-
-            if (filteredBooks.length === 0) {
-                bookListDiv.innerHTML = '<p>Tidak ada buku yang sesuai dengan filter.</p>';
-                return;
-            }
-
-            filteredBooks.forEach((book, index) => {
-                const bookItem = document.createElement('div');
-                bookItem.classList.add('book-item');
-
-                const bookCover = document.createElement('div');
-                bookCover.classList.add('book-cover');
-                bookCover.innerHTML = `<img src="${book.coverData}" alt="Cover Buku">`;
-
-                const bookDetails = document.createElement('div');
-                bookDetails.classList.add('book-details');
-                bookDetails.innerHTML = `
-                    <strong>${book.title}</strong><br>
-                    Genre: ${book.genre.join(', ')}<br>
-                    Jenis: ${book.type}<br>
-                    <em>Diunggah oleh: ${book.user}</em><br>
-                `;
-
-                // Tambahkan event listener pada keseluruhan item
-                bookItem.addEventListener('click', () => viewBook(index, filterType));
-
-                bookItem.appendChild(bookCover);
-                bookItem.appendChild(bookDetails);
-                bookListDiv.appendChild(bookItem);
-            });
-        }
-
-        // Fungsi untuk melihat detail buku
-        function viewBook(index, filterType) {
-            const books = JSON.parse(localStorage.getItem('books')) || [];
-            const filteredBooks = filterType 
-                ? books.filter(book => book.type === filterType) 
-                : books;
-
-            const book = filteredBooks[index];
-            if (!book) return;
-
-            // Simpan detail buku ke localStorage
-            localStorage.setItem('selectedBook', JSON.stringify(book));
-
-            // Arahkan ke halaman lihat buku
-            window.location.href = 'lihatbuku.html';
-        }
-
-        // Fungsi untuk memfilter buku berdasarkan jenis
-        function filterBooks() {
-            const filterType = document.getElementById('bookFilter').value;
-            loadBookList(filterType);
-        }
-
-        // Fungsi untuk logout
-        function logout() {
-            localStorage.removeItem('loggedInUser');
-            window.location.href = "login.html";
-        }
-        // Muat daftar buku saat halaman dimuat
-        window.onload = function() {
-            loadBookList();
-            loadHeaderProfilePic();
-
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
         };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Fungsi untuk memuat daftar buku
+        async function loadBookList(filter = "all") {
+            const bookListContainer = document.getElementById('bookList');
+            bookListContainer.innerHTML = '';
+            const loadingMessage = document.createElement('p');
+            loadingMessage.textContent = 'Memuat Buku...';
+            bookListContainer.appendChild(loadingMessage);
+
+            const bookDataRef = dbRef(database, 'books/');
+            const snapshot = await get(bookDataRef);
+
+            if (snapshot.exists()) {
+                const books = snapshot.val();
+                bookListContainer.innerHTML = '';
+                let foundBooks = false;
+
+                for (const key in books) {
+                    const book = books[key];
+                    if (filter === "all" || book.jenisBuku === filter) {
+                        const bookItem = document.createElement('div');
+                        bookItem.className = 'book-item';
+                        bookItem.innerHTML = ` 
+                            <div class="book-cover">
+                                <img src="${book.coverBase64}" alt="Cover Buku">
+                            </div>
+                            <div class="book-details">
+                                <strong>${book.title}</strong><br>
+                                Jenis: ${book.jenisBuku}<br>
+                                Genre: ${book.genre.join(', ')}<br>
+                                Pengupload: ${book.uploadedBy}<br>
+                                <em>${timeAgo(book.updatedAt)}</em><br>
+                            </div>
+                        `;
+                bookItem.addEventListener('click', function() {
+                window.location.href = `lihatbuku.html?bookKey=${key}`;
+            });
+                        bookListContainer.appendChild(bookItem);
+                        foundBooks = true;
+                    }
+                }
+
+                if (!foundBooks) {
+                    bookListContainer.innerHTML = '<p>Tidak ada buku jenis tersebut untuk saat ini.</p>';
+                }
+
+            } else {
+                bookListContainer.innerHTML = '<p>Tidak ada buku jenis tersebut untuk saat ini.</p>';
+            }
+        }
+
+        // Fungsi untuk menghitung waktu yang lalu
+        function timeAgo(date) {
+            const now = new Date();
+            const diff = now - new Date(date);
+
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (seconds < 60) {
+                return `${seconds} detik yang lalu`;
+            } else if (minutes < 60) {
+                return `${minutes} menit yang lalu`;
+            } else if (hours < 24) {
+                return `${hours} jam yang lalu`;
+            } else if (days < 7) {
+                return `${days} hari yang lalu`;
+            } else if (weeks < 4) {
+                return `${weeks} minggu yang lalu`;
+            } else if (months < 12) {
+                return `${months} bulan yang lalu`;
+            } else {
+                return `${years} tahun yang lalu`;
+            }
+        }
+
+        // Memuat buku saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBookList();
+            const filterDropdown = document.getElementById('jenis-buku-filter');
+            filterDropdown.addEventListener('change', (event) => {
+                loadBookList(event.target.value);
+            });
+        });
     </script>
 </body>
 </html>

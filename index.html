@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beranda - BUKITKACA</title>
-    <script src="script.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
     <style>
-    /* CSS untuk Carousel */
-    #bookCarousel {
+     #bookCarousel {
             position: relative;
             height: 360px;
             width: 100%;
@@ -62,6 +60,10 @@
             color: #ffffff;
             text-align: left; /* Align the description text to the left */
             flex-grow: 1; /* Make the description take the remaining space */
+            overflow: hidden; /* Hide overflowing text */
+            text-overflow: ellipsis; /* Add "..." when text overflows */
+            white-space: nowrap; /* Prevent text from wrapping to the next line */
+
         }
 
         .bookCarousel-title {
@@ -118,214 +120,200 @@
             background-color: rgba(0, 0, 0, 0.8);
         }
 
+        @media (max-width: 768px) {
+    #bookCarousel {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            margin: 20px auto;
+            overflow: hidden;
+            border: 1px solid #dddddd; /* Border around the carousel */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+            cursor: pointer;
+        }
+.bookCarousel-item img {
+    flex-shrink: 0; /* Mencegah gambar mengecil */
+    width: 150px;
+    height: 180px;
+    background-color: #222;
+    border-radius: 3px 15px 15px 3px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin-right: 20px;
 
+}
+
+.bookCarousel-item {
+            display: flex;
+            flex-direction: row; /* Horizontal layout */
+            align-items: flex-start; /* Align items at the start */
+            justify-content: flex-start; /* Align items to the left */
+            width: 100%;
+            padding: 10px;
+        }
+
+        .bookCarousel-title {
+    font-size: 20px; /* Reduced font size for the title */
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    text-align: left;
+    margin-bottom: 10px; /* Reduced space between title and description */
+}
+
+.bookCarousel-description {
+    font-size: 12px; /* Reduced font size for the description */
+    line-height: 1.4;
+    color: #ffffff;
+    text-align: left;
+    flex-grow: 1;
+}
+}
+.book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 5px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+
+    .book-item {
+        width: 150px; /* Mengurangi lebar buku di layar kecil */
+    }
+    .book-cover img {
+    width: 150px;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+}
+    @media (max-width: 480px) {
+
+    .book-item {
+        width: 120px; /* Lebar buku lebih kecil di ponsel */
+    }
+    .book-cover {
+        width: 120px;
+        height: 140px; /* Menyesuaikan ukuran cover buku */
+    }
+
+    .book-cover img {
+    width: 120px;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+}
     </style>
-   
 </head>
 <body>
     <header>
         <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <div class="logo">BUKITKACA</div>
         <nav id="navMenu">
-            <a href="index.html" class="active">Beranda</a>
+            <a href="index.html">Beranda</a>
             <a href="pojokbaca.html">Pojok Baca</a>
             <a href="pusatinformasi.html">Pusat Informasi</a>
-            <a href="upload.html">Upload</a>
+            <a href="upload.html" class="active">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
         </nav>
-        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
-    </header>
     </header>
 
     <section class="content-section">
-    <main>
-        <div></div><h1>Buku Kita Kalian Baca</h1>
-        <div id="bookCarousel" class="carousel">
-            <!-- Indicators -->
-            <ol class="carousel-indicators" id="carouselIndicators"></ol>
+        <main>
+            <h1>Buku Kita Kalian Baca</h1>
+            <div id="bookCarousel" class="carousel">
+                <ol class="carousel-indicators" id="carouselIndicators"></ol>
+                <div class="carousel-inner" id="carouselContent"></div>
+                <button class="carousel-control left" id="prevBtn">&#10094;</button>
+                <button class="carousel-control right" id="nextBtn">&#10095;</button>
+            </div>
 
-            <!-- Wrapper for slides -->
-            <div class="carousel-inner" id="carouselContent"></div>
-
-            <!-- Left and right controls -->
-            <button class="carousel-control left" id="prevBtn">&#10094;</button>
-            <button class="carousel-control right" id="nextBtn">&#10095;</button>
-        </div>
-
-        <h2>Update Terbaru</h2>
-        <div id="bookList" class="book-list"></div>
-    </main>
+            <h2>Update Terbaru</h2>
+            <div id="bookList" class="book-list"></div>
+        </main>
     </section>
+
     <footer>
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
     </footer>
 
-    <script>
-        // Cek apakah pengguna sudah login
-        function checkLogin() {
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            if (!loggedInUser) {
-                window.location.href = "login.html";
-            }
-            return loggedInUser;
-        }
-        // Logout function: clear user data and redirect to login page
-        function logout() {
-            localStorage.removeItem('loggedInUser');
-            window.location.href = "login.html"; // Redirect to login page
-        }
-        // Fungsi untuk memuat buku ke dalam carousel
-        function populateCarousel() {
-            const books = JSON.parse(localStorage.getItem('books')) || [];
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+
+      // Populate the carousel with books from Firebase
+      async function populateCarousel() {
             const carouselContent = document.getElementById('carouselContent');
             const carouselIndicators = document.getElementById('carouselIndicators');
 
             carouselContent.innerHTML = '';
             carouselIndicators.innerHTML = '';
 
-            // Pilih maksimal 7 buku secara acak
-            const shuffledBooks = books.sort(() => 0.5 - Math.random());
-            const selectedBooks = shuffledBooks.slice(0, 7);
+            const bookDataRef = dbRef(database, 'books/');
+            const snapshot = await get(bookDataRef);
 
-        selectedBooks.forEach((book, index) => {
-            const item = document.createElement('div');
-            item.classList.add('item', 'bookCarousel-item');
+            if (snapshot.exists()) {
+                const books = snapshot.val();
 
-        // Isi item dengan konten buku
-        item.innerHTML = `
-            <img src="${book.coverData}" alt="Cover Buku">
-            <div>
-                <div class="bookCarousel-title">${book.title}</div>
-                <div class="bookCarousel-description">${book.description}</div>
-            </div>
-        `;
+                // Ambil semua key-value dari buku
+                const bookArray = Object.entries(books).slice(0, 7); // Ambil maksimal 7 buku untuk carousel
 
-        // Tambahkan event listener untuk klik seluruh area buku
-        item.addEventListener('click', () => {
-            // Simpan detail buku ke localStorage
-            localStorage.setItem('selectedBook', JSON.stringify(book));
+                bookArray.forEach(([bookKey, book], index) => {
+                    const item = document.createElement('div');
+                    item.classList.add('item', 'bookCarousel-item');
+                    if (index === 0) item.classList.add('active');
 
-            // Arahkan ke halaman lihat buku
-            window.location.href = 'lihatbuku.html';
-        });
+                    item.innerHTML = `
+                        <img src="${book.coverBase64}" alt="Cover Buku">
+                        <div>
+                            <div class="bookCarousel-title">${book.title}</div>
+                            <div class="bookCarousel-description">${book.description}</div>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
+                    });
 
-        // Tambahkan item ke carousel
-        carouselContent.appendChild(item);
+                    carouselContent.appendChild(item);
 
-        // Tambahkan indikator
-        const indicator = document.createElement('li');
-        if (index === 0) {
-            indicator.classList.add('active');
-        }
-        carouselIndicators.appendChild(indicator);
+                    const indicator = document.createElement('li');
+                    if (index === 0) indicator.classList.add('active');
+                    indicator.addEventListener('click', () => moveToSlide(index));
+                    carouselIndicators.appendChild(indicator);
+                });
 
-        // Event listener untuk mengontrol indikator
-        indicator.addEventListener('click', () => moveToSlide(index));
-        });
-
-        moveToSlide(0); // Mulai dengan slide pertama
-        }
-
-        // Fungsi untuk menghitung waktu yang lalu
-        function timeAgo(date) {
-            const now = new Date();
-            const diff = now - new Date(date); // Selisih dalam milidetik
-
-            const seconds = Math.floor(diff / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
-            const weeks = Math.floor(days / 7);
-            const months = Math.floor(days / 30);
-            const years = Math.floor(days / 365);
-
-            if (seconds < 60) {
-                return `${seconds} detik yang lalu`;
-            } else if (minutes < 60) {
-                return `${minutes} menit yang lalu`;
-            } else if (hours < 24) {
-                return `${hours} jam yang lalu`;
-            } else if (days < 7) {
-                return `${days} hari yang lalu`;
-            } else if (weeks < 4) {
-                return `${weeks} minggu yang lalu`;
-            } else if (months < 12) {
-                return `${months} bulan yang lalu`;
+                moveToSlide(0);
             } else {
-                return `${years} tahun yang lalu`;
+                carouselContent.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
             }
         }
 
 
-
-// Muat daftar buku untuk semua pengguna
-function loadBookList() {
-    const books = JSON.parse(localStorage.getItem('books')) || [];
-    const bookListDiv = document.getElementById('bookList');
-    bookListDiv.innerHTML = ''; // Clear existing list
-
-    // Urutkan buku berdasarkan waktu update terbaru
-    const sortedBooks = books.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-    sortedBooks.forEach((book, index) => {
-        const bookItem = document.createElement('div');
-        bookItem.classList.add('book-item');
-
-        const bookCover = document.createElement('img');
-        bookCover.src = book.coverData;
-        bookCover.alt = 'Cover Buku';
-        bookCover.classList.add('book-cover');
-
-        const bookDetails = document.createElement('div');
-        bookDetails.classList.add('book-details');
-        bookDetails.innerHTML = `
-            <strong>${book.title}</strong><br>
-            Genre: ${book.genre.join(', ')}<br>
-            Pengupload: ${book.user}<br>
-            <em>${timeAgo(book.updatedAt)}</em>
-        `;
-
-        // Tambahkan event listener untuk melihat buku
-        bookItem.addEventListener('click', () => viewBook(index));
-
-        bookItem.appendChild(bookCover);
-        bookItem.appendChild(bookDetails);
-
-        bookListDiv.appendChild(bookItem);
-    });
-}
-
-// Fungsi untuk membuka buku berdasarkan index (berdasarkan sortedBooks)
-function openBook(index) {
-    const books = JSON.parse(localStorage.getItem('books')) || [];
-    const sortedBooks = books.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)); // Sorting books again
-    const book = sortedBooks[index];
-
-    // Menyimpan data PDF dan cover ke localStorage dan membuka halaman untuk menampilkan buku
-    localStorage.setItem('pdfData', book.pdfData);
-    localStorage.setItem('coverData', book.coverData);
-    window.location.href = 'readbook.html'; // Arahkan ke halaman untuk membuka PDF
-}
-        // Fungsi untuk melihat detail buku berdasarkan index
-
-    function viewBook(index) {
-        const books = JSON.parse(localStorage.getItem('books')) || [];
-        const sortedBooks = books.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)); // Sorting books again
-        const book = sortedBooks[index];
-
-        // Simpan detail buku ke localStorage
-localStorage.setItem('selectedBook', JSON.stringify(book));
-
-// Arahkan ke halaman lihat buku
-window.location.href = 'lihatbuku.html';
-}
-
-      
-
-        // Fungsi untuk berpindah slide
-        let currentIndex = 0;
+  // Fungsi untuk berpindah slide
+  let currentIndex = 0;
         function moveToSlide(index) {
             const items = document.querySelectorAll('.carousel-inner .item');
             if (index >= items.length) currentIndex = 0;
@@ -367,15 +355,93 @@ window.location.href = 'lihatbuku.html';
             startAutoScroll();
         }
 
-        // Panggil fungsi saat halaman dimuat
-        window.onload = function() {
-            checkLogin();
-            populateCarousel();
-            loadBookList();
-            startAutoScroll();
-            loadHeaderProfilePic();
-        };
+        // Fungsi untuk memuat daftar buku tanpa login
+        async function loadBookList() {
+    const bookListContainer = document.getElementById('bookList');
+    bookListContainer.innerHTML = ''; // Clear the book list container
 
+    const loadingMessage = document.createElement('p');
+    loadingMessage.textContent = 'Memuat Buku...';
+    bookListContainer.appendChild(loadingMessage);
+
+    const bookDataRef = dbRef(database, 'books/');
+    const snapshot = await get(bookDataRef);
+
+    if (snapshot.exists()) {
+        const books = snapshot.val();
+        bookListContainer.innerHTML = ''; // Clear any previous content
+        let foundBooks = false;
+
+        // Convert the books object to an array of [key, book] pairs
+        const bookArray = Object.entries(books);
+
+        // Sort the books by 'updatedAt' in descending order
+        bookArray.sort((a, b) => new Date(b[1].updatedAt) - new Date(a[1].updatedAt));
+
+        // Display the sorted books
+        for (const [key, book] of bookArray) {
+            const bookItem = document.createElement('div');
+            bookItem.className = 'book-item';
+            bookItem.innerHTML = `
+                <div class="book-cover">
+                    <img src="${book.coverBase64}" alt="Cover Buku">
+                </div>
+                <div class="book-details">
+                    <strong>${book.title}</strong><br>
+                    Genre: ${book.genre.join(', ')}<br>
+                    <em>${timeAgo(book.updatedAt)}</em><br>
+                </div>
+            `;
+            bookItem.addEventListener('click', function() {
+                window.location.href = `lihatbuku.html?bookKey=${key}`;
+            });
+
+            bookListContainer.appendChild(bookItem);
+            foundBooks = true;
+        }
+
+        if (!foundBooks) {
+            bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+        }
+    } else {
+        bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+    }
+}
+
+        // Fungsi untuk menghitung waktu yang lalu
+        function timeAgo(date) {
+            const now = new Date();
+            const diff = now - new Date(date); // Selisih dalam milidetik
+
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (seconds < 60) {
+                return `${seconds} detik yang lalu`;
+            } else if (minutes < 60) {
+                return `${minutes} menit yang lalu`;
+            } else if (hours < 24) {
+                return `${hours} jam yang lalu`;
+            } else if (days < 7) {
+                return `${days} hari yang lalu`;
+            } else if (weeks < 4) {
+                return `${weeks} minggu yang lalu`;
+            } else if (months < 12) {
+                return `${months} bulan yang lalu`;
+            } else {
+                return `${years} tahun yang lalu`;
+            }
+        }
+
+        // Memuat buku saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadBookList);
+        document.addEventListener('DOMContentLoaded', populateCarousel);
+        document.addEventListener('DOMContentLoaded', startAutoScroll);
     </script>
 </body>
 </html>
