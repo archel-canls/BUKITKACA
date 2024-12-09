@@ -146,6 +146,7 @@ nav {
     display: flex;
     gap: 0.2rem;
     transition: all 0.3s ease-in-out;
+    align-items: center; 
 }
 
 nav.show {
@@ -156,7 +157,7 @@ nav a {
     text-decoration: none;
     color: white;
     font-size: 1rem;
-    padding: 0.1rem 1rem;
+    padding: 1rem 1rem;
     border-radius: 4px;
     transition: background-color 0.3s ease;
 }
@@ -194,8 +195,8 @@ nav a.active {
         background-color: #004a99;
         position: absolute;
         bottom: 0;
-        top: 110px;
-        left: 20px;
+        top: 80px;
+        left: 0px;
         width: 250px;
         height: 380px;
         padding-top: 15px;
@@ -362,7 +363,7 @@ form input[type="submit"]:hover {
 .book-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 20px; /* Gap antara item buku */
     justify-content: center;
     margin-top: 20px;
 }
@@ -380,7 +381,7 @@ form input[type="submit"]:hover {
 }
 
 .book-item:hover {
-    transform: scale(1.05);
+    transform: scale(1.05);  /* Efek hover pada perangkat besar */
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
 
@@ -406,11 +407,17 @@ form input[type="submit"]:hover {
     padding: 10px;
     color: white;
     text-align: center;
+    font: 1em sans-serif;
 }
 
 .book-details strong {
-    font-size: 1.5em;
+    font-size: 1.5em;  /* Ukuran font lebih besar di layar besar */
     color: #fff;
+}
+
+.book-details .genre, .book-details .author {
+    font-size: 1.2em;  /* Ukuran font untuk genre dan author */
+    color: #ccc;
 }
 
 .book-buttons {
@@ -454,6 +461,64 @@ form input[type="submit"]:hover {
     outline: none;
 }
 
+/* Responsif - Mengatur ukuran teks untuk layar kecil */
+@media (max-width: 768px) {
+    .book-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Gap antara item buku */
+        justify-content: center;
+    }
+
+    .book-item {
+        width: 150px; /* Mengurangi lebar buku di layar kecil */
+    }
+
+    .book-cover {
+        width: 150px;
+        height: 180px; /* Menyesuaikan tinggi buku */
+       
+    }
+
+    .book-details strong {
+        font-size: 1.2em; /* Ukuran font lebih kecil pada layar lebih kecil */
+    }
+
+    .book-details{
+        font: 0.7em sans-serif;
+    }
+}
+
+/* Responsif - Mengatur ukuran teks dan elemen untuk layar lebih kecil (misalnya pada ponsel) */
+@media (max-width: 480px) {
+    .book-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Gap lebih kecil */
+        justify-content: center;
+    }
+
+    .book-item {
+        width: 120px; /* Lebar buku lebih kecil di ponsel */
+    }
+
+    .book-cover {
+        width: 120px;
+        height: 140px; /* Menyesuaikan ukuran cover buku */
+    }
+
+    .book-details strong {
+        font-size: 1em; /* Ukuran font lebih kecil pada ponsel */
+    }
+
+    .book-details .genre, .book-details .author {
+        font-size: 0.5em; /* Ukuran font lebih kecil untuk genre dan author */
+    }
+}
+
+
+
+
 /* Gaya untuk select dropdown */
 .filters {
     display: flex;
@@ -487,19 +552,18 @@ form input[type="submit"]:hover {
     width: 360px;
 }
 
-/* Responsif */
+/* Responsif - Mengurangi jarak antar elemen untuk input dan tombol */
 @media (max-width: 768px) {
+    .filters {
+        gap: 0.5rem; /* Mengurangi jarak antar dropdown dan input */
+    }
+
+    .filters select, .filters input {
+        padding: 8px; /* Mengurangi padding */
+    }
+    
     .content-section {
-        width: 90%;
-    }
-
-    .book-list-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .book-item {
-        width: 90%;
-        margin-bottom: 20px;
+        width: 90%; /* Mengurangi lebar konten */
+        padding: 12px; /* Mengurangi padding */
     }
 }
