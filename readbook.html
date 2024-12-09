@@ -83,9 +83,6 @@
         let currentPage = 1;
         let pdfDoc = null;
         let scale = 1.0;
-        let isDragging = false;
-        let startX = 0;
-        let startY = 0;
 
         async function loadBook() {
             const bookKey = new URLSearchParams(window.location.search).get('bookKey');
@@ -101,7 +98,7 @@
 
             const loadingTask = pdfjsLib.getDocument({ data: atob(book.fileBase64.split(',')[1]) });
             pdfDoc = await loadingTask.promise;
-            renderPage(currentPage);
+            loadHistory();
         }
 
         function renderPage(pageNum) {
@@ -117,6 +114,7 @@
                     pdfViewer.innerHTML = '';
                     pdfViewer.appendChild(canvas);
                     document.getElementById('pageNumber').textContent = `Halaman: ${pageNum}`;
+                    updateHistory();
                 });
             });
         }
@@ -147,40 +145,33 @@
             }
         }
 
-        document.getElementById('pdfViewer').addEventListener('mousedown', e => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-        });
+        function updateHistory() {
+            const bookTitle = document.getElementById('bookTitle').textContent;
+            const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
 
-        document.getElementById('pdfViewer').addEventListener('mousemove', e => {
-            if (isDragging) {
-                const deltaX = startX - e.clientX;
-                if (Math.abs(deltaX) > 50) {
-                    if (deltaX > 0) goToNextPage();
-                    else goToPrevPage();
-                    isDragging = false;
-                }
+            const existingIndex = history.findIndex(item => item.title === bookTitle);
+
+            if (existingIndex > -1) {
+                history[existingIndex].page = currentPage;
+                const updatedItem = history.splice(existingIndex, 1)[0];
+        history.unshift(updatedItem);
+            } else {
+                history.push({ title: bookTitle, page: currentPage });
             }
-        });
 
-        document.getElementById('pdfViewer').addEventListener('mouseup', () => isDragging = false);
+            localStorage.setItem('readingHistory', JSON.stringify(history));
+        }
 
-        document.getElementById('pdfViewer').addEventListener('touchstart', e => {
-            const touch = e.touches[0];
-            startX = touch.clientX;
-            startY = touch.clientY;
-        });
+        function loadHistory() {
+            const bookTitle = document.getElementById('bookTitle').textContent;
+            const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
+            const bookHistory = history.find(item => item.title === bookTitle);
 
-        document.getElementById('pdfViewer').addEventListener('touchmove', e => {
-            const touch = e.touches[0];
-            const deltaX = startX - touch.clientX;
-            if (Math.abs(deltaX) > 50) {
-                if (deltaX > 0) goToNextPage();
-                else goToPrevPage();
-                startX = touch.clientX;
+            if (bookHistory) {
+                currentPage = bookHistory.page;
             }
-        });
+            renderPage(currentPage);
+        }
 
         document.addEventListener('DOMContentLoaded', loadBook);
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
