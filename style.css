@@ -9,7 +9,7 @@
 body {
     background: linear-gradient(135deg, #091015, #441672);
     color: #f8f2f2;
-    padding: 4%;
+    padding: 18px;
     min-height: 100vh;
     text-align: center;
 }
@@ -20,12 +20,12 @@ header {
     color: white;
     padding: 1rem;
     display: flex;
-    justify-content: space-between; /* Memastikan ruang terbagi antara logo dan profil */
+    justify-content: space-between;
     align-items: center;
-    white-space: nowrap;
-    height: 80px; /* Tentukan tinggi tetap untuk header */
+    height: 80px; /* Tinggi tetap untuk header */
     padding-left: 20px;
-    padding-right: 20px;
+    padding-right: 120px;
+    position: relative;
 }
 
 header .logo {
@@ -40,36 +40,33 @@ header .logo {
         0 0 20px #00bfff,
         0 0 25px #0073e6,
         0 0 30px #004d99;
-    transition: font-size 0.3s ease; /* Menambahkan transisi untuk font-size */
-    flex-grow: 1; /* Membuat logo menyesuaikan ruang yang tersedia */
+    transition: font-size 0.3s ease;
     text-align: left;
+    line-height: 1;
+    flex-grow: 1;
+    transform: scaleY(0.8); /* Menyesuaikan skala vertikal untuk memperkecil teks */
 }
 
-/* Responsif untuk ukuran logo pada layar kecil */
+/* Responsif */
+@media (max-width: 1220px) {
+    header .logo {
+        font-size: 2.6rem;
+        transform: scaleY(0.85); /* Menyesuaikan sedikit lebih besar di layar kecil */
+    }
+}
+
 @media (max-width: 768px) {
     header .logo {
-        font-size: 2rem; /* Ukuran logo lebih kecil */
+        font-size: 2.2rem;
+        transform: scaleY(0.9); /* Menyesuaikan sedikit lebih besar */
     }
 }
 
 @media (max-width: 480px) {
     header .logo {
-        font-size: 1.8rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
+        font-size: 2.2rem;
+        transform: scaleY(0.95); /* Menyesuaikan sedikit lebih besar */
     }
-}
-
-/* Header */
-header {
-    background-color: #0056b3;
-    color: white;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between; /* Membagi ruang antara logo dan profil */
-    align-items: center;
-    height: 80px; /* Tetap tinggi untuk header */
-    padding-left: 20px;
-    padding-right: 120px;
-    position: relative; /* Untuk memastikan elemen di dalam header terstruktur dengan baik */
 }
 
 /* Profil gambar dalam header */
@@ -116,26 +113,27 @@ header .header-profile-pic:hover {
     background-color: #004a99;
     padding: 0px 20px;
     border-radius: 5px;
+    margin-right: 3%; /* Menambahkan jarak sedikit antara menu toggle dan logo */
 }
 
 /* Responsif: Menyesuaikan ukuran menu toggle pada layar kecil */
 @media (max-width: 1220px) {
     .menu-toggle {
-        font-size: 2.2rem; /* Ukuran font lebih kecil */
+        font-size: 2.4rem; /* Ukuran font lebih kecil */
         padding: 0px 15px; /* Padding lebih kecil */
     }
 }
 
 @media (max-width: 768px) {
     .menu-toggle {
-        font-size: 2rem; /* Ukuran font lebih kecil */
+        font-size: 2.2rem; /* Ukuran font lebih kecil */
         padding: 0px 10px; /* Padding lebih kecil */
     }
 }
 
 @media (max-width: 480px) {
     .menu-toggle {
-        font-size: 1.8rem; /* Ukuran font lebih kecil */
+        font-size: 2em; /* Ukuran font lebih kecil */
         padding: 0px 8px; /* Padding lebih kecil */
     }
 }
@@ -158,7 +156,7 @@ nav a {
     text-decoration: none;
     color: white;
     font-size: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.1rem 1rem;
     border-radius: 4px;
     transition: background-color 0.3s ease;
 }
