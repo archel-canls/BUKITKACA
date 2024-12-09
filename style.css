@@ -20,46 +20,42 @@ header {
     color: white;
     padding: 1rem;
     display: flex;
-    justify-content: start;
+    justify-content: space-between; /* Memastikan ruang terbagi antara logo dan profil */
     align-items: center;
     white-space: nowrap;
     height: 80px; /* Tentukan tinggi tetap untuk header */
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 header .logo {
-    margin-right: auto;
-    font-size: 2.5rem;
-    font-family: 'Cinzel', serif; 
+    font-size: 3rem;
+    font-family: 'Cinzel', serif;
     color: #f30f0f;
     font-weight: bold;
-    margin-left: 20px;
-    padding-right: 2rem;
-    text-shadow: 
-    0 0 5px #ffffff, 
-    0 0 10px #ffffff, 
-    0 0 15px #00bfff, 
-    0 0 20px #00bfff, 
-    0 0 25px #0073e6, 
-    0 0 30px #004d99;
+    text-shadow:
+        0 0 5px #ffffff,
+        0 0 10px #ffffff,
+        0 0 15px #00bfff,
+        0 0 20px #00bfff,
+        0 0 25px #0073e6,
+        0 0 30px #004d99;
     transition: font-size 0.3s ease; /* Menambahkan transisi untuk font-size */
+    flex-grow: 1; /* Membuat logo menyesuaikan ruang yang tersedia */
+    text-align: left;
 }
 
 /* Responsif untuk ukuran logo pada layar kecil */
 @media (max-width: 768px) {
     header .logo {
-        font-size: 1.5rem; /* Ukuran logo lebih kecil */
+        font-size: 2rem; /* Ukuran logo lebih kecil */
     }
 }
 
 @media (max-width: 480px) {
     header .logo {
-        font-size: 1rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
+        font-size: 1.5rem; /* Ukuran logo lebih kecil lagi pada layar yang sangat kecil */
     }
-}
-
-
-header .logo {
-    font-size: 3rem;
 }
 
 header .header-profile-pic {
@@ -71,7 +67,6 @@ header .header-profile-pic {
     background-position: center;
     cursor: pointer;
     transition: transform 0.3s ease;
-    margin-left: 20px;
     object-fit: cover;
 }
 
@@ -79,7 +74,7 @@ header .header-profile-pic:hover {
     transform: scale(1.1);
 }
 
-/* Navigasi */
+/* Menu Toggle */
 .menu-toggle {
     font-size: 2.6rem;
     cursor: pointer;
@@ -90,12 +85,11 @@ header .header-profile-pic:hover {
     margin-left: 10px;
 }
 
-/* Menu navigation */
+/* Navigasi */
 nav {
     display: flex;
     gap: 0.2rem;
     transition: all 0.3s ease-in-out;
-    flex-wrap: wrap; /* Ensure the menu wraps on small screens */
 }
 
 nav a {
@@ -131,7 +125,7 @@ nav a.active {
     background-color: #0a3a74;
 }
 
-/* Mobile responsiveness */
+/* Mobile Responsiveness */
 @media (max-width: 1220px) {
     nav {
         display: none;
@@ -159,10 +153,6 @@ nav a.active {
         padding: 10px 15px;
         text-align: center;
     }
-}
-
-section.content-section {
-    margin-top: 30px;
 }
 
 /* Profile container for mobile */
