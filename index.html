@@ -217,13 +217,15 @@
         <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <div class="logo">BUKITKACA</div>
         <nav id="navMenu">
-            <a href="index.html">Beranda</a>
+            <a href="index.html" class="active">Beranda</a>
             <a href="pojokbaca.html">Pojok Baca</a>
             <a href="pusatinformasi.html">Pusat Informasi</a>
-            <a href="upload.html" class="active">Upload</a>
+            <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
         </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
 
     <section class="content-section">
@@ -442,6 +444,7 @@
         document.addEventListener('DOMContentLoaded', loadBookList);
         document.addEventListener('DOMContentLoaded', populateCarousel);
         document.addEventListener('DOMContentLoaded', startAutoScroll);
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
     </script>
 </body>
 </html>
