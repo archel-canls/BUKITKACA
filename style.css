@@ -7,7 +7,6 @@
 
 /* Tampilan Umum */
 body {
-  
     background: url('tenor\ \(1\).gif') no-repeat center center fixed;
     background-size: 100% 100%;
     color: #f8f2f2;
@@ -30,7 +29,7 @@ header {
     position: fixed; /* Membuat header tetap di bagian atas */
     top: 0; /* Menempatkan header di bagian atas layar */
     left: 8px;
-    right: 8px;
+    right: 16px;
     bottom: 8px;
     width: 100%; /* Memastikan header mencakup seluruh lebar layar */
     z-index: 1000; /* Memastikan header berada di atas elemen lain */
