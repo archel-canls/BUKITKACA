@@ -30,6 +30,7 @@ header {
     right: 8px; /* Jarak 8px dari sisi kanan */
     z-index: 1000; /* Memastikan header berada di atas elemen lain */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan opsional */
+    padding-right: 120px; 
 }
 
 
