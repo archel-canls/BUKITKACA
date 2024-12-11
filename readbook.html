@@ -13,9 +13,22 @@
             height: 100%;
             overflow: hidden;
             position: relative;
-            touch-action: none; /* Allow custom touch events */
-            cursor: grab;
+            touch-action: none;  /* Disable default touch actions like zoom */
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-origin: 0 0;
+        }
+
+        canvas {
+            transition: transform 0.1s ease-out; /* Smooth transform */
         }
 
         .navigation-buttons, #zoomControls, #pageNumber {
@@ -61,7 +74,11 @@
     <section class="pageS">BACA BUKU</section>
     <section class="content-section">
         <h1 id="bookTitle" style="text-align: center; margin-top: 20px;"></h1><br>
-        <div id="pdfViewer"></div>
+        <div id="pdfViewer">
+            <div class="pdf-container">
+                <!-- PDF content will be inserted here dynamically -->
+            </div>
+        </div>
 
         <div class="navigation-buttons">
             <button onclick="goToPrevPage()">Sebelumnya</button>
@@ -90,7 +107,6 @@
         let offsetX = 0;
         let offsetY = 0;
 
-        // Check device type and set scale accordingly
         function setScaleBasedOnDevice() {
             if (window.innerWidth <= 768) {
                 scale = 0.46; // For mobile devices
@@ -100,7 +116,6 @@
         }
 
         async function loadBook() {
-            // Set the scale based on the device
             setScaleBasedOnDevice();
 
             const bookKey = new URLSearchParams(window.location.search).get('bookKey');
@@ -127,7 +142,7 @@
                 canvas.height = viewport.height;
 
                 page.render({ canvasContext: context, viewport }).promise.then(() => {
-                    const pdfViewer = document.getElementById('pdfViewer');
+                    const pdfViewer = document.querySelector('.pdf-container');
                     pdfViewer.innerHTML = '';
                     pdfViewer.appendChild(canvas);
                     document.getElementById('pageNumber').textContent = `Halaman: ${pageNum}`;
@@ -191,7 +206,7 @@
         }
 
         function enableTouchSwipe() {
-            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfViewer = document.querySelector('.pdf-container');
 
             pdfViewer.addEventListener('touchstart', (event) => {
                 isTouching = true;
@@ -208,7 +223,7 @@
                 offsetX += deltaX;
                 offsetY += deltaY;
 
-                pdfViewer.style.transform = `translate(${offsetX}px, 0px)`;  // Allow horizontal movement only
+                pdfViewer.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 
                 touchStartX = event.touches[0].clientX;
                 touchStartY = event.touches[0].clientY;
