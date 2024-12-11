@@ -84,7 +84,7 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html" class="active">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <!-- Hapus atau nonaktifkan logout jika tidak diperlukan -->
+            <a href="#" id="logout" onclick="logout()">Logout</a>
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
@@ -217,6 +217,7 @@
                 loadBookList(event.target.value);
             });
         });
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
     </script>
 </body>
 </html>
