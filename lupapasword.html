@@ -9,11 +9,21 @@
 </head>
 <body>
     <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
-
+    <section class="pageS">LUPA PASSWORD</section>
     <section class="content-section">
-        <h1>Lupa Password</h1>
         <form id="reset-password-form">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
@@ -25,6 +35,11 @@
         </form>
         <p id="status-message"></p>
     </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
+    </footer>
 
     <script>
         document.getElementById('reset-password-form').addEventListener('submit', function(event) {

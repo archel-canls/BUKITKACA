@@ -8,6 +8,7 @@
     <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <style>
+
         #pdfViewer {
             width: 100%;
             height: 100%;
@@ -42,24 +43,23 @@
     </style>
 </head>
 <body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="logout" onclick="logout()">Logout</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
+    <section class="pageS">BACA BUKU</section>
     <section class="content-section">
-        <header>
-            <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-            <div class="logo">BUKITKACA</div>
-            <nav id="navMenu">
-                <a href="index.html">Beranda</a>
-                <a href="pojokbaca.html">Pojok Baca</a>
-                <a href="pusatinformasi.html">Pusat Informasi</a>
-                <a href="upload.html">Upload</a>
-                <a href="rakbuku.html" class="active">Rak Buku</a>
-                <a href="bookmarks.html">Bookmarks</a>
-                <a href="#" id="logout" onclick="logout()">Logout</a>
-            </nav>
-            <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
-        </header>
-
-    <section>
-        <h1 id="bookTitle" style="text-align: center; margin-top: 20px;"></h1>
+        <h1 id="bookTitle" style="text-align: center; margin-top: 20px;"></h1><br>
         <div id="pdfViewer"></div>
 
         <div class="navigation-buttons">
@@ -88,7 +88,6 @@
             const bookKey = new URLSearchParams(window.location.search).get('bookKey');
             if (!bookKey) {
                 alert('Buku tidak ditemukan!');
-                window.location.href = 'rakbuku.html';
                 return;
             }
 
@@ -172,9 +171,9 @@
             }
             renderPage(currentPage);
         }
-
-        document.addEventListener('DOMContentLoaded', loadBook);
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
+        document.addEventListener('DOMContentLoaded', loadBook);
     </script>
 
 </body>

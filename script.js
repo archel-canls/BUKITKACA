@@ -1,3 +1,5 @@
+
+
 // Fungsi untuk menghitung waktu yang lalu
         function timeAgo(date) {
             const now = new Date();
@@ -52,9 +54,48 @@
         function loadHeaderProfilePic() {
             const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
             const userProfiles = JSON.parse(localStorage.getItem('userProfiles')) || {};
-            const profilePic = userProfiles[loggedInUser.username] || "default-profile.png";
+        
+            let profilePic;
+        
+            if (loggedInUser && loggedInUser.username) {
+                // If user is logged in, use their profile picture if available
+                profilePic = userProfiles[loggedInUser.username] || "default-profile.png";
+            } else {
+                // If no user is logged in, use the default profile image
+                profilePic = "default-profile.png";
+            }
+        
+            // Set the background image of the profile picture container
             document.getElementById('headerProfilePic').style.backgroundImage = `url('${profilePic}')`;
         }
-
+        
         loadHeaderProfilePic();
+        
+
+        function toggleAuthButton() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const authLink = document.getElementById('auth-link');
+    
+            if (loggedInUser) {
+                // User is logged in, show logout
+                authLink.textContent = "Logout";
+                authLink.style.backgroundColor = "red";
+                authLink.removeAttribute("href"); // Remove link behavior for logout
+                authLink.addEventListener('click', logout); // Bind logout function
+            } else {
+                // User is not logged in, show login
+                authLink.textContent = "Login";
+                authLink.style.backgroundColor = "green";
+                authLink.setAttribute("href", "login.html"); // Add link to login page
+            }
+        }
+    
+        // Logout function to clear localStorage and reload page
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            toggleAuthButton(); // Refresh the button after logout
+            window.location.href = "index.html"; // Redirect to home page after logout
+        }
+
+      
 

@@ -13,13 +13,12 @@
             width: 100%;
             margin: 20px auto;
             overflow: hidden;
-            border: 1px solid #dddddd; /* Border around the carousel */
+            border: 1px solid #ffffff; /* Border around the carousel */
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+            box-shadow: 0 4px 10px rgba(103, 81, 161, 0.3);
+            background: linear-gradient(to bottom, rgba(82, 0, 136, 0), rgba(255, 255, 255, 0));
             cursor: pointer;
-        }
-
+     }
         .carousel-inner {
             display: flex;
             transition: transform 1s ease;
@@ -223,14 +222,14 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a>
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
 
+    <section class="pageS">BUKU KITA KALIAN BACA</section>
     <section class="content-section">
         <main>
-            <h1>Buku Kita Kalian Baca</h1>
             <div id="bookCarousel" class="carousel">
                 <ol class="carousel-indicators" id="carouselIndicators"></ol>
                 <div class="carousel-inner" id="carouselContent"></div>
@@ -245,7 +244,9 @@
 
     <footer>
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
     </footer>
+    
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
@@ -439,12 +440,12 @@
                 return `${years} tahun yang lalu`;
             }
         }
-
         // Memuat buku saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
         document.addEventListener('DOMContentLoaded', loadBookList);
         document.addEventListener('DOMContentLoaded', populateCarousel);
         document.addEventListener('DOMContentLoaded', startAutoScroll);
-        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
     </script>
 </body>
 </html>

@@ -12,17 +12,17 @@
         <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <div class="logo">BUKITKACA</div>
         <nav id="navMenu">
-            <a href="developer.html">Profil</a> 
             <a href="index.html">Beranda</a>
             <a href="pojokbaca.html">Pojok Baca</a>
             <a href="pusatinformasi.html">Pusat Informasi</a>
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="login.html" id="auth-link" class="active">Login</a> <!-- Tombol Login/Logout -->
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a>
         </nav>
+        <div class="header-profile-pic"  id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
-
+    <section class="pageS">LOGIN</section>
     <section class="content-section">
         <h1>Login</h1>
         <form id="login-form">
@@ -39,6 +39,11 @@
     </section>
     <p id="error-message" style="color: red; display: none;"></p>
 
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
+    </footer>
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
@@ -99,6 +104,8 @@
                 document.getElementById("error-message").style.display = "block";
             });
         });
+        window.onload = toggleAuthButton;
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic)
     </script>
 </body>
 </html>

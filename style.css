@@ -7,7 +7,9 @@
 
 /* Tampilan Umum */
 body {
-    background: linear-gradient(135deg, #091015, #441672);
+  
+    background: url('tenor\ \(1\).gif') no-repeat center center fixed;
+    background-size: 100% 100%;
     color: #f8f2f2;
     min-height: 100vh;
     padding: 8px;
@@ -25,8 +27,16 @@ header {
     height: 80px; /* Tinggi tetap untuk header */
     padding-left: 20px;
     padding-right: 120px;
-    position: relative;
+    position: fixed; /* Membuat header tetap di bagian atas */
+    top: 0; /* Menempatkan header di bagian atas layar */
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: 100%; /* Memastikan header mencakup seluruh lebar layar */
+    z-index: 1000; /* Memastikan header berada di atas elemen lain */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan opsional */
 }
+
 
 header .logo {
     font-size: 3rem;
@@ -297,27 +307,74 @@ button:hover {
 
 footer {
     text-align: center;
-    margin-top: 20px;
-    padding: 10px 0;
-    background-color: #343a40;
+    padding: 10px ;
+    background-color: #050303c7;
     color: white;
+    position: fixed; /* Pastikan footer tetap di bawah */
+    bottom: 0; /* Tetap di bagian bawah layar */
+    left: 0;
+    width: 100%; /* Pastikan footer mencakup seluruh lebar layar */
+    z-index: 10; /* Pastikan footer di atas elemen lainnya */
 }
+
+.pageS {
+    margin-top: 90px;
+    text-align: center;
+    font-size: 2.5rem;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    padding: 10px; /* Memberikan ruang di sekitar teks */
+    border-radius: 10px; /* Membuat sudut melengkung */
+    display: inline-block; /* Supaya padding berlaku */
+    animation: fadeIn 2s ease-in-out; /* Animasi masuk */
+    background: transparent; /* Memastikan background tetap transparan */
+    
+    color: transparent; /* Membuat warna teks transparan untuk animasi gradasi */
+    background-image: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff, #6600ff); /* Gradasi warna */
+    background-clip: text; /* Menggunakan gradasi sebagai warna teks */
+    -webkit-background-clip: text; /* Untuk browser Webkit */
+    animation: gradientAnimation 3s ease infinite; /* Animasi kelap-kelip gradasi */
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
 
 /* Konten */
 .content-section {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.739);
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(151, 138, 138, 0.45);
     width: 80%;
     max-width: 900px;
     margin: 15px auto;
+    margin-bottom: 50px;
+
 }
 
 h1, h2 {
     text-align: center;
     font-size: 2rem;
-    color: #fff;
+    color: #ffffff;
 }
 
 form {
@@ -328,7 +385,7 @@ form {
 
 form label {
     font-size: 1.2rem;
-    color: #fff;
+    color: #ffffff;
 }
 
 form input, form select, form textarea {
@@ -337,17 +394,17 @@ form input, form select, form textarea {
     border: none;
     border-radius: 10px;
     outline: none;
-    background-color: #333;
-    color: #fff;
+    background-color: #ffffff;
+    color: #000000;
 }
 
 form input[type="file"] {
-    border: 1px solid #444;
+    border: 1px solid #ffffff;
 }
 
 form input[type="submit"] {
     background-color: #0099ff;
-    color: #fff;
+    color: #ffffff;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -371,18 +428,18 @@ form input[type="submit"]:hover {
 .book-item {
     display: flex;
     flex-direction: column;
-    background-color: #222;
+    background-color: #000000;
     width: 210px;
     border-radius: 5px 15px 15px 15px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(255, 253, 253, 0.3);
     transition: transform 0.3s ease;
     cursor: pointer;
 }
 
 .book-item:hover {
     transform: scale(1.05);  /* Efek hover pada perangkat besar */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 6px 15px rgba(145, 130, 130, 0.5);
 }
 
 .book-cover {
@@ -403,7 +460,7 @@ form input[type="submit"]:hover {
 }
 
 .book-details {
-    margin-top: 0.5rem;
+    margin-top: -7px;
     padding: 10px;
     color: white;
     text-align: center;

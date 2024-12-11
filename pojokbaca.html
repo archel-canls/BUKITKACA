@@ -10,11 +10,11 @@
         .book-item {
             display: flex;
             flex-direction: column;
-            background-color: #222;
+            background-color: #000000;
             width: 210px;
             border-radius: 5px 15px 15px 15px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
             transition: transform 0.3s ease;
             cursor: pointer;
         }
@@ -52,24 +52,34 @@
             gap: 10px;
         }
         #search-type {
-            padding: 5px;
-            border-radius: 5px;
-        }
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #3c5ee4;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#search-type option {
+    background-color: #ffffff;
+    color: rgb(11, 11, 11);
+}
+
         #search-query {
             padding: 5px;
             border-radius: 5px;
             width: 200px;
         }
         #search-button {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #4b9af5;
+            color: rgb(255, 255, 255);
             border: none;
             padding: 6px 12px;
             border-radius: 5px;
             cursor: pointer;
         }
         #search-button:hover {
-            background-color: #45a049;
+            background-color: #0f53ff;
         }
         /* Remove loading message when done */
         #loading-message {
@@ -83,18 +93,17 @@
         <div class="logo">BUKITKACA</div>
         <nav id="navMenu">
             <a href="index.html">Beranda</a>
-            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pojokbaca.html" class="active">Pojok Baca</a>
             <a href="pusatinformasi.html">Pusat Informasi</a>
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a> <!-- Updated -->
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
-
+    <section class="pageS">POJOK BACA</section>
     <section class="content-section">
-        <h1>Pojok Baca</h1><br>
         <form id="search-form">
             <label for="search-query">Cari Berdasarkan:</label>
             <div class="search-bar">
@@ -117,7 +126,9 @@
 
     <footer>
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
     </footer>
+    
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
@@ -221,14 +232,13 @@
             searchBooks(searchType, searchQuery);
         });
 
-        // Memuat semua buku saat halaman pertama kali dimuat
+       
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
         window.onload = function() {
             searchBooks("all", "");
             
         }
-        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
-
-        
     </script>
 </body>
 </html>

@@ -19,18 +19,16 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a> <!-- Updated -->
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
-
+    <section class="pageS">Pusat Informasi</section>
     <section class="content-section">
-    <main>
-        <h1>Pusat Informasi</h1><br>
         <section>
             <h2>Tentang Kami</h2>
             <p>BUKITKACA (Buku Kita Kalian Baca) adalah platform untuk berbagi dan membaca buku digital. Kami menyediakan berbagai fitur seperti Pojok Baca, Upload Buku, Rak Buku, dan Bookmark untuk memudahkan pengguna mengakses literatur favorit mereka.</p>
-        </section><br><br>
+    </section><br><br>
 
         <section>
             <h2>Panduan Pengguna</h2>
@@ -56,19 +54,12 @@
 
     <footer>
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
-        <p>@bukitkaca</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
     </footer>
     
 <script>
-     // Fungsi untuk memuat gambar profil di header
-     function loadHeaderProfilePic() {
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            const userProfiles = JSON.parse(localStorage.getItem('userProfiles')) || {};
-            const profilePic = userProfiles[loggedInUser.username] || "default-profile.png";
-            document.getElementById('headerProfilePic').style.backgroundImage = `url('${profilePic}')`;
-        }
-
-        loadHeaderProfilePic();
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
 </script>
 
 </body>
