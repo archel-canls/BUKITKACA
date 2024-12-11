@@ -8,7 +8,6 @@
     <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <style>
-
         #pdfViewer {
             width: 100%;
             height: 100%;
@@ -82,9 +81,23 @@
     <script>
         let currentPage = 1;
         let pdfDoc = null;
-        let scale = 1.0;
+        let scale;
+
+        // Check device type and set scale accordingly
+        function setScaleBasedOnDevice() {
+            if (window.innerWidth <= 768) {
+                // For mobile devices (screen width <= 768px)
+                scale = 0.1;
+            } else {
+                // For laptops/desktops (screen width > 768px)
+                scale = 1.0;
+            }
+        }
 
         async function loadBook() {
+            // Set the scale based on the device
+            setScaleBasedOnDevice();
+
             const bookKey = new URLSearchParams(window.location.search).get('bookKey');
             if (!bookKey) {
                 alert('Buku tidak ditemukan!');
@@ -133,13 +146,13 @@
         }
 
         function zoomIn() {
-            scale += 0.2;
+            scale += 0.1;
             renderPage(currentPage);
         }
 
         function zoomOut() {
-            if (scale > 0.4) {
-                scale -= 0.2;
+            if (scale > 0.2) {
+                scale -= 0.1;
                 renderPage(currentPage);
             }
         }
@@ -153,7 +166,7 @@
             if (existingIndex > -1) {
                 history[existingIndex].page = currentPage;
                 const updatedItem = history.splice(existingIndex, 1)[0];
-        history.unshift(updatedItem);
+                history.unshift(updatedItem);
             } else {
                 history.push({ title: bookTitle, page: currentPage });
             }
@@ -171,6 +184,10 @@
             }
             renderPage(currentPage);
         }
+
+        // Ensure scale is set based on device type when the page is loaded
+        window.onload = setScaleBasedOnDevice;
+
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
         window.onload = toggleAuthButton;
         document.addEventListener('DOMContentLoaded', loadBook);
