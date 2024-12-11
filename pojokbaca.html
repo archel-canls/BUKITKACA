@@ -3,78 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pojok Baca - BUKITKACA</title>
-    <script src="script.js"></script>
+    <title>Cari Buku - BUKITKACA</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
     <style>
-.book-item {
-    display: flex;
-    flex-direction: column;
-    background-color: #222;
-    width: 210px;
-    border-radius: 5px 15px 15px 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-}
-@media (max-width: 768px) {
-
-    .book-item {
-        width: 150px; /* Mengurangi lebar buku di layar kecil */
-    }
-    .book-cover img {
-    width: 150px;
-    height: 180px;
-    object-fit: cover;
-    display: block;
-}
-}
-    @media (max-width: 480px) {
-
-    .book-item {
-        width: 120px; /* Lebar buku lebih kecil di ponsel */
-    }
-    .book-cover {
-        width: 120px;
-        height: 140px; /* Menyesuaikan ukuran cover buku */
-    }
-
-    .book-cover img {
-    width: 120px;
-    height: 140px;
-    object-fit: cover;
-    display: block;
-}
-}
-
-        .search-bar {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .search-bar input {
-            width: 80%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .search-bar input::placeholder {
-            color: #bbb;
-            font-size: 14px;
-        }
-
-        .search-bar .search-button {
-            background: none;
-            border: none;
+        .book-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #222;
+            width: 210px;
+            border-radius: 5px 15px 15px 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
             cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .book-item {
+                width: 150px;
+            }
+            .book-cover img {
+                width: 150px;
+                height: 180px;
+                object-fit: cover;
+                display: block;
+            }
+        }
+        @media (max-width: 480px) {
+            .book-item {
+                width: 120px;
+            }
+            .book-cover {
+                width: 120px;
+                height: 140px;
+            }
+            .book-cover img {
+                width: 120px;
+                height: 140px;
+                object-fit: cover;
+                display: block;
+            }
+        }
+
+        /* Styling for search input and button */
+        #search-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #search-type {
             padding: 5px;
-            margin-left: 10px;
-            font-size: 20px;
             border-radius: 5px;
-            background-color: #ffffff;
+        }
+        #search-query {
+            padding: 5px;
+            border-radius: 5px;
+            width: 200px;
+        }
+        #search-button {
+            background-color: #4CAF50;
             color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #search-button:hover {
+            background-color: #45a049;
+        }
+        /* Remove loading message when done */
+        #loading-message {
+            display: none;
         }
     </style>
 </head>
@@ -84,7 +83,7 @@
         <div class="logo">BUKITKACA</div>
         <nav id="navMenu">
             <a href="index.html">Beranda</a>
-            <a href="pojokbaca.html" class="active">Pojok Baca</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
             <a href="pusatinformasi.html">Pusat Informasi</a>
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
@@ -96,19 +95,23 @@
 
     <section class="content-section">
         <h1>Pojok Baca</h1><br>
-        <p>Di bawah ini adalah daftar semua buku yang telah di-upload. Anda dapat mencari buku yang diinginkan.</p>
+        <form id="search-form">
+            <label for="search-query">Cari Berdasarkan:</label>
+            <div class="search-bar">
+                <select id="search-type">
+                    <option value="all">Semua</option>
+                    <option value="title">Judul</option>
+                    <option value="genre">Genre</option>
+                    <option value="uploader">Pengupload</option>
+                </select>
+                <input type="text" id="search-query" placeholder="Masukkan Pencarian"  required>
+                <button type="submit" id="search-button">🔍</button>
+            </div>
+        </form>
 
-        <div class="search-bar">
-            <input 
-                type="text" 
-                id="searchInput" 
-                placeholder="Cari berdasarkan Judul, Genre, atau Pengupload..." 
-                onkeydown="checkEnterKey(event)">
-            <button class="search-button" onclick="loadBookList()">
-                🔍
-            </button>
-        </div>
-
+        <p id="loading-message">Memuat Buku...</p><br>
+        
+        <h2>Daftar Buku:</h2>
         <div id="bookList" class="book-list"></div>
     </section>
 
@@ -119,8 +122,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
-        
-        // Firebase configuration
+
         const firebaseConfig = {
             apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
             authDomain: "bukitkaca-65e92.firebaseapp.com",
@@ -135,32 +137,42 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // Fungsi untuk memuat daftar buku dari Firebase
-        async function loadBookList() {
+        // Fungsi untuk memuat semua buku atau hasil pencarian berdasarkan kategori
+        async function searchBooks(searchType = "all", searchQuery = "") {
             const loggedInUser = checkLoginStatus();
             if (!loggedInUser) return;
 
             const bookListContainer = document.getElementById('bookList');
             bookListContainer.innerHTML = '';
-            const loadingMessage = document.createElement('p');
-            loadingMessage.textContent = 'Memuat Buku...';
-            bookListContainer.appendChild(loadingMessage);
+            const loadingMessage = document.getElementById('loading-message');
+            loadingMessage.style.display = 'block'; // Show loading message
 
             const bookDataRef = dbRef(database, 'books/');
             const snapshot = await get(bookDataRef);
 
             if (snapshot.exists()) {
                 const books = snapshot.val();
-                bookListContainer.innerHTML = '';
                 let foundBooks = false;
-                const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
                 for (const key in books) {
                     const book = books[key];
-                    if (searchBooks(book, searchInput)) {
+                    let matches = false;
+
+                    if (searchType === "all" && 
+                        (book.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         book.genre.some(g => g.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                         book.uploadedBy.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                        (searchType === "title" && book.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                        (searchType === "genre" && book.genre.some(g => g.toLowerCase().includes(searchQuery.toLowerCase()))) ||
+                        (searchType === "uploader" && book.uploadedBy.toLowerCase().includes(searchQuery.toLowerCase()))) {
+                        matches = true;
+                    }
+
+                    // Menampilkan buku jika cocok dengan pencarian
+                    if (matches) {
                         const bookItem = document.createElement('div');
                         bookItem.className = 'book-item';
-                        bookItem.innerHTML = `
+                        bookItem.innerHTML = ` 
                             <div class="book-cover">
                                 <img src="${book.coverBase64}" alt="Cover Buku">
                             </div>
@@ -169,26 +181,28 @@
                                 Jenis: ${book.jenisBuku}<br>
                                 Genre: ${book.genre.join(', ')}<br>
                                 Pengupload: ${book.uploadedBy}<br>
-                                <em>${timeAgo(book.updatedAt)}</em><br>               
+                                <em>${timeAgo(book.updatedAt)}</em><br>
                             </div>
                         `;
                         bookItem.addEventListener('click', function() {
-                window.location.href = `lihatbuku.html?bookKey=${key}`;
-            });
+                            window.location.href = `lihatbuku.html?bookKey=${key}`;
+                        });
                         bookListContainer.appendChild(bookItem);
                         foundBooks = true;
                     }
                 }
 
+                loadingMessage.style.display = 'none'; // Hide loading message
                 if (!foundBooks) {
                     bookListContainer.innerHTML = '<p>Tidak ada buku yang ditemukan.</p>';
                 }
             } else {
-                bookListContainer.innerHTML = '<p>Tidak ada buku yang diupload.</p>';
+                bookListContainer.innerHTML = '<p>Tidak ada buku yang ditemukan.</p>';
+                loadingMessage.style.display = 'none';
             }
         }
 
-        // Fungsi untuk memeriksa status login
+        // Fungsi untuk memeriksa login status
         function checkLoginStatus() {
             const loggedInUser = localStorage.getItem('loggedInUser');
             if (!loggedInUser) {
@@ -198,44 +212,23 @@
             return JSON.parse(loggedInUser);
         }
 
-        // Fungsi untuk mencari buku berdasarkan input
-        function searchBooks(book, searchInput) {
-            return book.title.toLowerCase().includes(searchInput) ||
-                   book.genre.some(genre => genre.toLowerCase().includes(searchInput)) ||
-                   book.uploadedBy.toLowerCase().includes(searchInput);
+
+        // Menangani form pencarian
+        document.getElementById('search-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const searchType = document.getElementById('search-type').value;
+            const searchQuery = document.getElementById('search-query').value.trim();
+            searchBooks(searchType, searchQuery);
+        });
+
+        // Memuat semua buku saat halaman pertama kali dimuat
+        window.onload = function() {
+            searchBooks("all", "");
+            
         }
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
 
-        // Fungsi untuk menghitung waktu yang lalu
-        function timeAgo(date) {
-            const now = new Date();
-            const diff = now - new Date(date);
-            const seconds = Math.floor(diff / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
-            const weeks = Math.floor(days / 7);
-            const months = Math.floor(days / 30);
-            const years = Math.floor(days / 365);
-
-            if (seconds < 60) return `${seconds} detik yang lalu`;
-            if (minutes < 60) return `${minutes} menit yang lalu`;
-            if (hours < 24) return `${hours} jam yang lalu`;
-            if (days < 7) return `${days} hari yang lalu`;
-            if (weeks < 4) return `${weeks} minggu yang lalu`;
-            if (months < 12) return `${months} bulan yang lalu`;
-            return `${years} tahun yang lalu`;
-        }
-
-        // Fungsi untuk menangani pencarian saat menekan tombol Enter
-        function checkEnterKey(event) {
-            if (event.key === 'Enter') {
-                loadBookList();
-            }
-        }
-
-        // Load book list on page load
-        loadBookList();
-        loadHeaderProfilePic();
+        
     </script>
 </body>
 </html>
