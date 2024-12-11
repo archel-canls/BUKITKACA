@@ -107,6 +107,7 @@
         let offsetX = 0;
         let offsetY = 0;
         let lastTouchDistance = 0;  // Distance between the two fingers during pinch zoom
+        const zoomSensitivity = 0.05; // Controls how sensitive the zoom is, smaller values = smoother
     
         function setScaleBasedOnDevice() {
             if (window.innerWidth <= 768) {
@@ -167,13 +168,13 @@
         }
     
         function zoomIn() {
-            scale += 0.1;
+            scale += zoomSensitivity;
             renderPage(currentPage);
         }
     
         function zoomOut() {
             if (scale > 0.2) {
-                scale -= 0.1;
+                scale -= zoomSensitivity;
                 renderPage(currentPage);
             }
         }
@@ -206,7 +207,7 @@
             renderPage(currentPage);
         }
     
-        // Pinch-to-zoom functionality for two fingers
+        // Pinch-to-zoom functionality for two fingers with smooth scaling
         function enableTouchPinchZoom() {
             const pdfViewer = document.querySelector('.pdf-container');
             
@@ -224,7 +225,10 @@
                     // Calculate the zoom factor based on the change in distance
                     const scaleChange = newTouchDistance / lastTouchDistance;
     
-                    scale *= scaleChange;
+                    // Apply a smoother scale change, adjusting sensitivity
+                    scale += (scaleChange - 1) * zoomSensitivity;  // Scale change is more gradual now
+                    scale = Math.max(0.2, Math.min(scale, 5));  // Limit zoom to a sensible range
+    
                     renderPage(currentPage);
     
                     lastTouchDistance = newTouchDistance; // Update the last distance
@@ -254,6 +258,7 @@
         window.onload = toggleAuthButton;
         document.addEventListener('DOMContentLoaded', loadBook);
     </script>
+    
     
 </body>
 </html>
