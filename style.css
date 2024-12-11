@@ -376,7 +376,7 @@ h1, h2 {
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 1px;
 }
 
 form label {
@@ -395,7 +395,7 @@ form input, form select, form textarea {
 }
 
 form input[type="file"] {
-    border: 1px solid #ffffff;
+    border: 10px solid #ffffff;
 }
 
 form input[type="submit"] {
