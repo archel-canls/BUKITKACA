@@ -52,18 +52,18 @@
             gap: 10px;
         }
         #search-type {
-    padding: 5px;
-    border-radius: 5px;
-    background-color: #3c5ee4;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #3c5ee4;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
 
-#search-type option {
-    background-color: #ffffff;
-    color: rgb(11, 11, 11);
-}
+        #search-type option {
+            background-color: #ffffff;
+            color: rgb(11, 11, 11);
+        }
 
         #search-query {
             padding: 5px;
@@ -113,7 +113,7 @@
                     <option value="genre">Genre</option>
                     <option value="uploader">Pengupload</option>
                 </select>
-                <input type="text" id="search-query" placeholder="Masukkan Pencarian"  required>
+                <input type="text" id="search-query" placeholder="Masukkan Pencarian" required>
                 <button type="submit" id="search-button">🔍</button>
             </div>
         </form>
@@ -150,9 +150,6 @@
 
         // Fungsi untuk memuat semua buku atau hasil pencarian berdasarkan kategori
         async function searchBooks(searchType = "all", searchQuery = "") {
-            const loggedInUser = checkLoginStatus();
-            if (!loggedInUser) return;
-
             const bookListContainer = document.getElementById('bookList');
             bookListContainer.innerHTML = '';
             const loadingMessage = document.getElementById('loading-message');
@@ -213,17 +210,6 @@
             }
         }
 
-        // Fungsi untuk memeriksa login status
-        function checkLoginStatus() {
-            const loggedInUser = localStorage.getItem('loggedInUser');
-            if (!loggedInUser) {
-                window.location.href = "login.html";
-                return null;
-            }
-            return JSON.parse(loggedInUser);
-        }
-
-
         // Menangani form pencarian
         document.getElementById('search-form').addEventListener('submit', function (event) {
             event.preventDefault();
@@ -231,13 +217,10 @@
             const searchQuery = document.getElementById('search-query').value.trim();
             searchBooks(searchType, searchQuery);
         });
-
-       
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
-        window.onload = toggleAuthButton;
         window.onload = function() {
+            toggleAuthButton();
             searchBooks("all", "");
-            
         }
     </script>
 </body>

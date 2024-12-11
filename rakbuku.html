@@ -14,7 +14,7 @@
             width: 210px;
             border-radius: 5px 15px 15px 15px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
             cursor: pointer;
         }
@@ -84,7 +84,7 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html" class="active">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a> <!-- Updated -->
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
@@ -209,8 +209,7 @@
                 return `${years} tahun yang lalu`;
             }
         }
-        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
-        window.onload = toggleAuthButton;
+     
 
         // Memuat buku saat halaman dimuat
         document.addEventListener('DOMContentLoaded', () => {
@@ -220,6 +219,8 @@
                 loadBookList(event.target.value);
             });
         });
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
     </script>
 </body>
 </html>
