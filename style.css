@@ -24,14 +24,14 @@ header {
     justify-content: space-between;
     align-items: center;
     height: 80px; /* Tinggi tetap untuk header */
-    padding-left: 20px;
-    padding-right: 20px;
     position: fixed; /* Membuat header tetap di bagian atas */
     top: 0; /* Menempatkan header di bagian atas layar */
-    width: 100%; /* Memastikan header mencakup seluruh lebar layar */
+    left: 8px; /* Jarak 8px dari sisi kiri */
+    right: 8px; /* Jarak 8px dari sisi kanan */
     z-index: 1000; /* Memastikan header berada di atas elemen lain */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan opsional */
 }
+
 
 
 header .logo {
@@ -376,7 +376,7 @@ h1, h2 {
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 1px;
 }
 
 form label {
@@ -395,7 +395,7 @@ form input, form select, form textarea {
 }
 
 form input[type="file"] {
-    border: 1px solid #ffffff;
+    border: 10px solid #ffffff;
 }
 
 form input[type="submit"] {
