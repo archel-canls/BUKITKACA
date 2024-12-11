@@ -100,13 +100,13 @@
     <script>
         let currentPage = 1;
         let pdfDoc = null;
-        let scale;
+        let scale = 1.0; // Initial scale factor
         let isTouching = false;
         let touchStartX = 0;
         let touchStartY = 0;
         let offsetX = 0;
         let offsetY = 0;
-        let lastScale = 1;  // To store the last scale value during pinch zoom
+        let lastTouchDistance = 0;  // Distance between the two fingers during pinch zoom
     
         function setScaleBasedOnDevice() {
             if (window.innerWidth <= 768) {
@@ -206,62 +206,48 @@
             renderPage(currentPage);
         }
     
-        // Add touch swipe and pinch zoom functionality
-        function enableTouchSwipeAndZoom() {
+        // Pinch-to-zoom functionality for two fingers
+        function enableTouchPinchZoom() {
             const pdfViewer = document.querySelector('.pdf-container');
-            let lastTouchDistance = 0;
-    
+            
             pdfViewer.addEventListener('touchstart', (event) => {
-                isTouching = true;
-                touchStartX = event.touches[0].clientX;
-                touchStartY = event.touches[0].clientY;
-    
                 if (event.touches.length === 2) {
+                    // Start pinch zoom gesture
                     lastTouchDistance = getDistanceBetweenTouches(event);
                 }
             });
     
             pdfViewer.addEventListener('touchmove', (event) => {
-                if (!isTouching) return;
-    
-                if (event.touches.length === 1) {
-                    const deltaX = event.touches[0].clientX - touchStartX;
-                    const deltaY = event.touches[0].clientY - touchStartY;
-    
-                    offsetX += deltaX;
-                    offsetY += deltaY;
-    
-                    pdfViewer.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-    
-                    touchStartX = event.touches[0].clientX;
-                    touchStartY = event.touches[0].clientY;
-                }
-    
                 if (event.touches.length === 2) {
                     const newTouchDistance = getDistanceBetweenTouches(event);
+    
+                    // Calculate the zoom factor based on the change in distance
                     const scaleChange = newTouchDistance / lastTouchDistance;
     
                     scale *= scaleChange;
                     renderPage(currentPage);
     
-                    lastTouchDistance = newTouchDistance;
+                    lastTouchDistance = newTouchDistance; // Update the last distance
                 }
             });
     
-            pdfViewer.addEventListener('touchend', () => {
-                isTouching = false;
+            pdfViewer.addEventListener('touchend', (event) => {
+                if (event.touches.length < 2) {
+                    // Reset pinch zoom when two fingers are no longer in contact
+                    lastTouchDistance = 0;
+                }
             });
         }
     
-        // Calculate the distance between two touch points for pinch zoom
+        // Function to calculate the distance between the two fingers for pinch zoom
         function getDistanceBetweenTouches(event) {
             const dx = event.touches[1].clientX - event.touches[0].clientX;
             const dy = event.touches[1].clientY - event.touches[0].clientY;
-            return Math.sqrt(dx * dx + dy * dy);
+            return Math.sqrt(dx * dx + dy * dy); // Pythagorean theorem to get distance
         }
     
-        // Initialize touch swipe and pinch zoom after the book is loaded
-        document.addEventListener('DOMContentLoaded', enableTouchSwipeAndZoom);
+        // Initialize touch pinch zoom functionality after the book is loaded
+        document.addEventListener('DOMContentLoaded', enableTouchPinchZoom);
     
         window.onload = setScaleBasedOnDevice;
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
