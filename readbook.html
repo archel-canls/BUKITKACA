@@ -106,7 +106,8 @@
         let touchStartY = 0;
         let offsetX = 0;
         let offsetY = 0;
-
+        let lastScale = 1;  // To store the last scale value during pinch zoom
+    
         function setScaleBasedOnDevice() {
             if (window.innerWidth <= 768) {
                 scale = 0.46; // For mobile devices
@@ -114,25 +115,25 @@
                 scale = 1.0; // For larger screens
             }
         }
-
+    
         async function loadBook() {
             setScaleBasedOnDevice();
-
+    
             const bookKey = new URLSearchParams(window.location.search).get('bookKey');
             if (!bookKey) {
                 alert('Buku tidak ditemukan!');
                 return;
             }
-
+    
             const response = await fetch(`https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app/books/${bookKey}.json`);
             const book = await response.json();
             document.getElementById('bookTitle').textContent = book.title;
-
+    
             const loadingTask = pdfjsLib.getDocument({ data: atob(book.fileBase64.split(',')[1]) });
             pdfDoc = await loadingTask.promise;
             loadHistory();
         }
-
+    
         function renderPage(pageNum) {
             pdfDoc.getPage(pageNum).then(page => {
                 const canvas = document.createElement('canvas');
@@ -140,7 +141,7 @@
                 const viewport = page.getViewport({ scale });
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
-
+    
                 page.render({ canvasContext: context, viewport }).promise.then(() => {
                     const pdfViewer = document.querySelector('.pdf-container');
                     pdfViewer.innerHTML = '';
@@ -150,39 +151,39 @@
                 });
             });
         }
-
+    
         function goToPrevPage() {
             if (currentPage > 1) {
                 currentPage--;
                 renderPage(currentPage);
             }
         }
-
+    
         function goToNextPage() {
             if (currentPage < pdfDoc.numPages) {
                 currentPage++;
                 renderPage(currentPage);
             }
         }
-
+    
         function zoomIn() {
             scale += 0.1;
             renderPage(currentPage);
         }
-
+    
         function zoomOut() {
             if (scale > 0.2) {
                 scale -= 0.1;
                 renderPage(currentPage);
             }
         }
-
+    
         function updateHistory() {
             const bookTitle = document.getElementById('bookTitle').textContent;
             const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
-
+    
             const existingIndex = history.findIndex(item => item.title === bookTitle);
-
+    
             if (existingIndex > -1) {
                 history[existingIndex].page = currentPage;
                 const updatedItem = history.splice(existingIndex, 1)[0];
@@ -190,58 +191,83 @@
             } else {
                 history.push({ title: bookTitle, page: currentPage });
             }
-
+    
             localStorage.setItem('readingHistory', JSON.stringify(history));
         }
-
+    
         function loadHistory() {
             const bookTitle = document.getElementById('bookTitle').textContent;
             const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
             const bookHistory = history.find(item => item.title === bookTitle);
-
+    
             if (bookHistory) {
                 currentPage = bookHistory.page;
             }
             renderPage(currentPage);
         }
-
-        function enableTouchSwipe() {
+    
+        // Add touch swipe and pinch zoom functionality
+        function enableTouchSwipeAndZoom() {
             const pdfViewer = document.querySelector('.pdf-container');
-
+            let lastTouchDistance = 0;
+    
             pdfViewer.addEventListener('touchstart', (event) => {
                 isTouching = true;
                 touchStartX = event.touches[0].clientX;
                 touchStartY = event.touches[0].clientY;
+    
+                if (event.touches.length === 2) {
+                    lastTouchDistance = getDistanceBetweenTouches(event);
+                }
             });
-
+    
             pdfViewer.addEventListener('touchmove', (event) => {
                 if (!isTouching) return;
-
-                const deltaX = event.touches[0].clientX - touchStartX;
-                const deltaY = event.touches[0].clientY - touchStartY;
-
-                offsetX += deltaX;
-                offsetY += deltaY;
-
-                pdfViewer.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-
-                touchStartX = event.touches[0].clientX;
-                touchStartY = event.touches[0].clientY;
+    
+                if (event.touches.length === 1) {
+                    const deltaX = event.touches[0].clientX - touchStartX;
+                    const deltaY = event.touches[0].clientY - touchStartY;
+    
+                    offsetX += deltaX;
+                    offsetY += deltaY;
+    
+                    pdfViewer.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    
+                    touchStartX = event.touches[0].clientX;
+                    touchStartY = event.touches[0].clientY;
+                }
+    
+                if (event.touches.length === 2) {
+                    const newTouchDistance = getDistanceBetweenTouches(event);
+                    const scaleChange = newTouchDistance / lastTouchDistance;
+    
+                    scale *= scaleChange;
+                    renderPage(currentPage);
+    
+                    lastTouchDistance = newTouchDistance;
+                }
             });
-
+    
             pdfViewer.addEventListener('touchend', () => {
                 isTouching = false;
             });
         }
-
-        // Initialize touch swipe functionality after the book is loaded
-        document.addEventListener('DOMContentLoaded', enableTouchSwipe);
-
+    
+        // Calculate the distance between two touch points for pinch zoom
+        function getDistanceBetweenTouches(event) {
+            const dx = event.touches[1].clientX - event.touches[0].clientX;
+            const dy = event.touches[1].clientY - event.touches[0].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+    
+        // Initialize touch swipe and pinch zoom after the book is loaded
+        document.addEventListener('DOMContentLoaded', enableTouchSwipeAndZoom);
+    
         window.onload = setScaleBasedOnDevice;
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
         window.onload = toggleAuthButton;
         document.addEventListener('DOMContentLoaded', loadBook);
     </script>
-
+    
 </body>
 </html>
