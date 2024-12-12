@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pengurutan Dokumen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Selamat datang di aplikasi pengurutan dokumen berdasarkan panjang kalimat!</h1>
+    <p>Masukkan kalimat-kalimat Anda di bawah ini. Tekan tombol "Proses" untuk mengurutkan.</p>
+    
+    <textarea id="inputText" placeholder="Masukkan kalimat Anda di sini. Pisahkan dengan baris baru."></textarea>
+    <button onclick="processSentences()">Proses</button>
+
+    <div id="result" class="result" style="display: none;">
+        <h2>Hasil Pengurutan</h2>
+        <ul id="sortedList"></ul>
+    </div>
+
+    <script>
+        function processSentences() {
+            const inputText = document.getElementById("inputText").value;
+            if (!inputText.trim()) {
+                alert("Harap masukkan setidaknya satu kalimat.");
+                return;
+            }
+
+            const sentences = inputText.split('\n').filter(sentence => sentence.trim());
+            const sortedSentences = mergeSort(sentences);
+
+            const resultDiv = document.getElementById("result");
+            const sortedList = document.getElementById("sortedList");
+
+            sortedList.innerHTML = ""; // Bersihkan hasil sebelumnya
+            sortedSentences.forEach((sentence, index) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${index + 1}. (${sentence.length} karakter) ${sentence}`;
+                sortedList.appendChild(listItem);
+            });
+
+            resultDiv.style.display = "block";
+        }
+
+        function mergeSort(sentences) {
+            if (sentences.length <= 1) return sentences;
+
+            const mid = Math.floor(sentences.length / 2);
+            const left = mergeSort(sentences.slice(0, mid));
+            const right = mergeSort(sentences.slice(mid));
+
+            return merge(left, right);
+        }
+
+        function merge(left, right) {
+            const result = [];
+            let i = 0, j = 0;
+
+            while (i < left.length && j < right.length) {
+                if (left[i].length <= right[j].length) {
+                    result.push(left[i]);
+                    i++;
+                } else {
+                    result.push(right[j]);
+                    j++;
+                }
+            }
+
+            return result.concat(left.slice(i)).concat(right.slice(j));
+        }
+    </script>
+</body>
+</html>
