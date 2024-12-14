@@ -222,22 +222,19 @@ function displayBookDetails(book) {
             return;
         }
 
-        const bookmarkRef = dbRef(database, 'bookmarks/' + user.username + '/' + book.key);
+const bookmarkRef = dbRef(database, 'bookmarks/' + user.username + '/' + book.key);
 
-        // Periksa apakah buku sudah ada di bookmark
-        const bookmarkSnapshot = await get(bookmarkRef);
-        if (bookmarkSnapshot.exists()) {
-            // Hapus dari bookmark jika sudah ada
-            await set(bookmarkRef, null);
-            alert("Buku telah dihapus dari bookmark");
-            bookmarkButton.textContent = "Tambah ke Bookmark";
-        } else {
-            // Tambahkan buku ke bookmark
-            await set(bookmarkRef, true);
-            alert("Buku telah ditambahkan ke bookmark");
-            bookmarkButton.textContent = "Hapus dari Bookmark";
-        }
-    });
+const bookmarkSnapshot = await get(bookmarkRef);
+if (bookmarkSnapshot.exists()) {
+    await set(bookmarkRef, null);  // Hapus dari bookmark
+    alert("Buku telah dihapus dari bookmark");
+    bookmarkButton.textContent = "Tambah ke Bookmark";  // Mengubah teks tombol
+} else {
+    await set(bookmarkRef, true);  // Tambah ke bookmark
+    alert("Buku telah ditambahkan ke bookmark");
+    bookmarkButton.textContent = "Hapus dari Bookmark";  // Mengubah teks tombol
+}
+});
 }
 
   

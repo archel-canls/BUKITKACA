@@ -57,13 +57,20 @@
     font-size: 20px;
     line-height: 1.4;
     color: #ffffff;
-    text-align: justify; /* Align text to both left and right */
-    flex-grow: 1; /* Make the description take the remaining space */
-    overflow: hidden; /* Hide overflowing text */
-    text-overflow: ellipsis; /* Add "..." when text overflows */
-    white-space: normal; /* Allow wrapping to next line */
-    word-wrap: break-word; /* Ensure long words break and wrap */
+    text-align: justify;
+    flex-grow: 1;
+    overflow: hidden;  /* Menyembunyikan teks yang berlebih */
+    white-space: nowrap; /* Agar teks tetap berada dalam satu baris */
+    text-overflow: ellipsis; /* Menampilkan elipsis jika teks terpotong */
 }
+
+
+/* If you want a "read more" option when the description is cut off */
+.bookCarousel-description.read-more {
+    height: auto; /* Allow it to expand when clicked */
+    overflow: visible;
+}
+
 
         .bookCarousel-title {
             font-size: 34px;
@@ -77,8 +84,8 @@
             position: absolute;
             top: 50%;
             z-index: 10;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
+            background-color: rgba(0, 0, 0, 0);
+            color: rgba(255, 255, 255, 0.262);
             border: none;
             font-size: 30px;
             padding: 10px;
@@ -104,7 +111,7 @@
         .carousel-indicators li {
             display: inline-block;
             margin: 0 5px;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(12, 11, 11, 0.473);
             width: 10px;
             height: 10px;
             border-radius: 50%;
@@ -116,7 +123,8 @@
         }
 
         .carousel-control:hover {
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0);
+            color: rgba(255, 255, 255, 0.821);
         }
 
         @media (max-width: 768px) {
@@ -134,13 +142,14 @@
         }
 .bookCarousel-item img {
     flex-shrink: 0; /* Mencegah gambar mengecil */
-    width: 150px;
-    height: 180px;
+    width: 120px;
+    height: 150px;
     background-color: #222;
     border-radius: 3px 15px 15px 3px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     margin-right: 20px;
+    margin-top: 10px;
 
 }
 
@@ -154,11 +163,22 @@
         }
 
         .bookCarousel-title {
-    font-size: 20px; /* Reduced font size for the title */
+    font-size: 16px; /* Reduced font size for the title */
     font-weight: bold;
     color: rgb(255, 255, 255);
     text-align: left;
     margin-bottom: 10px; /* Reduced space between title and description */
+}
+.bookCarousel-description {
+    font-size: 10px;
+    line-height: 1.4;
+    color: #ffffff;
+    text-align: justify; /* Align text to both left and right */
+    flex-grow: 1; /* Make the description take the remaining space */
+    overflow: hidden; /* Hide overflowing text */
+    text-overflow: ellipsis; /* Add "..." when text overflows */
+    white-space: normal; /* Allow wrapping to next line */
+    word-wrap: break-word; /* Ensure long words break and wrap */
 }
 
 
@@ -278,47 +298,61 @@
       async function populateCarousel() {
     const carouselContent = document.getElementById('carouselContent');
     const carouselIndicators = document.getElementById('carouselIndicators');
-
     carouselContent.innerHTML = '';
     carouselIndicators.innerHTML = '';
 
     const bookDataRef = dbRef(database, 'books/');
-    const snapshot = await get(bookDataRef);
+    try {
+        const snapshot = await get(bookDataRef);
 
-    if (snapshot.exists()) {
-        const books = snapshot.val();
+        if (snapshot.exists()) {
+            const books = snapshot.val();
+            const bookArray = Object.entries(books).slice(0, 7);
 
-        // Ambil semua key-value dari buku
-        const bookArray = Object.entries(books).slice(0, 7); // Ambil maksimal 7 buku untuk carousel
+            bookArray.forEach(([bookKey, book], index) => {
+                const item = document.createElement('div');
+                item.classList.add('item', 'bookCarousel-item');
+                if (index === 0) item.classList.add('active');
 
-        bookArray.forEach(([bookKey, book], index) => {
-            const item = document.createElement('div');
-            item.classList.add('item', 'bookCarousel-item');
-            if (index === 0) item.classList.add('active');
+                // Menentukan panjang teks dan menambahkan elipsis jika perlu
+                const maxDescriptionLength = 150;  // Misalnya, 150 karakter
+                let description = book.description;
+                if (description.length > maxDescriptionLength) {
+                    description = description.substring(0, maxDescriptionLength) + '...';
+                }
 
-            item.innerHTML = `
-                <img src="${book.coverBase64}" alt="Cover Buku">
-                <div>
-                    <div class="bookCarousel-title">${book.title}</div>
-                    <div class="bookCarousel-description">${book.description}</div>
-                </div>
-            `;
+                item.innerHTML = `
+                    <img src="${book.coverBase64}" alt="Cover Buku">
+                    <div>
+                        <div class="bookCarousel-title">${book.title}</div>
+                        <div class="bookCarousel-description">${description}</div>
+                    </div>
+                `;
 
-            // Tidak ada event listener untuk redirect
-            carouselContent.appendChild(item);
+                item.addEventListener('click', () => {
+                    window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
+                });
 
-            const indicator = document.createElement('li');
-            if (index === 0) indicator.classList.add('active');
-            indicator.addEventListener('click', () => moveToSlide(index));
-            carouselIndicators.appendChild(indicator);
-        });
+                carouselContent.appendChild(item);
 
-        moveToSlide(0);
-    } else {
-        carouselContent.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+                const indicator = document.createElement('li');
+                if (index === 0) indicator.classList.add('active');
+                indicator.addEventListener('click', () => moveToSlide(index));
+                carouselIndicators.appendChild(indicator);
+            });
+
+            moveToSlide(0);
+        } else {
+            carouselContent.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+        }
+    } catch (error) {
+        console.error('Error fetching book data:', error);
+        carouselContent.innerHTML = '<p>Terjadi kesalahan saat memuat data buku.</p>';
     }
 }
 
+
+    
 
 
 
