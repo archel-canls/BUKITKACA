@@ -158,62 +158,48 @@
             return JSON.parse(loggedInUser);
         }
 
-        // Fungsi untuk memuat daftar bookmarks
-        async function loadBookmarks() {
+        // Fungsi untuk memuat daftar buku yang di-bookmark
+        async function loadBookmarkList() {
             const loggedInUser = checkLoginStatus();
             if (!loggedInUser) return;
 
-            const bookmarksListContainer = document.getElementById('bookmarksList');
-            bookmarksListContainer.innerHTML = '';
-            const loadingMessage = document.createElement('p');
-            loadingMessage.textContent = 'Memuat Buku...';
-            bookmarksListContainer.appendChild(loadingMessage);
-
-            const bookmarksRef = dbRef(database, `users/${loggedInUser.username}/bookmarks/`);
-            const snapshot = await get(bookmarksRef);
+            const bookmarkListContainer = document.getElementById('bookmarkList');
+            bookmarkListContainer.innerHTML = '';
+            const bookmarkRef = dbRef(database, 'bookmarks/' + loggedInUser.username);
+            const snapshot = await get(bookmarkRef);
 
             if (snapshot.exists()) {
-                const bookmarks = snapshot.val();
-                bookmarksListContainer.innerHTML = '';
-                let foundBookmarks = false;
+                const bookmarkedBooks = snapshot.val();
+                for (const bookKey in bookmarkedBooks) {
+                    const bookDataRef = dbRef(database, 'books/' + bookKey);
+                    const bookSnapshot = await get(bookDataRef);
+                    if (bookSnapshot.exists()) {
+                        const book = bookSnapshot.val();
+                        const bookItem = document.createElement('div');
+                        bookItem.className = 'book-item';
+                        bookItem.innerHTML = `
+                            <div class="book-cover">
+                                <img src="${book.coverBase64}" alt="Cover Buku">
+                            </div>
+                            <div class="book-details">
+                                <strong>${book.title}</strong><br>
+                                Jenis: ${book.jenisBuku}<br>
+                                Genre: ${book.genre.join(', ')}<br>
+                                Pengupload: ${book.uploadedBy}
+                            </div>
+                        `;
+                        // Tambahkan event listener untuk klik pada buku
+                        bookItem.addEventListener('click', function() {
+                            window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
+                        });
 
-                for (const key in bookmarks) {
-                    const bookmark = bookmarks[key];
-                    const bookItem = document.createElement('div');
-                    bookItem.className = 'book-item';
-                    bookItem.innerHTML = `
-                        <div class="book-cover">
-                            <img src="${bookmark.coverBase64}" alt="Cover Buku">
-                        </div>
-                        <div class="book-details">
-                            <strong>${bookmark.title}</strong><br>
-                            Jenis: ${bookmark.jenisBuku}<br>
-                            Genre: ${bookmark.genre.join(', ')}<br>
-                            Pengupload: ${bookmark.uploadedBy}<br>
-                            <em>${timeAgo(bookmark.updatedAt)}</em><br>
-                        </div>
-                    `;
-                    bookmarksListContainer.appendChild(bookItem);
-                    foundBookmarks = true;
+                        bookmarkListContainer.appendChild(bookItem);
+                    }
                 }
-
-                if (!foundBookmarks) {
-                    bookmarksListContainer.innerHTML = '<p>Tidak ada buku yang diblokir.</p>';
-                }
-
-                document.querySelectorAll('.book-item').forEach(bookItem => {
-                    bookItem.addEventListener('click', function(event) {
-                        const bookKey = bookItem.querySelector('.delete-button').getAttribute('data-book-key');
-                        window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
-                    });
-                });
-
             } else {
-                bookmarksListContainer.innerHTML = '<p>Tidak ada buku yang diblokir.</p>';
+                bookmarkListContainer.innerHTML = '<p>Tidak ada buku yang di-bookmark.</p>';
             }
         }
-
-        loadBookmarks();
        
 
         // Load and display Reading History
@@ -253,7 +239,7 @@
             }
         };
 
-        document.addEventListener('DOMContentLoaded', loadBookmarks);
+        document.addEventListener('DOMContentLoaded', loadBookmarkList);
         loadHeaderProfilePic();
     </script>
 </body>
