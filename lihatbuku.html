@@ -7,7 +7,103 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
     <style>
-        /* (Gaya CSS lainnya tidak berubah) */
+        /* Kontainer detail buku */
+        .bookview-detail-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            width: 90%;
+            padding: 15px;
+        }
+
+        /* Gaya untuk cover buku */
+        .bookview-cover {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .bookview-cover img {
+            width: 250px;
+            height: 300px;
+            background-color: #222;
+            border-radius: 3px 15px 15px 3px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .action-button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 250px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .read-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .read-button:hover {
+            background-color: #218838;
+        }
+
+        .bookmark-button {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .bookmark-button:hover {
+            background-color: #e0a800;
+        }
+
+        .bookview-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            color: #fff;
+            max-width: 70%;
+        }
+
+        .bookview-info h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .bookview-info p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .bookview-detail-container {
+                flex-direction: column;
+                align-items: center;
+                margin-left: 5.1%;
+            }
+
+            .bookview-cover {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .bookview-info {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -26,7 +122,9 @@
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
+
     <section class="pageS">DETAIL BUKU</section>
+
     <section class="content-section">
         <div class="bookview-title">
             <h1 id="bookTitle"></h1>
@@ -35,7 +133,7 @@
             <div class="bookview-cover">
                 <img id="bookCoverImg" src="#" alt="Cover Buku">
                 <button class="action-button read-button" onclick="openBook()">Baca Buku</button>
-                <button class="bookmark-button" id="bookmarkButton">Tambahkan ke Bookmark</button>
+                <button class="action-button bookmark-button" onclick="toggleBookmark()" id="bookmarkButton">Tambah ke Bookmark</button>
             </div>
             <div class="bookview-info">
                 <p><strong>Jenis Buku:</strong> <span id="bookType">Fiksi</span></p>
@@ -75,6 +173,15 @@
             const urlParams = new URLSearchParams(window.location.search);
             const bookKey = urlParams.get('bookKey');
 
+            // Cek apakah data buku sudah ada di sessionStorage
+            const storedBook = sessionStorage.getItem('currentBook');
+            if (storedBook && JSON.parse(storedBook).key === bookKey) {
+                const book = JSON.parse(storedBook);
+                displayBookDetails(book);
+                return;
+            }
+
+            // Jika data buku tidak ada di sessionStorage, ambil dari Firebase
             if (!bookKey) {
                 alert('Buku tidak ditemukan!');
                 return;
@@ -84,15 +191,16 @@
             const snapshot = await get(bookDataRef);
             if (snapshot.exists()) {
                 const book = snapshot.val();
-                book.key = bookKey;
-                sessionStorage.setItem('currentBook', JSON.stringify(book));
+                book.key = bookKey; // Tambahkan key untuk identifikasi
+                sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
                 displayBookDetails(book);
             } else {
                 alert('Buku tidak ditemukan!');
-                window.history.back();
+                window.history.back(); // Kembali ke halaman sebelumnya
             }
         }
 
+        // Fungsi untuk menampilkan detail buku
         function displayBookDetails(book) {
             document.getElementById('bookTitle').textContent = book.title;
             document.getElementById('bookGenre').textContent = 'Genre: ' + book.genre.join(', ');
@@ -100,31 +208,70 @@
             document.getElementById('bookUploader').textContent = book.uploadedBy;
             document.getElementById('bookCoverImg').src = book.coverBase64;
 
-            // Event Listener untuk tombol Bookmark
-            const bookmarkButton = document.getElementById('bookmarkButton');
-            bookmarkButton.addEventListener('click', async function() {
-                const userKey = 'loggedInUser'; // Ganti dengan ID pengguna yang sudah login
-                const isBookmarked = await checkIfBookIsBookmarked(book.key, userKey);
-
-                if (isBookmarked) {
-                    // Hapus dari bookmark
-                    await set(dbRef(database, 'bookmarks/' + userKey + '/' + book.key), null);
-                    bookmarkButton.textContent = "Tambahkan ke Bookmark";
-                } else {
-                    // Tambahkan ke bookmark
-                    await set(dbRef(database, 'bookmarks/' + userKey + '/' + book.key), true);
-                    bookmarkButton.textContent = "Dihapus dari Bookmark";
-                }
-            });
+            // Mengubah tombol Baca Buku untuk mengarahkan ke halaman readbook.html
+            const readButton = document.querySelector('.read-button');
+            readButton.onclick = function () {
+                window.location.href = 'readbook.html?bookKey=' + book.key;
+            };
         }
 
-        async function checkIfBookIsBookmarked(bookKey, userKey) {
-            const bookmarkRef = dbRef(database, 'bookmarks/' + userKey + '/' + bookKey);
-            const snapshot = await get(bookmarkRef);
-            return snapshot.exists();
+        // Fungsi untuk menambah atau menghapus buku dari bookmark
+        async function toggleBookmark() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookKey = urlParams.get('bookKey');
+            
+            // Mengambil data pengguna yang sedang login
+            const currentUserId = "user123"; // Gantilah dengan ID pengguna yang sesuai, bisa dari session atau auth state
+
+            if (!bookKey) {
+                alert('Buku tidak ditemukan!');
+                return;
+            }
+
+            const bookDataRef = dbRef(database, 'books/' + bookKey);
+            const snapshot = await get(bookDataRef);
+            if (!snapshot.exists()) {
+                alert('Buku tidak ditemukan!');
+                return;
+            }
+
+            const book = snapshot.val();
+
+            // Menyimpan ke database sebagai bookmark
+            const userBookmarkRef = dbRef(database, 'users/' + currentUserId + '/bookmarks');
+            const userBookmarksSnapshot = await get(userBookmarkRef);
+
+            let bookmarks = userBookmarksSnapshot.exists() ? userBookmarksSnapshot.val() : [];
+
+            // Cek apakah buku sudah ada di bookmark
+            const isBookmarked = bookmarks.some(bookmark => bookmark.key === bookKey);
+
+            if (isBookmarked) {
+                // Hapus dari bookmark jika sudah ada
+                bookmarks = bookmarks.filter(bookmark => bookmark.key !== bookKey);
+                alert('Buku dihapus dari bookmark.');
+            } else {
+                // Tambahkan ke bookmark
+                bookmarks.push({ key: bookKey, title: book.title });
+                alert('Buku ditambahkan ke bookmark.');
+            }
+
+            // Update data bookmarks di Firebase
+            await set(userBookmarkRef, bookmarks);
+
+            // Mengubah teks tombol sesuai status bookmark
+            const bookmarkButton = document.getElementById('bookmarkButton');
+            if (isBookmarked) {
+                bookmarkButton.textContent = 'Tambah ke Bookmark';
+            } else {
+                bookmarkButton.textContent = 'Hapus dari Bookmark';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', loadBookDetails);
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
     </script>
+
 </body>
 </html>
