@@ -54,6 +54,21 @@
             font-size: 18px;
             margin-top: 10px;
         }
+
+        /* Button style for download */
+        #downloadBtn {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        #downloadBtn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -67,7 +82,7 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a> <!-- Updated -->
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a>
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
@@ -91,6 +106,9 @@
         </div>
 
         <div id="pageNumber">Halaman: 1</div>
+
+        <!-- PDF Download Button -->
+        <button id="downloadBtn" onclick="downloadPDF()">Unduh PDF</button>
     </section>
 
     <footer style="text-align: center; margin-top: 20px;">
@@ -107,8 +125,8 @@
         let offsetX = 0;
         let offsetY = 0;
         let lastTouchDistance = 0;  // Distance between the two fingers during pinch zoom
-        const zoomSensitivity =0.2; // Controls how sensitive the zoom is, smaller values = smoother
-    
+        const zoomSensitivity = 0.2; // Controls how sensitive the zoom is, smaller values = smoother
+
         function setScaleBasedOnDevice() {
             if (window.innerWidth <= 768) {
                 scale = 0.46; // For mobile devices
@@ -116,25 +134,25 @@
                 scale = 1.0; // For larger screens
             }
         }
-    
+
         async function loadBook() {
             setScaleBasedOnDevice();
-    
+
             const bookKey = new URLSearchParams(window.location.search).get('bookKey');
             if (!bookKey) {
                 alert('Buku tidak ditemukan!');
                 return;
             }
-    
+
             const response = await fetch(`https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app/books/${bookKey}.json`);
             const book = await response.json();
             document.getElementById('bookTitle').textContent = book.title;
-    
+
             const loadingTask = pdfjsLib.getDocument({ data: atob(book.fileBase64.split(',')[1]) });
             pdfDoc = await loadingTask.promise;
             loadHistory();
         }
-    
+
         function renderPage(pageNum) {
             pdfDoc.getPage(pageNum).then(page => {
                 const canvas = document.createElement('canvas');
@@ -142,7 +160,7 @@
                 const viewport = page.getViewport({ scale });
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
-    
+
                 page.render({ canvasContext: context, viewport }).promise.then(() => {
                     const pdfViewer = document.querySelector('.pdf-container');
                     pdfViewer.innerHTML = '';
@@ -152,39 +170,39 @@
                 });
             });
         }
-    
+
         function goToPrevPage() {
             if (currentPage > 1) {
                 currentPage--;
                 renderPage(currentPage);
             }
         }
-    
+
         function goToNextPage() {
             if (currentPage < pdfDoc.numPages) {
                 currentPage++;
                 renderPage(currentPage);
             }
         }
-    
+
         function zoomIn() {
             scale += zoomSensitivity;
             renderPage(currentPage);
         }
-    
+
         function zoomOut() {
             if (scale > 0.2) {
                 scale -= zoomSensitivity;
                 renderPage(currentPage);
             }
         }
-    
+
         function updateHistory() {
             const bookTitle = document.getElementById('bookTitle').textContent;
             const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
-    
+
             const existingIndex = history.findIndex(item => item.title === bookTitle);
-    
+
             if (existingIndex > -1) {
                 history[existingIndex].page = currentPage;
                 const updatedItem = history.splice(existingIndex, 1)[0];
@@ -192,73 +210,45 @@
             } else {
                 history.push({ title: bookTitle, page: currentPage });
             }
-    
+
             localStorage.setItem('readingHistory', JSON.stringify(history));
         }
-    
+
         function loadHistory() {
             const bookTitle = document.getElementById('bookTitle').textContent;
             const history = JSON.parse(localStorage.getItem('readingHistory')) || [];
             const bookHistory = history.find(item => item.title === bookTitle);
-    
+
             if (bookHistory) {
                 currentPage = bookHistory.page;
             }
             renderPage(currentPage);
         }
-    
-        // Pinch-to-zoom functionality for two fingers with smooth scaling
-        function enableTouchPinchZoom() {
-            const pdfViewer = document.querySelector('.pdf-container');
-            
-            pdfViewer.addEventListener('touchstart', (event) => {
-                if (event.touches.length === 2) {
-                    // Start pinch zoom gesture
-                    lastTouchDistance = getDistanceBetweenTouches(event);
-                }
-            });
-    
-            pdfViewer.addEventListener('touchmove', (event) => {
-                if (event.touches.length === 2) {
-                    const newTouchDistance = getDistanceBetweenTouches(event);
-    
-                    // Calculate the zoom factor based on the change in distance
-                    const scaleChange = newTouchDistance / lastTouchDistance;
-    
-                    // Apply a smoother scale change, adjusting sensitivity
-                    scale += (scaleChange - 1) * zoomSensitivity;  // Scale change is more gradual now
-                    scale = Math.max(0.2, Math.min(scale, 5));  // Limit zoom to a sensible range
-    
-                    renderPage(currentPage);
-    
-                    lastTouchDistance = newTouchDistance; // Update the last distance
-                }
-            });
-    
-            pdfViewer.addEventListener('touchend', (event) => {
-                if (event.touches.length < 2) {
-                    // Reset pinch zoom when two fingers are no longer in contact
-                    lastTouchDistance = 0;
-                }
+
+        // Function to download the PDF
+        function downloadPDF() {
+            const bookKey = new URLSearchParams(window.location.search).get('bookKey');
+            if (!bookKey) {
+                alert('Buku tidak ditemukan!');
+                return;
+            }
+
+            const response = fetch(`https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app/books/${bookKey}.json`);
+            response.then(res => res.json()).then(book => {
+                const base64Data = book.fileBase64.split(',')[1];
+                const pdfData = atob(base64Data);
+                const blob = new Blob([new Uint8Array([...pdfData].map(char => char.charCodeAt(0)))], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${book.title}.pdf`;
+                link.click();
             });
         }
-    
-        // Function to calculate the distance between the two fingers for pinch zoom
-        function getDistanceBetweenTouches(event) {
-            const dx = event.touches[1].clientX - event.touches[0].clientX;
-            const dy = event.touches[1].clientY - event.touches[0].clientY;
-            return Math.sqrt(dx * dx + dy * dy); // Pythagorean theorem to get distance
-        }
-    
-        // Initialize touch pinch zoom functionality after the book is loaded
-        document.addEventListener('DOMContentLoaded', enableTouchPinchZoom);
-    
+
         window.onload = setScaleBasedOnDevice;
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
         window.onload = toggleAuthButton;
         document.addEventListener('DOMContentLoaded', loadBook);
     </script>
-    
-    
 </body>
 </html>
