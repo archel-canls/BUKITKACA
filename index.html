@@ -303,18 +303,7 @@
                             <div class="bookCarousel-description">${book.description}</div>
                         </div>
                     `;
-                    item.addEventListener('click', () => {
-                    const targetUrl = `lihatbuku.html?bookKey=${bookKey}`;
-                    console.log('Navigating to:', targetUrl);
-                    window.location.href = targetUrl;
-                });
-
-                    carouselContent.appendChild(item);
-
-                    const indicator = document.createElement('li');
-                    if (index === 0) indicator.classList.add('active');
-                    indicator.addEventListener('click', () => moveToSlide(index));
-                    carouselIndicators.appendChild(indicator);
+                arouselIndicators.appendChild(indicator);
                 });
 
                 moveToSlide(0);
