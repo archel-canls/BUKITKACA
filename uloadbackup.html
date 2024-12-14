@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Buku - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <style>
+        .book-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #222;
+            width: 210px;
+            border-radius: 5px 15px 15px 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        /* Responsiveness for different screen sizes */
+        @media (max-width: 768px) {
+            .book-item {
+                width: 150px;
+            }
+            .book-cover img {
+                width: 150px;
+                height: 180px;
+                object-fit: cover;
+                display: block;
+            }
+        }
+        @media (max-width: 480px) {
+            .book-item {
+                width: 120px;
+            }
+            .book-cover img {
+                width: 120px;
+                height: 140px;
+                object-fit: cover;
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Header content here -->
+    </header>
+
+    <section class="content-section">
+        <h2>Daftar Buku yang Di-upload</h2>
+        <div id="bookList" class="book-list"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, set, push, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Fungsi untuk memeriksa login status
+        function checkLoginStatus() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                window.location.href = "login.html";
+                return null;
+            }
+            return JSON.parse(loggedInUser);
+        }
+
+        // Fungsi untuk memuat daftar buku dan menambahkan tombol bookmark
+        async function loadBookList() {
+            const loggedInUser = checkLoginStatus();
+            if (!loggedInUser) return;
+
+            const bookListContainer = document.getElementById('bookList');
+            bookListContainer.innerHTML = '';
+            const bookDataRef = dbRef(database, 'books/');
+            const snapshot = await get(bookDataRef);
+
+            if (snapshot.exists()) {
+                const books = snapshot.val();
+                const bookmarkRef = dbRef(database, 'bookmarks/' + loggedInUser.username);
+                const bookmarkSnapshot = await get(bookmarkRef);
+                const bookmarkedBooks = bookmarkSnapshot.exists() ? bookmarkSnapshot.val() : {};
+
+                for (const key in books) {
+                    const book = books[key];
+                    const isBookmarked = bookmarkedBooks[key] !== undefined;
+
+                    const bookItem = document.createElement('div');
+                    bookItem.className = 'book-item';
+                    bookItem.innerHTML = `
+                        <div class="book-cover">
+                            <img src="${book.coverBase64}" alt="Cover Buku">
+                        </div>
+                        <div class="book-details">
+                            <strong>${book.title}</strong><br>
+                            Jenis: ${book.jenisBuku}<br>
+                            Genre: ${book.genre.join(', ')}<br>
+                            Pengupload: ${book.uploadedBy}<br>
+                            <button class="bookmark-button" data-book-key="${key}">
+                                ${isBookmarked ? 'Hapus dari Bookmark' : 'Tambah ke Bookmark'}
+                            </button>
+                        </div>
+                    `;
+                    bookListContainer.appendChild(bookItem);
+
+                    // Event listener untuk tombol bookmark
+                    const bookmarkButton = bookItem.querySelector('.bookmark-button');
+                    bookmarkButton.addEventListener('click', async function () {
+                        if (isBookmarked) {
+                            // Hapus dari bookmark
+                            await set(dbRef(database, 'bookmarks/' + loggedInUser.username + '/' + key), null);
+                        } else {
+                            // Tambahkan ke bookmark
+                            await set(dbRef(database, 'bookmarks/' + loggedInUser.username + '/' + key), true);
+                        }
+                        loadBookList(); // Muat ulang daftar buku
+                    });
+                }
+            } else {
+                bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+            }
+        }
+
+        // Memuat daftar buku saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadBookList);
+    </script>
+</body>
+</html>
