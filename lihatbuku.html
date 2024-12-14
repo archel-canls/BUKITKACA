@@ -214,15 +214,17 @@
             };
 
             // Periksa apakah buku sudah ada di bookmark
-            const bookmarkButton = document.getElementById('bookmarkButton');
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const isBookmarked = bookmarks.some(b => b.key === book.key);
-
-            if (isBookmarked) {
-                bookmarkButton.textContent = 'Hapus dari Bookmark';
-            } else {
-                bookmarkButton.textContent = 'Tambahkan ke Bookmark';
-            }
+            const bookmarkButton = bookItem.querySelector('.bookmark-button');
+                    bookmarkButton.addEventListener('click', async function () {
+                        if (isBookmarked) {
+                            // Hapus dari bookmark
+                            await set(dbRef(database, 'bookmarks/' + loggedInUser.username + '/' + key), null);
+                        } else {
+                            // Tambahkan ke bookmark
+                            await set(dbRef(database, 'bookmarks/' + loggedInUser.username + '/' + key), true);
+                        }
+                        loadBookList(); // Muat ulang daftar buku
+                    });
         }
 
         function toggleBookmark() {
@@ -249,7 +251,7 @@
 
         document.addEventListener('DOMContentLoaded', loadBookDetails);
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
-        document.addEventListener('DOMContentLoaded', toggleBookmark);
+        window.onload = toggleBookmark;
         window.onload = toggleAuthButton;
     </script>
 
