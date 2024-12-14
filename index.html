@@ -15,7 +15,7 @@
             overflow: hidden;
             border: 1px solid #ffffff; /* Border around the carousel */
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(103, 81, 161, 0.3);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
             background: linear-gradient(to bottom, rgba(82, 0, 136, 0), rgba(255, 255, 255, 0));
             cursor: pointer;
      }
@@ -53,17 +53,17 @@
     margin-right: 20px;
 }
 
-        .bookCarousel-description {
-            font-size: 20px;
-            line-height: 1.4;
-            color: #ffffff;
-            text-align: left; /* Align the description text to the left */
-            flex-grow: 1; /* Make the description take the remaining space */
-            overflow: hidden; /* Hide overflowing text */
-            text-overflow: ellipsis; /* Add "..." when text overflows */
-            white-space: nowrap; /* Prevent text from wrapping to the next line */
-
-        }
+.bookCarousel-description {
+    font-size: 20px;
+    line-height: 1.4;
+    color: #ffffff;
+    text-align: justify; /* Align text to both left and right */
+    flex-grow: 1; /* Make the description take the remaining space */
+    overflow: hidden; /* Hide overflowing text */
+    text-overflow: ellipsis; /* Add "..." when text overflows */
+    white-space: normal; /* Allow wrapping to next line */
+    word-wrap: break-word; /* Ensure long words break and wrap */
+}
 
         .bookCarousel-title {
             font-size: 34px;
@@ -161,13 +161,7 @@
     margin-bottom: 10px; /* Reduced space between title and description */
 }
 
-.bookCarousel-description {
-    font-size: 12px; /* Reduced font size for the description */
-    line-height: 1.4;
-    color: #ffffff;
-    text-align: left;
-    flex-grow: 1;
-}
+
 }
 .book-item {
     display: flex;
@@ -392,6 +386,7 @@
                 <div class="book-details">
                     <strong>${book.title}</strong><br>
                     Genre: ${book.genre.join(', ')}<br>
+                    Pengupload: ${book.uploadedBy}<br>
                     <em>${timeAgo(book.updatedAt)}</em><br>
                 </div>
             `;
