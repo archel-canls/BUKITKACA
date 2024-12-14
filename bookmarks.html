@@ -118,6 +118,7 @@
     </header>
     <section class="pageS">BOOKMARKS</section>
     <h2>Buku yang Di-bookmark</h2>
+    <div id="loadingMessage" class="loading-message">Memuat Buku...</div>
     <div id="bookmarkList" class="book-list"></div>
 
         <h1>Riwayat Membaca</h1>
@@ -164,10 +165,10 @@
             if (!loggedInUser) return;
 
             const bookmarkListContainer = document.getElementById('bookmarkList');
-            bookmarkListContainer.innerHTML = '';
-            const loadingMessage = document.createElement('p');
-            loadingMessage.textContent = 'Memuat Buku...';
-            bookListContainer.appendChild(loadingMessage);
+            const loadingMessage = document.getElementById('loadingMessage');
+            loadingMessage.style.display = 'block';  // Show loading message
+            bookmarkListContainer.innerHTML = '';   // Clear previous book list
+
             const bookmarkRef = dbRef(database, 'bookmarks/' + loggedInUser.username);
             const snapshot = await get(bookmarkRef);
 
@@ -202,6 +203,8 @@
             } else {
                 bookmarkListContainer.innerHTML = '<p>Tidak ada buku yang di-bookmark.</p>';
             }
+
+            loadingMessage.style.display = 'none';  // Hide loading message after loading is complete
         }
        
 
