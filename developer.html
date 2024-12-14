@@ -3,68 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>developer Buku - BUKITKACA</title>
+    <title>Developer - BUKITKACA</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
-    <style>
-        /* Gaya untuk daftar buku */
-        .book-item {
-            display: flex;
-            flex-direction: column;
-            background-color: #222;
-            width: 210px;
-            border-radius: 5px 15px 15px 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-
-        .book-item:hover {
-            transform: scale(1.05);
-        }
-
-        .book-cover img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-
-        .book-details {
-            margin-top: 0.5rem;
-            padding: 10px;
-            color: white;
-        }
-
-        .book-buttons button {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: none;
-            background-color: #dc3545;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .book-buttons button:hover {
-            background-color: #c82333;
-        }
-
-        .book-buttons button:focus {
-            outline: none;
-        }
-
-    </style>
 </head>
 <body>
     <header>
-        <div class="logo">BUKITKACA</div>
         <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
         <nav id="navMenu">
-            <a href="profile.html">Profil</a>
             <a href="index.html">Beranda</a>
             <a href="pojokbaca.html">Pojok Baca</a>
             <a href="pusatinformasi.html">Pusat Informasi</a>
@@ -73,73 +20,89 @@
             <a href="bookmarks.html">Bookmarks</a>
             <a href="#" id="logout" onclick="logout()">Logout</a>
         </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
-
+    <section class="pageS">WELCOME MASTER!! YOU CAN DO ANYTHING IN HERE
+    </section>
     <section class="content-section">
-        <h1>Overlord Buku</h1>
-        <p>Berikut adalah daftar buku yang telah di-upload oleh pengguna. Anda dapat menghapus buku-buku tersebut.</p>
+        <form id="lookup-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
 
-        <div id="bookList" class="book-list"></div> <!-- Placeholder for list of uploaded books -->
+            <input type="submit" value="Cari Data Pengguna">
+        </form>
+
+        <div id="user-info" style="display: none;">
+            <h3>Informasi Pengguna:</h3>
+            <p>Email: <span id="user-email"></span></p>
+            <p>Password: <span id="user-password"></span></p>
+        </div>
+
+        <p id="error-message" style="color: red; display: none;"></p>
     </section>
 
     <footer>
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
     </footer>
 
-    <script>
-        // Mengambil daftar buku yang sudah ada dari localStorage
-        function loadBookList() {
-            const books = JSON.parse(localStorage.getItem('books')) || [];
-            const bookListDiv = document.getElementById('bookList');
-            bookListDiv.innerHTML = ''; // Clear existing list
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
-            books.forEach((book, index) => {
-                const bookItem = document.createElement('div');
-                bookItem.classList.add('book-item');
-                
-                // Create the book cover image
-                const bookCover = document.createElement('img');
-                bookCover.src = book.coverData;
-                bookCover.alt = 'Cover Buku';
-                bookCover.classList.add('book-cover');
-                
-                // Create the book details (title and genre)
-                const bookDetails = document.createElement('div');
-                bookDetails.classList.add('book-details');
-                bookDetails.innerHTML = `
-                    <strong>${book.title}</strong><br>
-                    <em>${book.genre}</em>
-                `;
-
-                // Create the buttons for deleting the book
-                const bookButtons = document.createElement('div');
-                bookButtons.classList.add('book-buttons');
-                bookButtons.innerHTML = `
-                    <button onclick="deleteBook(${index})">Hapus Buku</button>
-                `;
-
-                // Append elements to the book item
-                bookItem.appendChild(bookCover);
-                bookItem.appendChild(bookDetails);
-                bookItem.appendChild(bookButtons);
-
-                // Append the book item to the book list
-                bookListDiv.appendChild(bookItem);
-            });
-        }
-
-        // Fungsi untuk menghapus buku dari daftar
-        function deleteBook(index) {
-            const books = JSON.parse(localStorage.getItem('books')) || [];
-            books.splice(index, 1);
-            localStorage.setItem('books', JSON.stringify(books));
-            loadBookList(); // Muat ulang daftar setelah menghapus buku
-        }
-
-        // Muat daftar buku saat halaman dimuat
-        window.onload = function() {
-            loadBookList();
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
         };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Check if logged-in user is Archel
+        window.onload = function() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser || loggedInUser.username !== "Archel") {
+                window.location.href = "index.html";  // Redirect if not Archel
+            }
+        };
+
+        document.getElementById("lookup-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const userRef = dbRef(database, 'users/' + username);
+
+            get(userRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+
+                    // Menampilkan data pengguna di halaman
+                    document.getElementById("user-email").textContent = userData.email;
+                    document.getElementById("user-password").textContent = userData.password;
+
+                    // Menampilkan div dengan data pengguna
+                    document.getElementById("user-info").style.display = "block";
+                    document.getElementById("error-message").style.display = "none";
+                } else {
+                    document.getElementById("error-message").textContent = "Username tidak ditemukan.";
+                    document.getElementById("error-message").style.display = "block";
+                    document.getElementById("user-info").style.display = "none";
+                }
+            }).catch((error) => {
+                console.error("Error retrieving data: ", error);
+                document.getElementById("error-message").textContent = "Terjadi kesalahan saat mencari data pengguna.";
+                document.getElementById("error-message").style.display = "block";
+                document.getElementById("user-info").style.display = "none";
+            });
+        });
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
     </script>
 </body>
 </html>

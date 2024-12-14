@@ -38,14 +38,14 @@
             align-items: flex-start; /* Align items at the start */
             justify-content: flex-start; /* Align items to the left */
             width: 100%;
-            padding: 15px;
+            padding: 8px;
         }
 
      
         .bookCarousel-item img {
             flex-shrink: 0; /* Mencegah gambar mengecil */
-    width: 250px;
-    height: 330px;
+    width: 210px;
+    height: 250px;
     background-color: #222;
     border-radius: 3px 15px 15px 3px;
     overflow: hidden;
@@ -55,13 +55,15 @@
 
 .bookCarousel-description {
     font-size: 20px;
-    line-height: 1.4;
+    line-height: 1;
     color: #ffffff;
     text-align: justify;
     flex-grow: 1;
     overflow: hidden;  /* Menyembunyikan teks yang berlebih */
     white-space: nowrap; /* Agar teks tetap berada dalam satu baris */
     text-overflow: ellipsis; /* Menampilkan elipsis jika teks terpotong */
+    white-space: normal; /* Allow wrapping to next line */
+    word-wrap: break-word; /* Ensure long words break and wrap */
 }
 
 
@@ -78,6 +80,7 @@
             color: rgb(255, 255, 255);
             text-align: left;
             margin-bottom: 15px; /* Reduced space between title and description */
+            overflow: hidden;  /* Menyembunyikan teks yang berlebih */
         }
 
         .carousel-control {
@@ -149,7 +152,7 @@
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     margin-right: 20px;
-    margin-top: 10px;
+    margin-top: 8px;
 
 }
 
@@ -163,7 +166,7 @@
         }
 
         .bookCarousel-title {
-    font-size: 16px; /* Reduced font size for the title */
+    font-size: 14px; /* Reduced font size for the title */
     font-weight: bold;
     color: rgb(255, 255, 255);
     text-align: left;
@@ -171,7 +174,7 @@
 }
 .bookCarousel-description {
     font-size: 10px;
-    line-height: 1.4;
+    line-height: 1;
     color: #ffffff;
     text-align: justify; /* Align text to both left and right */
     flex-grow: 1; /* Make the description take the remaining space */
@@ -180,9 +183,19 @@
     white-space: normal; /* Allow wrapping to next line */
     word-wrap: break-word; /* Ensure long words break and wrap */
 }
-
-
 }
+.tap-to-read {
+            color: #2ac61c;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* Added hover effect */
+        .tap-to-read:hover {
+            text-decoration: underline;
+        }
 .book-item {
     display: flex;
     flex-direction: column;
@@ -301,6 +314,9 @@
     carouselContent.innerHTML = '';
     carouselIndicators.innerHTML = '';
 
+    // Determine the max description length based on the screen width
+    const maxDescriptionLength = window.innerWidth <= 768 ? 200 : 330;
+
     const bookDataRef = dbRef(database, 'books/');
     try {
         const snapshot = await get(bookDataRef);
@@ -314,18 +330,18 @@
                 item.classList.add('item', 'bookCarousel-item');
                 if (index === 0) item.classList.add('active');
 
-                // Menentukan panjang teks dan menambahkan elipsis jika perlu
-                const maxDescriptionLength = 150;  // Misalnya, 150 karakter
                 let description = book.description;
                 if (description.length > maxDescriptionLength) {
-                    description = description.substring(0, maxDescriptionLength) + '...';
+                    description = description.substring(0, maxDescriptionLength) + '... <span class="tap-to-read">TAP UNTUK LEBIH DETAIL</span>';
                 }
 
                 item.innerHTML = `
-                    <img src="${book.coverBase64}" alt="Cover Buku">
-                    <div>
-                        <div class="bookCarousel-title">${book.title}</div>
-                        <div class="bookCarousel-description">${description}</div>
+                    <div class="bookCarousel-item">
+                        <img src="${book.coverBase64}" alt="Cover Buku">
+                        <div>
+                            <div class="bookCarousel-title">${book.title}</div>
+                            <div class="bookCarousel-description">${description}</div>
+                        </div>
                     </div>
                 `;
 
@@ -347,12 +363,14 @@
         }
     } catch (error) {
         console.error('Error fetching book data:', error);
-        carouselContent.innerHTML = '<p>Terjadi kesalahan saat memuat data buku.</p>';
+        carouselContent.innerHTML = '<a>Tunggu Sebentar sedang memuat ulang :). Jika masalah tetap terjadi, kunjungi halaman lain dan kembali ke sini. Jika masih tidak bisa, silakan hubungi kontak kita dibagian bawah layar';
+
+        // Refresh the page after 5 seconds
+        setTimeout(() => {
+            location.reload();
+        }, 5000);
     }
 }
-
-
-    
 
 
 
@@ -390,7 +408,7 @@
         function startAutoScroll() {
             autoScroll = setInterval(() => {
                 moveToSlide(currentIndex + 1);
-            }, 7000); // 5000ms = 5 detik
+            }, 5000); // 5000ms = 5 detik
         }
 
         // Reset auto-scroll saat pengguna mengontrol carousel secara manual

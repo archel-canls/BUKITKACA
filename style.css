@@ -170,7 +170,7 @@ nav a {
 }
 
 nav a:hover {
-    background-color: #003f7f;
+    background-color: #374ee1;
 }
 
 
@@ -191,7 +191,7 @@ nav a:hover {
 }
 
 nav a.active {
-    background-color: #0a3a74;
+    background-color: #002552;
 }
 
 /* Mobile Responsiveness */
@@ -373,6 +373,13 @@ h1, h2 {
     font-size: 2rem;
     color: #ffffff;
 }
+a {
+    color: rgb(22, 92, 197);
+}
+a :hover{
+color: rgb(5, 50, 117);
+}
+
 
 form {
     display: flex;
@@ -412,6 +419,7 @@ form input[type="submit"] {
 form input[type="submit"]:hover {
     background-color: #0066cc;
 }
+
 
 /* Daftar Buku yang Diupload */
 .book-list {

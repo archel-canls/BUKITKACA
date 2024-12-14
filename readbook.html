@@ -67,7 +67,7 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a> <!-- Updated -->
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
@@ -107,7 +107,7 @@
         let offsetX = 0;
         let offsetY = 0;
         let lastTouchDistance = 0;  // Distance between the two fingers during pinch zoom
-        const zoomSensitivity =1; // Controls how sensitive the zoom is, smaller values = smoother
+        const zoomSensitivity =0.2; // Controls how sensitive the zoom is, smaller values = smoother
     
         function setScaleBasedOnDevice() {
             if (window.innerWidth <= 768) {

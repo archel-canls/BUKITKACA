@@ -118,7 +118,7 @@
             <a href="upload.html">Upload</a>
             <a href="rakbuku.html">Rak Buku</a>
             <a href="bookmarks.html">Bookmarks</a>
-            <a href="#" id="logout" onclick="logout()">Logout</a>
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a> <!-- Updated -->
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
@@ -170,73 +170,90 @@
         const database = getDatabase(app);
 
         async function loadBookDetails() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const bookKey = urlParams.get('bookKey');
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookKey = urlParams.get('bookKey');
 
-    // Cek apakah data buku sudah ada di sessionStorage
-    const storedBook = sessionStorage.getItem('currentBook');
-    if (storedBook && JSON.parse(storedBook).key === bookKey) {
-        const book = JSON.parse(storedBook);
-        displayBookDetails(book);
-        return;
-    }
+            // Cek apakah data buku sudah ada di sessionStorage
+            const storedBook = sessionStorage.getItem('currentBook');
+            if (storedBook && JSON.parse(storedBook).key === bookKey) {
+                const book = JSON.parse(storedBook);
+                displayBookDetails(book);
+                return;
+            }
 
-    // Jika data buku tidak ada di sessionStorage, ambil dari Firebase
-    if (!bookKey) {
-        alert('Buku tidak ditemukan!');
-        return;
-    }
+            // Jika data buku tidak ada di sessionStorage, ambil dari Firebase
+            if (!bookKey) {
+                alert('Buku tidak ditemukan!');
+                return;
+            }
 
-    const bookDataRef = dbRef(database, 'books/' + bookKey);
-    const snapshot = await get(bookDataRef);
-    if (snapshot.exists()) {
-        const book = snapshot.val();
-        book.key = bookKey; // Tambahkan key untuk identifikasi
-        sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
-        displayBookDetails(book);
-    } else {
-        alert('Buku tidak ditemukan!');
-        window.history.back(); // Kembali ke halaman sebelumnya
-    }
-}
-
-function displayBookDetails(book) {
-    document.getElementById('bookTitle').textContent = book.title;
-    document.getElementById('bookGenre').textContent = 'Genre: ' + book.genre.join(', ');
-    document.getElementById('bookDescription').textContent = book.description;
-    document.getElementById('bookUploader').textContent = book.uploadedBy;
-    document.getElementById('bookCoverImg').src = book.coverBase64;
-
-    // Mengubah tombol Baca Buku untuk mengarahkan ke halaman readbook.html
-    const readButton = document.querySelector('.read-button');
-    readButton.onclick = function () {
-        window.location.href = 'readbook.html?bookKey=' + book.key;
-    };
-
-    const bookmarkButton = document.getElementById('bookmarkButton');
-    bookmarkButton.addEventListener('click', async function () {
-        // Pastikan pengguna sudah login
-        const user = JSON.parse(localStorage.getItem('loggedInUser'));
-        if (!user) {
-            alert("Anda harus login terlebih dahulu!");
-            return;
+            const bookDataRef = dbRef(database, 'books/' + bookKey);
+            const snapshot = await get(bookDataRef);
+            if (snapshot.exists()) {
+                const book = snapshot.val();
+                book.key = bookKey; // Tambahkan key untuk identifikasi
+                sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
+                displayBookDetails(book);
+            } else {
+                alert('Buku tidak ditemukan!');
+                window.history.back(); // Kembali ke halaman sebelumnya
+            }
         }
 
-const bookmarkRef = dbRef(database, 'bookmarks/' + user.username + '/' + book.key);
+        function displayBookDetails(book) {
+            document.getElementById('bookTitle').textContent = book.title;
+            document.getElementById('bookGenre').textContent = 'Genre: ' + book.genre.join(', ');
+            document.getElementById('bookDescription').textContent = book.description;
+            document.getElementById('bookUploader').textContent = book.uploadedBy;
+            document.getElementById('bookCoverImg').src = book.coverBase64;
 
-const bookmarkSnapshot = await get(bookmarkRef);
-if (bookmarkSnapshot.exists()) {
-    await set(bookmarkRef, null);  // Hapus dari bookmark
-    alert("Buku telah dihapus dari bookmark");
-    bookmarkButton.textContent = "Tambah ke Bookmark";  // Mengubah teks tombol
-} else {
-    await set(bookmarkRef, true);  // Tambah ke bookmark
-    alert("Buku telah ditambahkan ke bookmark");
-    bookmarkButton.textContent = "Hapus dari Bookmark";  // Mengubah teks tombol
-}
-});
-}
+            // Mengubah tombol Baca Buku untuk mengarahkan ke halaman readbook.html
+            const readButton = document.querySelector('.read-button');
+            readButton.onclick = function () {
+                window.location.href = 'readbook.html?bookKey=' + book.key;
+            };
 
+            const bookmarkButton = document.getElementById('bookmarkButton');
+            bookmarkButton.addEventListener('click', async function () {
+                // Pastikan pengguna sudah login
+                const user = JSON.parse(localStorage.getItem('loggedInUser'));
+                if (!user) {
+                    alert("Anda harus login terlebih dahulu!");
+                    return;
+                }
+
+                const bookmarkRef = dbRef(database, 'bookmarks/' + user.username + '/' + book.key);
+
+                const bookmarkSnapshot = await get(bookmarkRef);
+                if (bookmarkSnapshot.exists()) {
+                    await set(bookmarkRef, null);  // Hapus dari bookmark
+                    alert("Buku telah dihapus dari bookmark");
+                    bookmarkButton.textContent = "Tambah ke Bookmark";  // Mengubah teks tombol
+                } else {
+                    await set(bookmarkRef, true);  // Tambah ke bookmark
+                    alert("Buku telah ditambahkan ke bookmark");
+                    bookmarkButton.textContent = "Hapus dari Bookmark";  // Mengubah teks tombol
+                }
+            });
+
+            // Cek status bookmark untuk tombol
+            checkBookmarkStatus(book);
+        }
+
+        async function checkBookmarkStatus(book) {
+            const user = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!user) return;  // Tidak lanjut jika user belum login
+
+            const bookmarkRef = dbRef(database, 'bookmarks/' + user.username + '/' + book.key);
+            const bookmarkSnapshot = await get(bookmarkRef);
+            const bookmarkButton = document.getElementById('bookmarkButton');
+            
+            if (bookmarkSnapshot.exists()) {
+                bookmarkButton.textContent = "Hapus dari Bookmark";  // Buku sudah dibookmark
+            } else {
+                bookmarkButton.textContent = "Tambah ke Bookmark";  // Buku belum dibookmark
+            }
+        }
   
         document.addEventListener('DOMContentLoaded', loadBookDetails);
         document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
