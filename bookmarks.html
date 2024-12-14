@@ -142,7 +142,7 @@
             const loggedInUser = checkLoginStatus();
             if (!loggedInUser) return;
 
-            const bookmarkListContainer = document.getElementById('bookList');
+            const bookmarkListContainer = document.getElementById('bookmarkList');
             bookmarkListContainer.innerHTML = '';
             const bookmarkRef = dbRef(database, 'bookmarks/' + loggedInUser.username);
             const snapshot = await get(bookmarkRef);
