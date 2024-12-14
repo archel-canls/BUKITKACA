@@ -96,9 +96,8 @@
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
     <section class="pageS">BOOKMARKS</section>
-    <section class="content-section bookmark-container">
-        <h1 class="bookmark-title">Daftar Bookmark</h1>
-        <div id="bookmarkList"></div><br>
+    <h2>Buku yang Di-bookmark</h2>
+    <div id="bookmarkList" class="book-list"></div>
 
         <h1>Riwayat Membaca</h1>
         <ul class="history-list" id="historyList">
@@ -110,86 +109,73 @@
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
     </footer>
 
-    <script>
-           // Cek apakah pengguna sudah login
-           function checkLogin() {
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Fungsi untuk memeriksa login status
+        function checkLoginStatus() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
             if (!loggedInUser) {
                 window.location.href = "login.html";
+                return null;
             }
-            return loggedInUser;
+            return JSON.parse(loggedInUser);
         }
-        // Logout function: clear user data and redirect to login page
-        function logout() {
-            localStorage.removeItem('loggedInUser');
-            window.location.href = "login.html"; // Redirect to login page
-        }
-        // Load and display Bookmarks
-        function loadBookmarkList() {
-            checkLogin();
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const bookmarkListDiv = document.getElementById('bookmarkList');
 
-            bookmarkListDiv.innerHTML = '';
+        // Fungsi untuk memuat daftar buku yang di-bookmark
+        async function loadBookmarkList() {
+            const loggedInUser = checkLoginStatus();
+            if (!loggedInUser) return;
 
-            const userBookmarks = bookmarks.filter(book => book.username === loggedInUser.username);
+            const bookmarkListContainer = document.getElementById('bookmarkList');
+            bookmarkListContainer.innerHTML = '';
+            const bookmarkRef = dbRef(database, 'bookmarks/' + loggedInUser.username);
+            const snapshot = await get(bookmarkRef);
 
-            if (userBookmarks.length === 0) {
-                bookmarkListDiv.innerHTML = '<p>Belum ada buku yang dibookmark.</p>';
+            if (snapshot.exists()) {
+                const bookmarkedBooks = snapshot.val();
+                for (const bookKey in bookmarkedBooks) {
+                    const bookDataRef = dbRef(database, 'books/' + bookKey);
+                    const bookSnapshot = await get(bookDataRef);
+                    if (bookSnapshot.exists()) {
+                        const book = bookSnapshot.val();
+                        const bookItem = document.createElement('div');
+                        bookItem.className = 'book-item';
+                        bookItem.innerHTML = `
+                            <div class="book-cover">
+                                <img src="${book.coverBase64}" alt="Cover Buku">
+                            </div>
+                            <div class="book-details">
+                                <strong>${book.title}</strong><br>
+                                Jenis: ${book.jenisBuku}<br>
+                                Genre: ${book.genre.join(', ')}<br>
+                                Pengupload: ${book.uploadedBy}
+                            </div>
+                        `;
+                        bookmarkListContainer.appendChild(bookItem);
+                    }
+                }
             } else {
-                userBookmarks.forEach((book, index) => {
-                    const bookItem = document.createElement('div');
-                    bookItem.classList.add('book-item');
-
-                    const bookCover = document.createElement('img');
-                    bookCover.src = book.coverData;
-                    bookCover.alt = 'Cover Buku';
-                    bookCover.classList.add('book-cover');
-
-                    const bookDetails = document.createElement('div');
-                    bookDetails.classList.add('book-details');
-                    bookDetails.innerHTML = `
-                        <strong>${book.title}</strong><br>
-                        Genre: ${book.genre.join(', ')}<br>
-                        Pengupload: ${book.user}<br>
-                    `;
-
-                    const bookButtons = document.createElement('div');
-                    bookButtons.classList.add('book-buttons');
-                    bookButtons.innerHTML = `
-                        <button onclick="removeBookmark(${index})">Hapus dari Bookmark</button>
-                    `;
-                    bookItem.onclick = function() {
-                        viewBook(index);
-                    };
-                    bookItem.appendChild(bookCover);
-                    bookItem.appendChild(bookDetails);
-                    bookItem.appendChild(bookButtons);
-                    bookmarkListDiv.appendChild(bookItem);
-                });
+                bookmarkListContainer.innerHTML = '<p>Tidak ada buku yang di-bookmark.</p>';
             }
         }
 
-        function viewBook(index) {
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const book = bookmarks[index];
-            localStorage.setItem('selectedBook', JSON.stringify(book));
-            window.location.href = 'lihatbuku.html';
-        }
-
-        function removeBookmark(index) {
-            event.stopPropagation();
-            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-
-            bookmarks = bookmarks.filter(book => book.username === loggedInUser.username);
-            bookmarks.splice(index, 1);
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-
-            alert('Buku berhasil dihapus dari bookmark!');
-            loadBookmarkList();
-        }
+       
 
         // Load and display Reading History
         window.onload = function() {
@@ -228,7 +214,7 @@
             }
         };
 
-        loadBookmarkList();
+        document.addEventListener('DOMContentLoaded', loadBookmarkList);
         loadHeaderProfilePic();
     </script>
 </body>
