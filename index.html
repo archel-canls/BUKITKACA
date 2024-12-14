@@ -54,7 +54,7 @@
 }
 
 .bookCarousel-description {
-    font-size: 20px;
+    font-size: 16px;
     line-height: 1;
     color: #ffffff;
     text-align: justify;
@@ -75,7 +75,7 @@
 
 
         .bookCarousel-title {
-            font-size: 34px;
+            font-size: 28px;
             font-weight: bold;
             color: rgb(255, 255, 255);
             text-align: left;
@@ -88,7 +88,7 @@
             top: 50%;
             z-index: 10;
             background-color: rgba(0, 0, 0, 0);
-            color: rgba(255, 255, 255, 0.262);
+            color: rgba(255, 255, 255, 0.55);
             border: none;
             font-size: 30px;
             padding: 10px;
@@ -122,12 +122,12 @@
         }
 
         .carousel-indicators .active {
-            background-color: white;
+            background-color: rgb(255, 255, 255);
         }
 
         .carousel-control:hover {
             background-color: rgba(0, 0, 0, 0);
-            color: rgba(255, 255, 255, 0.821);
+            color: rgba(255, 255, 255, 0.259);
         }
 
         @media (max-width: 768px) {
@@ -163,7 +163,7 @@
             align-items: flex-start; /* Align items at the start */
             justify-content: flex-start; /* Align items to the left */
             width: 100%;
-            padding: 8px;
+            padding: 4px;
         }
 
         .bookCarousel-title {
@@ -318,9 +318,9 @@
     // Determine the max description length based on the screen width
     let maxDescriptionLength = 330; // Default for larger screens
     if (window.innerWidth <= 480) {
-        maxDescriptionLength = 100; // For screens smaller than 480px
+        maxDescriptionLength = 120; // For screens smaller than 480px
     } else if (window.innerWidth <= 768) {
-        maxDescriptionLength = 200; // For screens smaller than or equal to 768px
+        maxDescriptionLength = 360; // For screens smaller than or equal to 768px
     }
 
     const bookDataRef = dbRef(database, 'books/');
