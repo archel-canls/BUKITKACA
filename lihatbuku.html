@@ -172,31 +172,31 @@
             const urlParams = new URLSearchParams(window.location.search);
             const bookKey = urlParams.get('bookKey');
 
-           // Cek apakah data buku sudah ada di sessionStorage
-const storedBook = sessionStorage.getItem('currentBook');
-if (storedBook && JSON.parse(storedBook).key === bookKey) {
-    const book = JSON.parse(storedBook);
-    displayBookDetails(book);
-    return;
-}
+            // Cek apakah data buku sudah ada di sessionStorage
+            const storedBook = sessionStorage.getItem('currentBook');
+            if (storedBook && JSON.parse(storedBook).key === bookKey) {
+                const book = JSON.parse(storedBook);
+                displayBookDetails(book);
+                return;
+            }
 
-// Jika data buku tidak ada di sessionStorage, ambil dari Firebase
-if (!bookKey) {
-    alert('Buku tidak ditemukan!');
-    return;
-}
+            // Jika data buku tidak ada di sessionStorage, ambil dari Firebase
+            if (!bookKey) {
+                alert('Buku tidak ditemukan!');
+                return;
+            }
 
-const bookDataRef = dbRef(database, 'books/' + bookKey);
-const snapshot = await get(bookDataRef);
-if (snapshot.exists()) {
-    const book = snapshot.val();
-    book.key = bookKey; // Tambahkan key untuk identifikasi
-    sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
-    displayBookDetails(book);
-} else {
-    alert('Buku tidak ditemukan!');
-    window.history.back(); // Kembali ke halaman sebelumnya
-}
+            const bookDataRef = dbRef(database, 'books/' + bookKey);
+            const snapshot = await get(bookDataRef);
+            if (snapshot.exists()) {
+                const book = snapshot.val();
+                book.key = bookKey; // Tambahkan key untuk identifikasi
+                sessionStorage.setItem('currentBook', JSON.stringify(book)); // Simpan ke sessionStorage
+                displayBookDetails(book);
+            } else {
+                alert('Buku tidak ditemukan!');
+                window.history.back(); // Kembali ke halaman sebelumnya
+            }
         }
 
         // Fungsi untuk menampilkan detail buku
@@ -212,6 +212,39 @@ if (snapshot.exists()) {
             readButton.onclick = function () {
                 window.location.href = 'readbook.html?bookKey=' + book.key;
             };
+
+            // Periksa apakah buku sudah ada di bookmark
+            const bookmarkButton = document.getElementById('bookmarkButton');
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            const isBookmarked = bookmarks.some(b => b.key === book.key);
+
+            if (isBookmarked) {
+                bookmarkButton.textContent = 'Hapus dari Bookmark';
+            } else {
+                bookmarkButton.textContent = 'Tambahkan ke Bookmark';
+            }
+        }
+
+        function toggleBookmark() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookKey = urlParams.get('bookKey');
+            const storedBook = sessionStorage.getItem('currentBook');
+            const book = storedBook ? JSON.parse(storedBook) : null;
+
+            if (!book) return;
+
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+            // Jika sudah ada di bookmark, hapus, jika belum tambahkan
+            if (bookmarks.some(b => b.key === book.key)) {
+                bookmarks = bookmarks.filter(b => b.key !== book.key);
+                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                document.getElementById('bookmarkButton').textContent = 'Tambahkan ke Bookmark';
+            } else {
+                bookmarks.push(book);
+                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                document.getElementById('bookmarkButton').textContent = 'Hapus dari Bookmark';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', loadBookDetails);
