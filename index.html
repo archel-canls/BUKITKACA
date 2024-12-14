@@ -276,41 +276,50 @@
 
       // Populate the carousel with books from Firebase
       async function populateCarousel() {
-            const carouselContent = document.getElementById('carouselContent');
-            const carouselIndicators = document.getElementById('carouselIndicators');
+    const carouselContent = document.getElementById('carouselContent');
+    const carouselIndicators = document.getElementById('carouselIndicators');
 
-            carouselContent.innerHTML = '';
-            carouselIndicators.innerHTML = '';
+    carouselContent.innerHTML = '';
+    carouselIndicators.innerHTML = '';
 
-            const bookDataRef = dbRef(database, 'books/');
-            const snapshot = await get(bookDataRef);
+    const bookDataRef = dbRef(database, 'books/');
+    const snapshot = await get(bookDataRef);
 
-            if (snapshot.exists()) {
-                const books = snapshot.val();
+    if (snapshot.exists()) {
+        const books = snapshot.val();
 
-                // Ambil semua key-value dari buku
-                const bookArray = Object.entries(books).slice(0, 7); // Ambil maksimal 7 buku untuk carousel
+        // Ambil semua key-value dari buku
+        const bookArray = Object.entries(books).slice(0, 7); // Ambil maksimal 7 buku untuk carousel
 
-                bookArray.forEach(([bookKey, book], index) => {
-                    const item = document.createElement('div');
-                    item.classList.add('item', 'bookCarousel-item');
-                    if (index === 0) item.classList.add('active');
+        bookArray.forEach(([bookKey, book], index) => {
+            const item = document.createElement('div');
+            item.classList.add('item', 'bookCarousel-item');
+            if (index === 0) item.classList.add('active');
 
-                    item.innerHTML = `
-                        <img src="${book.coverBase64}" alt="Cover Buku">
-                        <div>
-                            <div class="bookCarousel-title">${book.title}</div>
-                            <div class="bookCarousel-description">${book.description}</div>
-                        </div>
-                    `;
-                arouselIndicators.appendChild(indicator);
-                });
+            item.innerHTML = `
+                <img src="${book.coverBase64}" alt="Cover Buku">
+                <div>
+                    <div class="bookCarousel-title">${book.title}</div>
+                    <div class="bookCarousel-description">${book.description}</div>
+                </div>
+            `;
 
-                moveToSlide(0);
-            } else {
-                carouselContent.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
-            }
-        }
+            // Tidak ada event listener untuk redirect
+            carouselContent.appendChild(item);
+
+            const indicator = document.createElement('li');
+            if (index === 0) indicator.classList.add('active');
+            indicator.addEventListener('click', () => moveToSlide(index));
+            carouselIndicators.appendChild(indicator);
+        });
+
+        moveToSlide(0);
+    } else {
+        carouselContent.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+    }
+}
+
+
 
 
   // Fungsi untuk berpindah slide
