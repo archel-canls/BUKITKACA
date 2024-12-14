@@ -190,6 +190,13 @@
                         `;
                         bookmarkListContainer.appendChild(bookItem);
                     }
+                    document.querySelectorAll('.book-item').forEach(bookItem => {
+            bookItem.addEventListener('click', function(event) {
+                // Mengarahkan ke Lihat Buku ketika buku diklik
+                const bookKey = bookItem.querySelector('.delete-button').getAttribute('data-book-key');
+                window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
+            });
+        });
                 }
             } else {
                 bookmarkListContainer.innerHTML = '<p>Tidak ada buku yang di-bookmark.</p>';
