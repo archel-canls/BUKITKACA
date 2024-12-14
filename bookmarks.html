@@ -7,25 +7,46 @@
     <script src="script.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        #bookmarkList {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        
-        .book-item {
-            display: flex;
-            flex-direction: column;
-            background-color: #000000;
-            width: 210px;
-            border-radius: 5px 15px 15px 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
+ .book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 5px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+
+    .book-item {
+        width: 150px; /* Mengurangi lebar buku di layar kecil */
+    }
+    .book-cover img {
+    width: 150px;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+}
+    @media (max-width: 480px) {
+
+    .book-item {
+        width: 120px; /* Lebar buku lebih kecil di ponsel */
+    }
+    .book-cover {
+        width: 120px;
+        height: 140px; /* Menyesuaikan ukuran cover buku */
+    }
+
+    .book-cover img {
+    width: 120px;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+}
 
         .book-buttons {
             text-align: center;
