@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lupa Password - BUKITKACA</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </head>
 <body>
     <header>
@@ -22,50 +22,80 @@
         </nav>
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
-    <section class="pageS">LUPA PASSWORD</section>
+    <section class="pageS">Lupa Password</section>
     <section class="content-section">
-        <form id="reset-password-form">
+        <form id="forgot-password-form">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required><br><br>
 
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" required><br><br>
 
-            <button type="submit">Kirim Permintaan Reset</button>
+            <input type="submit" value="Kirim Permintaan">
         </form>
-        <p id="status-message"></p>
+        <p id="error-message" style="color: red; display: none;"></p>
     </section>
 
     <footer>
         <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
-        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a></p>
     </footer>
 
-    <script>
-        document.getElementById('reset-password-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Mencegah form untuk dikirimkan secara default
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
 
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
+        };
 
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            let userFound = false;
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
-            // Mencari pengguna yang sesuai dengan username dan email
-            users.forEach(user => {
-                if (user.username === username && user.email === email) {
-                    userFound = true;
+        // Fungsi untuk menangani permintaan lupa password
+        document.getElementById("forgot-password-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah form dari pengiriman default
+
+            // Mengambil nilai input
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+
+            // Referensi ke data pengguna di Firebase Realtime Database
+            const userRef = dbRef(database, 'users/' + username);
+
+            // Cek apakah username ada di database
+            get(userRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+
+                    // Cek apakah email sesuai
+                    if (userData.email === email) {
+                        // Mengirim pesan ke WhatsApp
+                        const message = `Lupa password untuk akun BUKITKACA:\nUsername: ${username}\nEmail: ${email}`;
+                        const whatsappLink = `https://wa.me/+62895617352225?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappLink, '_blank');
+                    } else {
+                        // Email tidak cocok
+                        document.getElementById("error-message").textContent = "Email tidak sesuai dengan username.";
+                        document.getElementById("error-message").style.display = "block";
+                    }
+                } else {
+                    // Username tidak ditemukan
+                    document.getElementById("error-message").textContent = "Username tidak ditemukan.";
+                    document.getElementById("error-message").style.display = "block";
                 }
+            }).catch((error) => {
+                console.error("Error retrieving data: ", error);
+                document.getElementById("error-message").textContent = "Terjadi kesalahan saat memeriksa data pengguna.";
+                document.getElementById("error-message").style.display = "block";
             });
-
-            const statusMessage = document.getElementById('status-message');
-            if (userFound) {
-                statusMessage.textContent = 'Permintaan reset password telah dikirim. Silakan cek email Anda.';
-                statusMessage.style.color = 'green';
-            } else {
-                statusMessage.textContent = 'Username atau email tidak ditemukan.';
-                statusMessage.style.color = 'red';
-            }
         });
     </script>
 </body>
