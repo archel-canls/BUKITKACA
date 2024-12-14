@@ -368,15 +368,11 @@
             carouselContent.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
         }
     } catch (error) {
-        console.error('Error fetching book data:', error);
-        carouselContent.innerHTML = '<a>Tunggu Sebentar sedang memuat ulang :). Jika masalah tetap terjadi, kunjungi halaman lain dan kembali ke sini. Jika masih tidak bisa, silakan hubungi kontak kita dibagian bawah layar';
-        // Refresh the page after 5 seconds
-        setTimeout(() => {
-            location.reload();
-        }, 5000);
-    }
-}
-
+                console.error('Error fetching book data:', error);
+                carouselContent.innerHTML = '<p>Tunggu Sebentar sedang memuat ulang :). Jika masalah tetap terjadi, kunjungi halaman lain dan kembali ke sini. Jika masih tidak bisa, silakan hubungi kontak kita dibagian bawah layar...</p>';
+                setTimeout(populateCarousel, 5000);
+            }
+        }
 
 
   // Fungsi untuk berpindah slide
