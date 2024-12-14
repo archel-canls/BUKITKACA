@@ -7,44 +7,37 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
     <style>
-     #bookCarousel {
-            position: relative;
-            height: 360px;
-            width: 100%;
-            margin: 20px auto;
-            overflow: hidden;
-            border: 1px solid #ffffff; /* Border around the carousel */
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
-            background: linear-gradient(to bottom, rgba(82, 0, 136, 0), rgba(255, 255, 255, 0));
-            cursor: pointer;
-     }
-        .carousel-inner {
-            display: flex;
-            transition: transform 1s ease;
-        }
+#bookCarousel {
+    position: relative;
+    height: 360px;
+    width: 100%;
+    margin: 20px auto;
+    overflow: hidden;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+    cursor: pointer;
+}
 
-        .carousel-inner .item {
-            min-width: 100%;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: flex-start; /* Align content to the left */
-            align-items: flex-start; /* Align content to the top */
-        }
+.carousel-inner {
+    display: flex;
+    transition: transform 1s ease;
+    width: 100%;
+}
 
-        .bookCarousel-item {
-            display: flex;
-            flex-direction: row; /* Horizontal layout */
-            align-items: flex-start; /* Align items at the start */
-            justify-content: flex-start; /* Align items to the left */
-            width: 100%;
-            padding: 15px;
-        }
+.carousel-inner .item {
+    min-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center; /* Menyelaraskan konten di dalam carousel */
+}
 
-     
-        .bookCarousel-item img {
-            flex-shrink: 0; /* Mencegah gambar mengecil */
-    width: 250px;
+.bookCarousel-item img {
+    flex-shrink: 0;
+    width: 250px; /* Gambar akan selalu memiliki lebar tetap */
     height: 330px;
     background-color: #222;
     border-radius: 3px 15px 15px 3px;
@@ -57,112 +50,85 @@
     font-size: 20px;
     line-height: 1.4;
     color: #ffffff;
-    text-align: justify; /* Align text to both left and right */
-    flex-grow: 1; /* Make the description take the remaining space */
-    overflow: hidden; /* Hide overflowing text */
-    text-overflow: ellipsis; /* Add "..." when text overflows */
-    white-space: normal; /* Allow wrapping to next line */
-    word-wrap: break-word; /* Ensure long words break and wrap */
-}
-
-        .bookCarousel-title {
-            font-size: 34px;
-            font-weight: bold;
-            color: rgb(255, 255, 255);
-            text-align: left;
-            margin-bottom: 15px; /* Reduced space between title and description */
-        }
-
-        .carousel-control {
-            position: absolute;
-            top: 50%;
-            z-index: 10;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            font-size: 30px;
-            padding: 10px;
-            cursor: pointer;
-            transform: translateY(-50%);
-        }
-
-        .carousel-control.left {
-            left: 10px;
-        }
-
-        .carousel-control.right {
-            right: 10px;
-        }
-
-        .carousel-indicators {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .carousel-indicators li {
-            display: inline-block;
-            margin: 0 5px;
-            background-color: rgba(0, 0, 0, 0.5);
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .carousel-indicators .active {
-            background-color: white;
-        }
-
-        .carousel-control:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-
-        @media (max-width: 768px) {
-    #bookCarousel {
-            position: relative;
-            height: 200px;
-            width: 100%;
-            margin: 20px auto;
-            overflow: hidden;
-            border: 1px solid #dddddd; /* Border around the carousel */
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
-            cursor: pointer;
-        }
-.bookCarousel-item img {
-    flex-shrink: 0; /* Mencegah gambar mengecil */
-    width: 150px;
-    height: 180px;
-    background-color: #222;
-    border-radius: 3px 15px 15px 3px;
+    text-align: justify;
+    flex-grow: 1;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    margin-right: 20px;
-
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
-.bookCarousel-item {
-            display: flex;
-            flex-direction: row; /* Horizontal layout */
-            align-items: flex-start; /* Align items at the start */
-            justify-content: flex-start; /* Align items to the left */
-            width: 100%;
-            padding: 10px;
-        }
-
-        .bookCarousel-title {
-    font-size: 20px; /* Reduced font size for the title */
+.bookCarousel-title {
+    font-size: 34px;
     font-weight: bold;
     color: rgb(255, 255, 255);
     text-align: left;
-    margin-bottom: 10px; /* Reduced space between title and description */
+    margin-bottom: 15px;
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 30px;
+    padding: 10px;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.carousel-control.left {
+    left: 10px;
+}
+
+.carousel-control.right {
+    right: 10px;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.carousel-indicators li {
+    display: inline-block;
+    margin: 0 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.carousel-indicators .active {
+    background-color: white;
+}
+
+.carousel-control:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 768px) {
+    #bookCarousel {
+        height: 200px;
+    }
+
+    .bookCarousel-item img {
+        width: 150px;
+        height: 180px;
+    }
+
+    .bookCarousel-title {
+        font-size: 20px;
+    }
 }
 
 
-}
+
 .book-item {
     display: flex;
     flex-direction: column;
