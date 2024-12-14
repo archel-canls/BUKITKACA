@@ -165,6 +165,9 @@
 
             const bookmarkListContainer = document.getElementById('bookmarkList');
             bookmarkListContainer.innerHTML = '';
+            const loadingMessage = document.createElement('p');
+            loadingMessage.textContent = 'Memuat Buku...';
+            bookListContainer.appendChild(loadingMessage);
             const bookmarkRef = dbRef(database, 'bookmarks/' + loggedInUser.username);
             const snapshot = await get(bookmarkRef);
 
