@@ -13,13 +13,13 @@
             height: 100%;
             overflow: hidden;
             position: relative;
-            touch-action: none;  /* Disable default touch actions like zoom */
+            touch-action: auto;  /* Disable default touch actions like zoom */
         }
 
         .pdf-container {
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow: auto;
             position: relative;
             display: flex;
             justify-content: center;
@@ -29,6 +29,9 @@
 
         canvas {
             transition: transform 0.1s ease-out; /* Smooth transform */
+            max-width: 100%;
+            max-height: 100%;
+          
         }
 
         .navigation-buttons, #zoomControls, #pageNumber {
@@ -52,8 +55,11 @@
 
         #pageNumber {
             font-size: 18px;
-            margin-top: 10px;
-        }
+            margin-top: 10px; /* Agar teks lebih tegas */
+            color: #000;
+            font-weight: bold;
+         
+}
 
         /* Button style for download */
         #downloadBtn {
@@ -151,7 +157,13 @@
             const loadingTask = pdfjsLib.getDocument({ data: atob(book.fileBase64.split(',')[1]) });
             pdfDoc = await loadingTask.promise;
             loadHistory();
+
+            document.querySelector('#pdfViewer').addEventListener('touchmove', (e) => {
+    e.stopPropagation(); // Pastikan event tetap berjalan
+}, { passive: true });
         }
+     
+
 
         function renderPage(pageNum) {
             pdfDoc.getPage(pageNum).then(page => {
