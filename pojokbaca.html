@@ -19,57 +19,33 @@
             cursor: pointer;
         }
         @media (max-width: 768px) {
-    .book-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* Gap antara item buku */
-        justify-content: center;
-    }
 
-    .book-item {
-        width: 150px; /* Mengurangi lebar buku di layar kecil */
-    }
+.book-item {
+    width: 150px; /* Mengurangi lebar buku di layar kecil */
+}
+.book-cover img {
+width: 150px;
+height: 180px;
+object-fit: cover;
+display: block;
+}
+}
+@media (max-width: 480px) {
 
-    .book-cover {
-        width: 150px;
-        height: 180px; /* Menyesuaikan tinggi buku */
-       
-    }
-
-    .book-details strong {
-        font-size: 1.2em; /* Ukuran font lebih kecil pada layar lebih kecil */
-    }
-
-    .book-details{
-        font: 0.5em sans-serif;
-    }
+.book-item {
+    width: 120px; /* Lebar buku lebih kecil di ponsel */
+}
+.book-cover {
+    width: 120px;
+    height: 140px; /* Menyesuaikan ukuran cover buku */
 }
 
-/* Responsif - Mengatur ukuran teks dan elemen untuk layar lebih kecil (misalnya pada ponsel) */
-@media (max-width: 480px) {
-    .book-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* Gap lebih kecil */
-        justify-content: center;
-    }
-
-    .book-item {
-        width: 120px; /* Lebar buku lebih kecil di ponsel */
-    }
-
-    .book-cover {
-        width: 120px;
-        height: 140px; /* Menyesuaikan ukuran cover buku */
-    }
-
-    .book-details strong {
-        font-size: 1em; /* Ukuran font lebih kecil pada ponsel */
-    }
-
-    .book-details .genre, .book-details .author {
-        font-size: 0.3em; /* Ukuran font lebih kecil untuk genre dan author */
-    }
+.book-cover img {
+width: 120px;
+height: 140px;
+object-fit: cover;
+display: block;
+}
 }
 
         /* Styling for search input and button */
