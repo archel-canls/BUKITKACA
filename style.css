@@ -473,7 +473,7 @@ form input[type="submit"]:hover {
 }
 
 .book-details strong {
-    font-size: 1.5em;  /* Ukuran font lebih besar di layar besar */
+    font-size: 1.6em;  /* Ukuran font lebih besar di layar besar */
     color: #fff;
     text-transform: capitalize;
 }
@@ -544,11 +544,11 @@ form input[type="submit"]:hover {
     }
 
     .book-details strong {
-        font-size: 1.2em; /* Ukuran font lebih kecil pada layar lebih kecil */
+        font-size: 1.4em; /* Ukuran font lebih kecil pada layar lebih kecil */
     }
 
     .book-details{
-        font: 0.5em sans-serif;
+        font: 0.7em sans-serif;
     }
 }
 
@@ -571,11 +571,11 @@ form input[type="submit"]:hover {
     }
 
     .book-details strong {
-        font-size: 1em; /* Ukuran font lebih kecil pada ponsel */
+        font-size: 1.2em; /* Ukuran font lebih kecil pada ponsel */
     }
 
     .book-details .genre, .book-details .author {
-        font-size: 0.3em; /* Ukuran font lebih kecil untuk genre dan author */
+        font-size: 0.5em; /* Ukuran font lebih kecil untuk genre dan author */
     }
 }
 
