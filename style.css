@@ -364,7 +364,7 @@ footer {
     width: 80%;
     max-width: 900px;
     margin: 15px auto;
-    margin-bottom: 50px;
+    margin-bottom: 70px;
 
 }
 
@@ -475,10 +475,11 @@ form input[type="submit"]:hover {
 .book-details strong {
     font-size: 1.5em;  /* Ukuran font lebih besar di layar besar */
     color: #fff;
+    text-transform: capitalize;
 }
 
 .book-details .genre, .book-details .author {
-    font-size: 1.2em;  /* Ukuran font untuk genre dan author */
+    font-size: 1em;  /* Ukuran font untuk genre dan author */
     color: #ccc;
 }
 
@@ -547,7 +548,7 @@ form input[type="submit"]:hover {
     }
 
     .book-details{
-        font: 0.7em sans-serif;
+        font: 0.5em sans-serif;
     }
 }
 
@@ -574,7 +575,7 @@ form input[type="submit"]:hover {
     }
 
     .book-details .genre, .book-details .author {
-        font-size: 0.5em; /* Ukuran font lebih kecil untuk genre dan author */
+        font-size: 0.3em; /* Ukuran font lebih kecil untuk genre dan author */
     }
 }
 
