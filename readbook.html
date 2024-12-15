@@ -87,7 +87,7 @@
         <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
     </header>
     <section class="pageS">BACA BUKU</section>
-    <section class="content-section">
+    <section>
         <h1 id="bookTitle" style="text-align: center; margin-top: 20px; text-transform: capitalize;"></h1><br>
         <div id="pdfViewer">
             <div class="pdf-container">
@@ -129,9 +129,9 @@
 
         function setScaleBasedOnDevice() {
             if (window.innerWidth <= 768) {
-                scale = 0.46; // For mobile devices
+                scale = 0.6; // For mobile devices
             } else {
-                scale = 1.0; // For larger screens
+                scale = 1.2; // For larger screens
             }
         }
 
