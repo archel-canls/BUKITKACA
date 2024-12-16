@@ -32,8 +32,31 @@
         form label {
     font-size: 1.2rem;
     color: #ffffff;
- 
 }
+/* Gaya untuk tombol kembali ke Bukitkaca */
+.back-to-home-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.back-to-home-button {
+    background-color: #ff0000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    width: 250px;
+    transition: background-color 0.3s ease;
+}
+
+.back-to-home-button:hover {
+    background-color: #830303;
+}
+
 
 
 
@@ -144,6 +167,11 @@ form input[type="submit"]:hover {
 
         <input type="submit" value="Kirim">
     </form>
+    <div class="back-to-home-container">
+        <a href="index.html">
+            <button class="action-button back-to-home-button">Menuju ke Bukitkaca</button>
+        </a>
+    </div>
 
     <script>
         function sendToWhatsApp(event) {
