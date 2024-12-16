@@ -28,68 +28,63 @@
             max-width: 500px;
         }
 
-
         form label {
-    font-size: 1.2rem;
-    color: #ffffff;
-}
-/* Gaya untuk tombol kembali ke Bukitkaca */
-.back-to-home-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
 
-.back-to-home-button {
-    background-color: #ff0000;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    text-align: center;
-    width: 250px;
-    transition: background-color 0.3s ease;
-}
+        /* Gaya untuk tombol kembali ke Bukitkaca */
+        .back-to-home-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
 
-.back-to-home-button:hover {
-    background-color: #830303;
-}
+        .back-to-home-button {
+            background-color: #ff0000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            width: 250px;
+            transition: background-color 0.3s ease;
+        }
 
+        .back-to-home-button:hover {
+            background-color: #830303;
+        }
 
+        form input, form select, form textarea {
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            background-color: #ffffff;
+            color: #000000;
+        }
 
+        form input[type="file"] {
+            border: 10px solid #ffffff;
+        }
 
-form input, form select, form textarea {
-    padding: 10px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-    background-color: #ffffff;
-    color: #000000;
+        form input[type="submit"] {
+            background-color: #0099ff;
+            color: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+        }
 
-}
-
-form input[type="file"] {
-    border: 10px solid #ffffff;
-}
-
-
-form input[type="submit"] {
-    background-color: #0099ff;
-    color: #ffffff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-}
-
-form input[type="submit"]:hover {
-    background-color: #0066cc;
-}
+        form input[type="submit"]:hover {
+            background-color: #0066cc;
+        }
     </style>
 </head>
 <body>
@@ -167,6 +162,7 @@ form input[type="submit"]:hover {
 
         <input type="submit" value="Kirim">
     </form>
+
     <div class="back-to-home-container">
         <a href="index.html">
             <button class="action-button back-to-home-button">Menuju ke Bukitkaca</button>
