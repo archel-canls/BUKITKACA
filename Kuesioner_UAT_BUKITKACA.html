@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuesioner UAT BUKITKACA</title>
+    <style>
+        body {
+            text-align: left;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+        }
+        input[type="radio"], textarea {
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kuesioner UAT - Pengujian Situs BUKITKACA</h1>
+    <form id="uatForm" onsubmit="sendToWhatsApp(event)">
+        <h2>A. Fungsionalitas:</h2>
+        <label>1. Apakah Anda dapat mengakses semua halaman utama (Beranda, Pojok Baca, Pusat Informasi, Upload, Rak Buku, Bookmarks) tanpa masalah?</label><br>
+        <input type="radio" name="akses_halaman" value="ya"> Ya<br>
+        <input type="radio" name="akses_halaman" value="tidak"> Tidak<br><br>
+
+        <label>2. Apakah fitur 'Upload' berfungsi dengan baik saat Anda mencoba mengunggah konten?</label><br>
+        <input type="radio" name="fitur_upload" value="ya"> Ya<br>
+        <input type="radio" name="fitur_upload" value="tidak"> Tidak<br><br>
+
+        <label>3. Apakah Anda menerima pesan kesalahan saat menggunakan fitur tertentu? Jika ya, sebutkan fitur tersebut.</label><br>
+        <input type="radio" name="pesan_kesalahan" value="ya"> Ya<br>
+        <input type="radio" name="pesan_kesalahan" value="tidak"> Tidak<br>
+        <input type="text" name="detail_kesalahan" placeholder="Sebutkan fitur"><br><br>
+
+        <h2>B. Antarmuka Pengguna (User Interface):</h2>
+        <label>4. Seberapa menarik tampilan visual situs web ini menurut Anda?</label><br>
+        <input type="radio" name="tampilan_visual" value="1"> 1 (Sangat Tidak Menarik)<br>
+        <input type="radio" name="tampilan_visual" value="2"> 2<br>
+        <input type="radio" name="tampilan_visual" value="3"> 3<br>
+        <input type="radio" name="tampilan_visual" value="4"> 4<br>
+        <input type="radio" name="tampilan_visual" value="5"> 5 (Sangat Menarik)<br><br>
+
+        <label>5. Apakah tata letak menu navigasi (Beranda, Pojok Baca, dll.) mudah dipahami?</label><br>
+        <input type="radio" name="menu_navigasi" value="ya"> Ya<br>
+        <input type="radio" name="menu_navigasi" value="tidak"> Tidak<br><br>
+
+        <label>6. Apakah ukuran dan jenis font memudahkan Anda dalam membaca konten?</label><br>
+        <input type="radio" name="font_konten" value="ya"> Ya<br>
+        <input type="radio" name="font_konten" value="tidak"> Tidak<br><br>
+
+        <h2>C. Performa dan Kecepatan:</h2>
+        <label>7. Seberapa cepat halaman situs web ini dimuat di perangkat Anda?</label><br>
+        <input type="radio" name="kecepatan_muat" value="1"> 1 (Sangat Lambat)<br>
+        <input type="radio" name="kecepatan_muat" value="2"> 2<br>
+        <input type="radio" name="kecepatan_muat" value="3"> 3<br>
+        <input type="radio" name="kecepatan_muat" value="4"> 4<br>
+        <input type="radio" name="kecepatan_muat" value="5"> 5 (Sangat Cepat)<br><br>
+
+        <label>8. Apakah Anda mengalami keterlambatan atau lag saat berinteraksi dengan fitur-fitur di situs ini?</label><br>
+        <input type="radio" name="lag_interaksi" value="ya"> Ya<br>
+        <input type="radio" name="lag_interaksi" value="tidak"> Tidak<br><br>
+
+        <h2>D. Navigasi dan Kemudahan Penggunaan:</h2>
+        <label>9. Seberapa mudah Anda menemukan informasi yang Anda cari di situs ini?</label><br>
+        <input type="radio" name="kemudahan_informasi" value="1"> 1 (Sangat Sulit)<br>
+        <input type="radio" name="kemudahan_informasi" value="2"> 2<br>
+        <input type="radio" name="kemudahan_informasi" value="3"> 3<br>
+        <input type="radio" name="kemudahan_informasi" value="4"> 4<br>
+        <input type="radio" name="kemudahan_informasi" value="5"> 5 (Sangat Mudah)<br><br>
+
+        <label>10. Apakah struktur navigasi situs ini intuitif dan memudahkan Anda dalam menjelajah?</label><br>
+        <input type="radio" name="navigasi_intuitif" value="ya"> Ya<br>
+        <input type="radio" name="navigasi_intuitif" value="tidak"> Tidak<br><br>
+
+        <h2>E. Keamanan dan Kepercayaan:</h2>
+        <label>11. Apakah Anda merasa informasi pribadi Anda aman saat menggunakan fitur 'Upload' atau fitur lain yang memerlukan data pribadi?</label><br>
+        <input type="radio" name="keamanan_pribadi" value="ya"> Ya<br>
+        <input type="radio" name="keamanan_pribadi" value="tidak"> Tidak<br><br>
+
+        <label>12. Apakah informasi yang disajikan di situs ini terlihat valid dan dapat dipercaya?</label><br>
+        <input type="radio" name="informasi_valid" value="ya"> Ya<br>
+        <input type="radio" name="informasi_valid" value="tidak"> Tidak<br><br>
+
+        <h2>F. Saran dan Masukan:</h2>
+        <label>13. Apa yang Anda sukai dari situs web BUKITKACA?</label><br>
+        <textarea name="suka" rows="4" cols="50" placeholder="Tulis jawaban Anda di sini..."></textarea><br><br>
+
+        <label>14. Apa yang menurut Anda perlu diperbaiki atau ditambahkan pada situs web ini?</label><br>
+        <textarea name="perbaikan" rows="4" cols="50" placeholder="Tulis jawaban Anda di sini..."></textarea><br><br>
+
+        <input type="submit" value="Kirim">
+    </form>
+
+    <script>
+        function sendToWhatsApp(event) {
+            event.preventDefault(); // Mencegah form agar tidak terkirim secara biasa
+
+            // Ambil nilai dari form
+            const form = document.forms['uatForm'];
+            const aksesHalaman = form['akses_halaman'].value;
+            const fiturUpload = form['fitur_upload'].value;
+            const pesanKesalahan = form['pesan_kesalahan'].value;
+            const detailKesalahan = form['detail_kesalahan'].value;
+            const tampilanVisual = form['tampilan_visual'].value;
+            const menuNavigasi = form['menu_navigasi'].value;
+            const fontKonten = form['font_konten'].value;
+            const kecepatanMuat = form['kecepatan_muat'].value;
+            const lagInteraksi = form['lag_interaksi'].value;
+            const kemudahanInformasi = form['kemudahan_informasi'].value;
+            const navigasiIntuitif = form['navigasi_intuitif'].value;
+            const keamananPribadi = form['keamanan_pribadi'].value;
+            const informasiValid = form['informasi_valid'].value;
+            const suka = form['suka'].value;
+            const perbaikan = form['perbaikan'].value;
+
+            // Buat pesan untuk WhatsApp
+            const message = `Kuesioner UAT - BUKITKACA:
+            
+            1. Akses Halaman: ${aksesHalaman}
+            2. Fitur Upload: ${fiturUpload}
+            3. Pesan Kesalahan: ${pesanKesalahan} - Fitur: ${detailKesalahan}
+            4. Tampilan Visual: ${tampilanVisual}
+            5. Menu Navigasi: ${menuNavigasi}
+            6. Font Konten: ${fontKonten}
+            7. Kecepatan Muat: ${kecepatanMuat}
+            8. Lag Interaksi: ${lagInteraksi}
+            9. Kemudahan Informasi: ${kemudahanInformasi}
+            10. Navigasi Intuitif: ${navigasiIntuitif}
+            11. Keamanan Pribadi: ${keamananPribadi}
+            12. Informasi Valid: ${informasiValid}
+            13. Suka: ${suka}
+            14. Perbaikan: ${perbaikan}`;
+
+            // Kirim pesan ke WhatsApp
+            const phoneNumber = "0895617352225";
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
