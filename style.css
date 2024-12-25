@@ -52,13 +52,28 @@ header .logo {
     line-height: 1;
     flex-grow: 1;
     transform: scaleY(0.8); /* Menyesuaikan skala vertikal untuk memperkecil teks */
+
+    /* Gaya untuk gambar sebagai logo */
+    background-image: url('logoku.png'); /* Nama file logo Anda */
+    background-repeat: no-repeat;
+    background-size: contain; /* Menjaga proporsi gambar */
+    background-position: left center; /* Menggeser logo ke kiri */
+    width: 9rem; /* Lebar logo tetap */
+    height: 9rem; /* Tinggi logo tetap */
+    display: inline-block; /* Membuat elemen ini sejajar dengan teks */
+    vertical-align: middle; /* Menyelaraskan logo secara vertikal */
+    text-indent: -9999px; /* Menyembunyikan teks jika logo menggantikan teks */
+    margin-left: -1.2rem; /* Geser logo sedikit ke kiri */
 }
+
 
 /* Responsif */
 @media (max-width: 1220px) {
     header .logo {
         font-size: 2.6rem;
         transform: scaleY(0.85); /* Menyesuaikan sedikit lebih besar di layar kecil */
+        background-position: center;
+        margin-right: -2rem;
     }
 }
 
@@ -66,6 +81,8 @@ header .logo {
     header .logo {
         font-size: 2.2rem;
         transform: scaleY(0.9); /* Menyesuaikan sedikit lebih besar */
+        background-position: center;
+        margin-right: -4rem;
     }
 }
 
@@ -73,6 +90,8 @@ header .logo {
     header .logo {
         font-size: 2.2rem;
         transform: scaleY(0.95); /* Menyesuaikan sedikit lebih besar */
+        background-position: center;
+        margin-right: -4rem;
     }
 }
 
@@ -384,7 +403,7 @@ color: rgb(5, 50, 117);
 form {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
 }
 
 form label {
