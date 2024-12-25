@@ -68,7 +68,7 @@ header .logo {
 
 
 /* Responsif */
-@media (max-width: 1108px) {
+@media (max-width: 920px) {
     header .logo {
         font-size: 2.6rem;
         transform: scaleY(0.85); /* Menyesuaikan sedikit lebih besar di layar kecil */
