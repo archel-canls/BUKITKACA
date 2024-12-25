@@ -51,7 +51,7 @@ header .logo {
     text-align: left;
     line-height: 1;
     flex-grow: 1;
-    transform: scaleY(0.8); /* Menyesuaikan skala vertikal untuk memperkecil teks */
+    transform: scaleY(0.9); /* Menyesuaikan skala vertikal untuk memperkecil teks */
 
     /* Gaya untuk gambar sebagai logo */
     background-image: url('logoku.png'); /* Nama file logo Anda */
@@ -71,7 +71,7 @@ header .logo {
 @media (max-width: 920px) {
     header .logo {
         font-size: 2.6rem;
-        transform: scaleY(0.85); /* Menyesuaikan sedikit lebih besar di layar kecil */
+        transform: scaleY(0.9); /* Menyesuaikan sedikit lebih besar di layar kecil */
         background-position: center;
         margin-right: -2rem;
     }
@@ -89,7 +89,7 @@ header .logo {
 @media (max-width: 480px) {
     header .logo {
         font-size: 2.2rem;
-        transform: scaleY(0.95); /* Menyesuaikan sedikit lebih besar */
+        transform: scaleY(0.9); /* Menyesuaikan sedikit lebih besar */
         background-position: center;
         margin-right: -4rem;
     }
@@ -214,7 +214,7 @@ nav a.active {
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 1220px) {
+@media (max-width: 920px) {
     nav {
         display: none;
         flex-direction: column;
