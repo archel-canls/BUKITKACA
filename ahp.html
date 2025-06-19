@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPTITALENT-Pemilihan Karyawan Terbaik Bermetode AHP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="luxury-bg">
+    <header class="luxury-header">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center justify-between"> <div class="flex items-center"> <img src="logo.png" alt="OPTITALENT Logo" class="header-logo mr-4"> <div> <h1 class="text-3xl md:text-5xl font-display font-extrabold text-white tracking-tight leading-none">OPTITALENT</h1>
+                        <p class="text-lg md:text-xl font-outfit text-white opacity-90 mt-2">Pemilihan Karyawan Terbaik Bermetode AHP</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="luxury-card mb-8">
+            <div class="flex items-start space-x-4">
+                <div class="luxury-icon-container">
+                    <i class="fas fa-hospital-user text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-xl font-display font-bold text-black mb-2"> Studi Kasus</h2>
+                    <p class="text-primary-light leading-relaxed">
+                        Sistem Pendukung Keputusan (SPK) AHP diterapkan di Rumah Sakit Kanker Dharmais untuk mengatasi tantangan dalam penilaian karyawan terbaik. Sebelumnya, proses ini cenderung subjektif. SPK ini menggunakan kriteria objektif seperti kepatuhan, hasil kerja, inisiatif, dan masa kerja untuk memberikan penilaian yang lebih adil dan transparan. (Sumber: <a href="https://jurnal.bsi.ac.id/index.php/reputasi/article/view/1899" target="_blank" class="text-accent-blue hover:underline font-semibold">Reputasi (jurnal.bsi.ac.id)</a>).
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="criteriaSection" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="luxury-card">
+                <h3 class="text-xl font-display font-bold text-blue-900 mb-4 flex items-center">
+                    <i class="fas fa-list-ul text-accent-blue mr-3"></i>
+                    Manajemen Kriteria
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="newCriteria" class="block text-sm font-medium text-primary-light mb-2">Nama Kriteria</label>
+                        <div id="criteriaList" class="space-y-2">
+                            </div>
+                        <div class="mt-3 flex space-x-2">
+                            <input type="text" id="newCriteria" placeholder="Tambah kriteria baru..."
+                                class="luxury-input flex-1">
+                            <button onclick="addCriteria()" class="luxury-button bg-accent-green">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="luxury-card">
+                <h3 class="text-xl font-display font-bold text-blue-900 mb-4 flex items-center">
+                    <i class="fas fa-users text-accent-green mr-3"></i>
+                    Manajemen Alternatif
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="newAlternative" class="block text-sm font-medium text-primary-light mb-2">Nama Karyawan(Alternatif)</label>
+                        <div id="alternativesList" class="space-y-2">
+                            </div>
+                        <div class="mt-3 flex space-x-2">
+                            <input type="text" id="newAlternative" placeholder="Tambah alternatif baru..."
+                                class="luxury-input flex-1">
+                            <button onclick="addAlternative()" class="luxury-button bg-accent-green">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="luxury-card">
+            <h3 class="text-xl font-display font-bold text-blue-900 mb-4 flex items-center">
+                Skala Perbandingan AHP:
+            </h3>
+            <div class="space-y-4">
+                <div class="flex flex-col gap-2 text-sm">
+                    <div><span class="font-bold text-black">1</span> : <span class="text-primary-light">Kinerja setara</span></div>
+                    <div><span class="font-bold text-black">2</span> : <span class="text-primary-light">Sedikit lebih unggul</span></div>
+                    <div><span class="font-bold text-black">3</span> : <span class="text-primary-light">Lebih unggul</span></div>
+                    <div><span class="font-bold text-black">4</span> : <span class="text-primary-light">Cukup lebih unggul</span></div>
+                    <div><span class="font-bold text-black">5</span> : <span class="text-primary-light">Jauh lebih unggul</span></div>
+                    <div><span class="font-bold text-black">6</span> : <span class="text-primary-light">Sangat menonjol</span></div>
+                    <div><span class="font-bold text-black">7</span> : <span class="text-primary-light">Sangat jauh lebih unggul</span></div>
+                    <div><span class="font-bold text-black">8</span> : <span class="text-primary-light">Hampir luar biasa</span></div>
+                    <div><span class="font-bold text-black">9</span> : <span class="text-primary-light">Mutlak terbaik</span></div>
+                </div>
+                <h4 class="font-semibold text-accent-blue mb-2">Klik Tombol Dibawah Untuk Memuat Data dari Jurnal:</h4>
+                <button onclick="loadDefaultData()" class="luxury-button">
+                    <i class="fas fa-download mr-2"></i>
+                    Muat Data Default
+                </button><br>
+                <h4 class="font-semibold text-accent-blue mb-2">Atau Anda Bisa Mengisinya Secara Manual Maupun Upload Data Dari Excel(Dengan ketentuan Matriks Identitasnya dimulai dari B3,C4,D5,Dst) Melalui Matriks Berikut Ini:</h4>
+            </div>
+        </div>
+    </div><br>
+
+        <div id="matrixSection" class="luxury-card mb-8">
+           
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-display font-bold text-blue-900 flex items-center">
+                    <i class="fas fa-table text-accent-blue mr-3"></i>
+                    Matriks Perbandingan Kriteria
+                </h3>
+                <label for="uploadCriteriaExcel" class="luxury-button-sm bg-accent-green cursor-pointer">
+                    <i class="fas fa-file-excel mr-1"></i>
+                    Upload From Excel (Kriteria)
+                    <input type="file" id="uploadCriteriaExcel" class="hidden" accept=".xls,.xlsx" onchange="handleExcelUpload(event, 'criteria')">
+                </label>
+            </div>
+            <div class="overflow-x-auto">
+                <table id="criteriaMatrix" class="w-full border-collapse luxury-table">
+                    </table>
+            </div>
+     
+        </div>
+
+        <div id="alternativeMatrices" class="space-y-8 mb-8">
+            </div>
+
+        <div class="text-center mb-8">
+            <button onclick="processAHP()" class="luxury-button bg-accent-blue">
+                <i class="fas fa-calculator mr-3"></i>
+                Hitung Sekarang
+            </button>
+        </div>
+
+        <div id="resultsSection" class="hidden space-y-8">
+            <div class="luxury-card p-4">
+                <div class="flex flex-wrap gap-4 justify-center">
+                <div class="mt-8 text-center">
+                    <button id="exportExcelBtn" class="luxury-button bg-accent-green" onclick="exportResultsToExcel()">
+                        <i class="fas fa-file-excel mr-2"></i> Ekspor ke Excel
+                    </button>
+                </div>
+            </div><br>
+
+            <div class="luxury-card">
+                <h3 class="text-xl font-display font-bold text-blue-900 mb-4 flex items-center">
+                    Bobot Kriteria
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="overflow-x-auto">
+                        <table id="criteriaWeights" class="luxury-table w-full">
+                            </table>
+                    </div>
+                    <div>
+                        <canvas id="criteriaChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="luxury-card">
+                <h3 class="text-xl font-display font-bold text-blue-900 mb-4 flex items-center">
+                    Rangking Karyawan Terbaik
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="overflow-x-auto">
+                        <table id="finalScores" class="luxury-table w-full">
+                            </table>
+                    </div>
+                    <div>
+                        <canvas id="scoresChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="luxury-card">
+                <h3 class="text-xl font-display font-bold text-green-900 mb-4 flex items-center">
+                    <i class="fas fa-check-circle text-accent-green mr-3"></i>
+                    Uji Konsistensi
+                </h3>
+                <div id="consistencyResults" class="space-y-4">
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="luxury-footer">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-primary-light">&copy; 2025 Decision Support System. SPK Pemilihan Karyawan Terbaik Berbasis Analytical Hierarchy Process (AHP).Kelompok 3(4E).</p>
+        </div>
+    </footer>
+
+    <script src="ahp.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

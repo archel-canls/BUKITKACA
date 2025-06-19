@@ -1,648 +1,1518 @@
+
+/* Modern Luxury CSS Framework for AHP Decision Support System - Gemini Inspired */
+
+/* Font Imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* CSS Variables - Color Palette (Adjusted for Gemini Theme) */
+:root {
+    /* Primary Light Background Shades */
+    --bg-primary: #ffffff; /* White background */
+    --bg-secondary: #f0f4f8; /* Light gray for secondary elements */
+    --bg-tertiary: #e2e8f0; /* Slightly darker light gray */
+    --bg-accent: #cbd5e1; /* Even darker light gray */
+
+    /* Text Colors */
+    --text-primary: #1a202c; /* Dark text for contrast */
+    --text-secondary: #2d3748; /* Slightly lighter dark text */
+    --text-muted: #718096; /* Muted gray for less important text */
+    --text-accent: #4a5568; /* Accent gray for certain texts */
+
+    /* Gemini Rainbow Gradient Colors */
+    --gemini-red: #ea4335;
+    --gemini-orange: #fbbc05;
+    --gemini-green: #34a853;
+    --gemini-blue: #4285f4;
+    --gemini-purple: #9c27b0; /* Added a purple for more rainbow feel */
+
+    /* Accent Colors (More vibrant and complementary) */
+    --accent-blue: #4285f4; /* Google Blue */
+    --accent-blue-light: #669df6;
+    --accent-blue-dark: #3367d6;
+
+    --accent-green: #34a853; /* Google Green */
+    --accent-green-light: #5cb86b;
+    --accent-green-dark: #2a7e44;
+
+    --accent-purple: #9c27b0; /* A vibrant purple */
+    --accent-purple-light: #be5cd2;
+    --accent-purple-dark: #7b1fa2;
+
+    --accent-gold: #fbbc05; /* Google Yellow */
+    --accent-gold-light: #ffce4e;
+    --accent-gold-dark: #e0ac00;
+
+    /* Card/Glass effect for lighter theme */
+    --glass-bg: rgba(255, 255, 255, 0.7); /* Lighter background with transparency */
+    --glass-border: rgba(0, 0, 0, 0.1); /* Darker border for contrast */
+    --glass-shadow: rgba(0, 0, 0, 0.1); /* Lighter shadow */
+
+    /* Shadows (Adjusted for lighter theme) */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+}
+
+/* Global Styles */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
 }
 
-/* Tampilan Umum */
+html {
+    /* Ensures 1rem = 10px, making rem calculations easier. Default is 16px. */
+    font-size: 62.5%;
+}
+
 body {
-    background: url('tenor\ \(1\).gif') no-repeat center center fixed;
-    background-size: 100% 100%;
-    color: #f8f2f2;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    overflow-x: hidden; /* Prevents horizontal scroll */
+    font-size: 1.6rem; /* Base font size, equivalent to 16px */
+}
+
+/* Typography */
+.font-display {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; /* Made bolder for emphasis */
+    letter-spacing: -0.035em; /* Slightly tighter for modern look */
+    color: var(--text-primary); /* Ensure it's dark on light background */
+}
+
+.text-primary-light {
+    color: var(--text-secondary); /* Adjusted for light background */
+}
+
+.font-outfit { /* Added if not present */
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Background */
+.luxury-bg {
+    background: var(--bg-primary);
+    background-image:
+        radial-gradient(circle at 20% 80%, rgba(66, 133, 244, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(234, 67, 53, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(52, 168, 83, 0.03) 0%, transparent 50%);
     min-height: 100vh;
-    padding: 8px 8px;
-    text-align: center;
 }
 
-/* Header */
-header {
-    background-color: #0056b3;
-    color: white;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
+/* Header - Blue-Green Gradient (Retained original color) */
+.luxury-header {
+    background: linear-gradient(90deg, var(--gemini-blue) 0%, var(--gemini-green) 100%);
+    color: white; /* Default text color for header */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    padding: 1.5rem 1rem; /* Default padding for smaller screens */
+    display: flex; /* Using flexbox for better content alignment */
     align-items: center;
-    height: 80px; /* Tinggi tetap untuk header */
-    position: fixed; /* Membuat header tetap di bagian atas */
-    top: 0; /* Menempatkan header di bagian atas layar */
-    left: 8px; /* Jarak 8px dari sisi kiri */
-    right: 8px; /* Jarak 8px dari sisi kanan */
-    z-index: 1000; /* Memastikan header berada di atas elemen lain */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan opsional */
-    padding-right: 120px; 
+    justify-content: space-between; /* Adjust as needed for logo/nav */
+    flex-wrap: wrap; /* Allow content to wrap */
 }
 
-
-
-header .logo {
-    font-size: 3rem;
-    font-family: 'Cinzel', serif;
-    color: #f30f0f;
-    font-weight: bold;
-    text-shadow:
-        0 0 5px #ffffff,
-        0 0 10px #ffffff,
-        0 0 15px #00bfff,
-        0 0 20px #00bfff,
-        0 0 25px #0073e6,
-        0 0 30px #004d99;
-    transition: font-size 0.3s ease;
-    text-align: left;
-    line-height: 1;
-    flex-grow: 1;
-    transform: scaleY(0.9); /* Menyesuaikan skala vertikal untuk memperkecil teks */
-
-    /* Gaya untuk gambar sebagai logo */
-    background-image: url('logoku.png'); /* Nama file logo Anda */
-    background-repeat: no-repeat;
-    background-size: contain; /* Menjaga proporsi gambar */
-    background-position: left center; /* Menggeser logo ke kiri */
-    width: 9rem; /* Lebar logo tetap */
-    height: 9rem; /* Tinggi logo tetap */
-    display: inline-block; /* Membuat elemen ini sejajar dengan teks */
-    vertical-align: middle; /* Menyelaraskan logo secara vertikal */
-    text-indent: -9999px; /* Menyembunyikan teks jika logo menggantikan teks */
-    margin-left: -1.2rem; /* Geser logo sedikit ke kiri */
-}
-
-
-/* Responsif */
-@media (max-width: 920px) {
-    header .logo {
-        font-size: 2.6rem;
-        transform: scaleY(0.9); /* Menyesuaikan sedikit lebih besar di layar kecil */
-        background-position: center;
-        margin-right: -2rem;
+@media (min-width: 768px) { /* Medium screens and up */
+    .luxury-header {
+        padding: 2.5rem 2rem; /* Larger padding for desktop */
     }
 }
 
-@media (max-width: 768px) {
-    header .logo {
-        font-size: 2.2rem;
-        transform: scaleY(0.9); /* Menyesuaikan sedikit lebih besar */
-        background-position: center;
-        margin-right: -4rem;
+.luxury-header h1,
+.luxury-header p {
+    color: white !important; /* Ensuring all text in header is white */
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3); /* Adding slight shadow for readability */
+}
+
+.luxury-header .font-display {
+    font-weight: 900; /* Even bolder for titles */
+    letter-spacing: -0.05em; /* Tighter for modern look */
+    font-size: 2.8rem; /* Responsive font size */
+}
+
+@media (min-width: 768px) {
+    .luxury-header .font-display {
+        font-size: 4rem;
     }
 }
 
-@media (max-width: 480px) {
-    header .logo {
-        font-size: 2.2rem;
-        transform: scaleY(0.9); /* Menyesuaikan sedikit lebih besar */
-        background-position: center;
-        margin-right: -4rem;
+.luxury-header .text-primary-light,
+.luxury-header .text-white {
+    color: white !important; /* Ensure all header text is white */
+}
+/* Logo Styling */
+.header-logo {
+    height: 5rem; /* Tinggi default logo untuk layar kecil (misal: 50px) */
+    width: auto; /* Pertahankan rasio aspek gambar */
+    object-fit: contain; /* Pastikan gambar pas tanpa terpotong */
+    transition: all 0.3s ease; /* Transisi halus untuk responsivitas */
+}
+
+@media (min-width: 768px) {
+    .header-logo {
+        height: 7rem; /* Tinggi logo lebih besar untuk desktop (misal: 70px) */
+        margin-right: 2rem; /* Tambah sedikit jarak di desktop */
     }
 }
 
-/* Profil gambar dalam header */
-header .header-profile-pic {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: #888;
-    background-size: cover;
-    background-position: center;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    object-fit: cover;
-    aspect-ratio: 1;
-    position: absolute; /* Pastikan profil berada di dalam header */
-    right: 2%; /* Tempatkan profil di sebelah kanan */
+/* Header Specific Adjustments for Left Alignment */
+/* Target elemen yang membungkus logo dan teks judul di dalam header */
+.luxury-header .container > .flex.items-center.justify-between > .flex.items-center {
+    justify-content: flex-start; /* Pastikan konten logo dan judul rata kiri */
+    width: auto; /* Sesuaikan lebar secara otomatis */
 }
 
-/* Responsif: Mengubah ukuran gambar profil pada layar lebih kecil */
-@media (max-width: 768px) {
-    header .header-profile-pic {
-        width: 60px;
-        height: 60px;
+
+/* Memastikan teks judul dan sub-judul di header rata kiri */
+.luxury-header h1,
+.luxury-header p {
+    color: white !important; /* Tetap putih */
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    text-align: left !important; /* Paksa rata kiri untuk h1 dan p di header */
+}
+
+/* Penyesuaian padding kontainer header agar konten tidak terlalu menempel tepi */
+.luxury-header .container {
+    padding-left: 2rem; /* Padding kiri untuk konten header */
+    padding-right: 2rem; /* Padding kanan untuk konten header */
+}
+
+@media (min-width: 768px) {
+    .luxury-header .container {
+        padding-left: 3rem; /* Padding lebih besar di desktop */
+        padding-right: 3rem;
     }
 }
 
-@media (max-width: 480px) {
-    header .header-profile-pic {
-        width: 50px;
-        height: 50px;
-    }
+/* Mobile Menu */
+.luxury-mobile-menu {
+    background: var(--glass-bg); /* Use glass background */
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    box-shadow: var(--shadow-lg);
+    width: 100%; /* Full width on mobile */
+    /* Add display control via JavaScript or media queries (e.g., display: none on desktop) */
 }
 
-header .header-profile-pic:hover {
-    transform: scale(1.1);
+/* Icon Container */
+.luxury-icon-container {
+    background: var(--bg-secondary);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    color: var(--accent-blue);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-
-/* Menu Toggle */
-.menu-toggle {
-    font-size: 2.6rem;
-    cursor: pointer;
-    display: none;
-    background-color: #004a99;
-    padding: 0px 20px;
-    border-radius: 5px;
-    margin-right: 3%; /* Menambahkan jarak sedikit antara menu toggle dan logo */
-}
-
-/* Responsif: Menyesuaikan ukuran menu toggle pada layar kecil */
-@media (max-width: 920px) {
-    .menu-toggle {
-        font-size: 2.4rem; /* Ukuran font lebih kecil */
-        padding: 0px 15px; /* Padding lebih kecil */
-    }
-}
-
-@media (max-width: 768px) {
-    .menu-toggle {
-        font-size: 2.2rem; /* Ukuran font lebih kecil */
-        padding: 0px 10px; /* Padding lebih kecil */
-    }
-}
-
-@media (max-width: 480px) {
-    .menu-toggle {
-        font-size: 2em; /* Ukuran font lebih kecil */
-        padding: 0px 8px; /* Padding lebih kecil */
-    }
-}
-
-
-
-
-/* Navigasi */
-nav {
-    display: flex;
-    gap: 0.2rem;
-    transition: all 0.3s ease-in-out;
-    align-items: center; 
-}
-
-nav.show {
-    display: flex;
-}
-
-nav a {
-    text-decoration: none;
+.luxury-icon-container:hover {
+    background: var(--accent-blue-light);
+    border-color: var(--accent-blue);
     color: white;
-    font-size: 1rem;
-    padding: 1rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+    transform: translateY(-0.2rem);
 }
 
-nav a:hover {
-    background-color: #374ee1;
+/* Cards */
+.luxury-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: var(--space-lg);
 }
 
+@media (min-width: 768px) {
+    .luxury-card {
+        padding: var(--space-xl);
+    }
+}
 
-#logout {
+.luxury-card:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.2);
+    transform: translateY(-0.4rem);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Buttons */
+.luxury-button {
+    background: var(--accent-blue);
     color: white;
-    background-color: red;
     border: none;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-weight: 600;
+    font-size: 1.4rem;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-#logout:hover {
-    background-color: darkred;
-}
-
-nav a.active {
-    background-color: #002552;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 920px) {
-    nav {
-        display: none;
-        flex-direction: column;
-        background-color: #004a99;
-        position: absolute;
-        bottom: 0;
-        top: 80px;
-        left: 0px;
-        width: 250px;
-        height: 380px;
-        padding-top: 15px;
-        z-index: 1000;
-    }
-
-    nav.show {
-        display: flex;
-    }
-
-    .menu-toggle {
-        display: block;
-    }
-
-    nav a {
-        padding: 10px 15px;
-        text-align: center;
-    }
-}
-
-/* Profile container for mobile */
-.profile-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.profile-pic {
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
     position: relative;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    border: 4px solid #fff;
-    background-color: #888;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 20px;
-    transition: transform 0.3s ease;
+    overflow: hidden;
+    display: inline-block;
+    text-align: center;
 }
 
-.profile-pic:hover {
+.luxury-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.luxury-button:hover::before {
+    left: 100%;
+}
+
+.luxury-button:hover {
+    transform: translateY(-0.2rem);
+    box-shadow: var(--shadow-md);
+    background: var(--accent-blue-light);
+}
+
+.luxury-button-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+    padding: 1.2rem 2rem;
+    font-size: 1.8rem;
+    border-radius: var(--radius-lg);
+    color: white;
+}
+
+@media (min-width: 768px) {
+    .luxury-button-primary {
+        padding: var(--space-md) var(--space-xl);
+        font-size: 1.8rem;
+    }
+}
+
+.luxury-button-secondary {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: var(--space-sm) var(--space-md);
+}
+
+.luxury-button-secondary:hover {
+    background: var(--bg-accent);
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.luxury-button-sm {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 1.2rem;
+    border-radius: var(--radius-sm);
+    color: white;
+}
+
+/* Accent Color Variants for buttons (use vibrant Gemini colors) */
+.bg-accent-blue { background: linear-gradient(135deg, var(--gemini-blue), var(--accent-blue-dark)); }
+.bg-accent-green { background: linear-gradient(135deg, var(--gemini-green), var(--accent-green-dark)); }
+.bg-accent-purple { background: linear-gradient(135deg, var(--gemini-purple), var(--accent-purple-dark)); }
+.bg-accent-gold { background: linear-gradient(135deg, var(--gemini-orange), var(--accent-gold-dark)); }
+
+.text-accent-blue { color: var(--accent-blue); }
+.text-accent-green { color: var(--accent-green); }
+.text-accent-purple { color: var(--accent-purple); }
+.text-accent-gold { color: var(--accent-gold); }
+
+/* Team Components (Retain some glass effect but lighter) */
+.luxury-team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-lg);
+    padding: 0 var(--space-sm);
+}
+
+@media (min-width: 768px) {
+    .luxury-team-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        padding: 0;
+    }
+}
+
+.luxury-team-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    color: var(--text-primary);
+}
+
+.luxury-team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.2rem;
+    background: linear-gradient(90deg, var(--gemini-blue), var(--gemini-green), var(--gemini-orange), var(--gemini-red), var(--gemini-purple));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.luxury-team-card:hover::before {
+    opacity: 1;
+}
+
+.luxury-team-card:hover {
+    transform: translateY(-0.8rem);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-xl);
+}
+
+.luxury-team-avatar {
+    width: 6.4rem;
+    height: 6.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-sm);
+    color: white;
+    background: var(--accent-blue);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    font-size: 2.4rem;
+}
+
+.luxury-team-card:hover .luxury-team-avatar {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Stats */
+.luxury-stats-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    width: 100%;
+}
+
+.luxury-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--space-md);
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .luxury-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+}
+
+.luxury-stat-item {
+    padding: var(--space-sm);
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.luxury-stat-item:hover {
+    transform: translateY(-0.2rem);
+}
+
+/* Input Components - Enhanced Visibility on light background */
+.luxury-input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 100%;
+}
+
+.luxury-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.luxury-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background: var(--bg-tertiary);
+    box-shadow: 0 0 0 0.3rem rgba(66, 133, 244, 0.2);
+    transform: translateY(-0.1rem);
+}
+
+.luxury-input:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+    background: var(--bg-tertiary);
+}
+
+/* Tooltip and Message Styling */
+.input-tooltip {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    padding: var(--space-xs) var(--space-sm);
+    box-shadow: var(--shadow-sm);
+    z-index: 50;
+}
+
+.message-error {
+    background: rgba(234, 67, 53, 0.1);
+    border-color: var(--gemini-red);
+    color: var(--gemini-red);
+}
+
+.message-warning {
+    background: rgba(251, 188, 5, 0.1);
+    border-color: var(--gemini-orange);
+    color: var(--gemini-orange);
+}
+
+.message-success {
+    background: rgba(52, 168, 83, 0.1);
+    border-color: var(--gemini-green);
+    color: var(--gemini-green);
+}
+
+.message-info {
+    background: rgba(66, 133, 244, 0.1);
+    border-color: var(--gemini-blue);
+    color: var(--gemini-blue);
+}
+
+/* Suggestion Box */
+.suggestion-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    max-height: 20rem;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.suggestion-item {
+    padding: var(--space-sm) var(--space-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 0.1rem solid var(--bg-tertiary);
+    font-size: 1.4rem;
+}
+
+.suggestion-item:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+/* Progress Bar */
+.progress-bar {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    height: 0.8rem;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, var(--gemini-blue), var(--gemini-green));
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: var(--radius-sm);
+}
+
+/* Helper Text */
+.helper-text {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    color: var(--text-secondary);
+    font-size: 1.4rem;
+    line-height: 1.5;
+}
+
+/* Footer */
+.luxury-footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--glass-border);
+    padding: var(--space-xl) 0;
+    margin-top: var(--space-xl);
+    color: var(--text-muted);
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+/* Table Styles - Enhanced for Better Visibility on light background */
+/* Wrapper for responsive tables - Add this to your HTML around tables if needed */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: var(--space-md);
+}
+
+table {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+    padding: var(--space-md) !important;
+    border-bottom: 0.2rem solid var(--glass-border) !important;
+    text-align: center !important;
+    font-size: 1.4rem !important;
+    white-space: nowrap;
+}
+
+table td {
+    color: var(--text-secondary) !important;
+    padding: var(--space-sm) !important;
+    border-bottom: 0.1rem solid var(--bg-tertiary) !important;
+    text-align: center !important;
+    font-size: 1.4rem !important;
+    white-space: nowrap;
+}
+
+table tr:hover {
+    background: var(--bg-tertiary) !important;
+}
+
+/* Luxury Table Enhanced */
+.luxury-table {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius-lg) !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-md) !important;
+    backdrop-filter: blur(10px) !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+.luxury-table th {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+    padding: var(--space-md) !important;
+    border-bottom: 0.2rem solid var(--glass-border) !important;
+    text-align: center !important;
+    font-size: 1.4rem !important;
+    white-space: nowrap;
+}
+
+.luxury-table td {
+    padding: var(--space-sm) !important;
+    text-align: center !important;
+    border: 0.1rem solid var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+    font-size: 1.4rem !important;
+    white-space: nowrap;
+}
+
+.luxury-table tr:nth-child(even) {
+    background: var(--bg-secondary) !important;
+}
+
+.luxury-table tr:hover {
+    background: var(--bg-tertiary) !important;
+}
+
+/* Enhanced Matrix Table Styling */
+.matrix-table {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.matrix-table th {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: 700;
+    padding: var(--space-md);
+    border-bottom: 0.2rem solid var(--glass-border);
+    text-align: center;
+    font-size: 1.4rem;
+    white-space: nowrap;
+}
+
+.matrix-table td {
+    padding: var(--space-sm);
+    text-align: center;
+    border: 0.1rem solid var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 1.4rem;
+    white-space: nowrap;
+}
+
+.matrix-table tr:nth-child(even) {
+    background: var(--bg-secondary);
+}
+
+.matrix-table tr:hover {
+    background: var(--bg-tertiary);
+}
+
+/* Matrix Input Enhanced - Better Visibility and Responsiveness */
+.matrix-input {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem !important;
+    color: var(--text-primary) !important;
+    text-align: center;
+    width: 100% !important;
+    max-width: 9rem !important;
+    font-weight: 600 !important;
+    font-size: 1.4rem !important;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08) !important;
+}
+
+@media (max-width: 480px) {
+    .matrix-input {
+        padding: 0.3rem 0.5rem !important;
+        font-size: 1.2rem !important;
+        max-width: 6rem !important;
+    }
+}
+
+.matrix-input:focus {
+    outline: none;
+    border-color: var(--accent-blue) !important;
+    background: var(--bg-tertiary) !important;
+    box-shadow: 0 0 0 0.3rem rgba(66, 133, 244, 0.2), 0 0.4rem 0.6rem rgba(0, 0, 0, 0.1) !important;
+    transform: scale(1.05);
+}
+
+.matrix-input:hover {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    background: var(--bg-tertiary) !important;
+    transform: translateY(-0.1rem);
+}
+
+/* Input validation states */
+.input-error {
+    border-color: var(--gemini-red) !important;
+    background: rgba(234, 67, 53, 0.1) !important;
+}
+
+.input-valid {
+    border-color: var(--gemini-green) !important;
+    background: rgba(52, 168, 83, 0.1) !important;
+}
+
+.pulse-error {
+    animation: pulse-red 1s ease-in-out;
+}
+
+.pulse-success {
+    animation: pulse-green 1s ease-in-out;
+}
+
+@keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.4); }
+    50% { box-shadow: 0 0 0 0.8rem rgba(234, 67, 53, 0); }
+}
+
+@keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52, 168, 83, 0.4); }
+    50% { box-shadow: 0 0 0 0.8rem rgba(52, 168, 83, 0); }
+}
+
+/* Progress Indicator */
+.progress-indicator {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    height: 0.8rem;
+    position: relative;
+    width: 100%;
+}
+
+.progress-indicator .progress-bar {
+    background: linear-gradient(90deg, var(--gemini-blue), var(--gemini-green));
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: var(--radius-sm);
+    position: relative;
+}
+
+.progress-indicator .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* Floating Message Enhanced */
+.floating-message {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    font-size: 1.4rem;
+    width: 100%;
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .floating-message {
+        max-width: 50rem;
+    }
+}
+
+.floating-message.bg-green-100 {
+    background: rgba(52, 168, 83, 0.1);
+    border-color: var(--gemini-green);
+    color: var(--gemini-green);
+}
+
+.floating-message.bg-red-100 {
+    background: rgba(234, 67, 53, 0.1);
+    border-color: var(--gemini-red);
+    color: var(--gemini-red);
+}
+
+.floating-message.bg-yellow-100 {
+    background: rgba(251, 188, 5, 0.1);
+    border-color: var(--gemini-orange);
+    color: var(--gemini-orange);
+}
+
+.floating-message.bg-blue-100 {
+    background: rgba(66, 133, 244, 0.1);
+    border-color: var(--gemini-blue);
+    color: var(--gemini-blue);
+}
+
+/* Override any remaining Tailwind classes that might conflict */
+.luxury-override {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Ensure all text inputs use light theme */
+input[type="text"],
+input[type="number"],
+input {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: var(--space-sm) !important;
+    font-weight: 500 !important;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08) !important;
+    font-size: 1.4rem;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 0 0.3rem rgba(66, 133, 244, 0.2) !important;
+}
+
+/* Canvas backgrounds for charts */
+canvas {
+    background: var(--bg-secondary) !important;
+    border-radius: var(--radius-md);
+    width: 100% !important;
+    height: auto !important; /* Maintain aspect ratio */
+}
+
+/* Ensure chart containers have proper backgrounds and scrolling */
+.chart-container {
+    min-height: 50rem; /* Increased min-height for better visibility on mobile */
+    max-height: 00vh; /* Set a max-height to enable scrolling if content exceeds viewport */
+    height: auto; /* Allow height to adjust up to max-height */
+    width: 100%;
+    position: relative;
+    padding-bottom: 2rem; /* Provide space for legend below if it's rendered outside canvas but inside container */
+    overflow-y: auto; /* Enable vertical scrolling for the container */
+    overflow-x: hidden; /* Pevent horizontal scrolling */
+}
+
+@media (min-width: 768px) {
+    .chart-container {
+        min-height: 100rem; /* Increased min-height for desktop */
+        max-height: 10vh; /* Adjust max-height for desktop */
+    }
+}
+
+/* Additional fixes for white backgrounds */
+.diagonal-cell, .diagonal {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600;
+}
+
+.auto-cell, .calculated {
+    background: var(--bg-secondary) !important;
+    color: var(--text-muted) !important;
+    font-style: italic;
+}
+
+/* Fix consistency indicators */
+.consistency-good {
+    background: rgba(52, 168, 83, 0.1) !important;
+    color: var(--gemini-green) !important;
+    border: 1px solid var(--gemini-green) !important;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 1.4rem;
+}
+
+.consistency-warning {
+    background: rgba(251, 188, 5, 0.1) !important;
+    color: var(--gemini-orange) !important;
+    border: 1px solid var(--gemini-orange) !important;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 1.4rem;
+}
+
+/* Fix any remaining white backgrounds */
+.bg-white, .bg-gray-50, .bg-gray-100 {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.text-gray-500, .text-gray-600, .text-gray-700, .text-gray-800, .text-gray-900 {
+    color: var(--text-primary) !important;
+}
+
+/* Enhanced table results styling */
+.results-table th {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--glass-border) !important;
+}
+
+.results-table td {
+    background: transparent !important;
+    color: var(--text-secondary) !important;
+    border-color: var(--bg-tertiary) !important;
+}
+
+.results-table tr:nth-child(even) {
+    background: var(--bg-secondary) !important;
+}
+
+.results-table tr:hover {
+    background: var(--bg-tertiary) !important;
+}
+
+/* Matrix table hover states */
+.matrix-table td:hover {
+    background: var(--bg-secondary) !important;
+}
+
+/* Progress indicator fix */
+.progress-indicator {
+    background: var(--bg-tertiary) !important;
+}
+
+/* Fix any input focus states */
+input:focus, textarea:focus, select:focus {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--accent-blue) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Enhanced table styling fix */
+.enhanced-table th {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+.enhanced-table tr:hover {
+    background: var(--bg-secondary) !important;
+}
+
+/* Fix any remaining light backgrounds */
+.bg-blue-50, .bg-green-50, .bg-yellow-50, .bg-red-50 {
+    background: var(--bg-secondary) !important;
+}
+
+/* Fix select elements */
+select {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    font-size: 1.4rem;
+    width: 100%;
+}
+
+select option {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Additional comprehensive light theme fixes */
+.border-gray-300 {
+    border-color: var(--glass-border) !important;
+}
+
+.border-gray-200 {
+    border-color: var(--glass-border) !important;
+}
+
+.focus\:ring-blue-500:focus {
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 0 0.3rem rgba(66, 133, 244, 0.2) !important;
+}
+
+.focus\:ring-green-500:focus {
+    border-color: var(--accent-green) !important;
+    box-shadow: 0 0 0 0.3rem rgba(52, 168, 83, 0.2) !important;
+}
+
+/* Fix any dynamically generated content */
+.bg-white, .bg-gray-50, .bg-gray-100, .bg-gray-200, .bg-blue-50, .bg-green-50, .bg-yellow-50, .bg-red-50 {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Fix text colors for light theme */
+.text-gray-900, .text-gray-800, .text-gray-700 {
+    color: var(--text-primary) !important;
+}
+
+.text-gray-600, .text-gray-500 {
+    color: var(--text-secondary) !important;
+}
+
+.text-gray-400, .text-gray-300 {
+    color: var(--text-muted) !important;
+}
+
+/* Ensure form elements are properly styled */
+input[type="text"], input[type="number"], input[type="email"], textarea {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Fix dropdown and select styling */
+select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234a5568' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important; /* Fixed typo here */
+    background-position: right 0.75rem center !important;
+    background-size: 1.5rem !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 2.5rem !important;
+}
+
+/* Modern scrollbar for light theme */
+::-webkit-scrollbar {
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 0.4rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 0.4rem;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Fix any code blocks or pre elements */
+code, pre {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--glass-border) !important;
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+}
+
+/* Fix table borders for luxury theme */
+table, th, td {
+    border-color: var(--bg-tertiary) !important;
+}
+
+/* Ensure all buttons follow luxury theme */
+button:not(.luxury-button):not(.luxury-button-primary):not(.luxury-button-secondary):not(.luxury-button-sm) {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:not(.luxury-button):not(.luxury-button-primary):not(.luxury-button-secondary):not(.luxury-button-sm):hover {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--accent-blue) !important;
+}
+
+/* COMPREHENSIVE WHITE BACKGROUND ELIMINATION (Adjusted for light theme) */
+/* Matrix table specific overrides */
+.matrix-table *,
+.luxury-table *,
+.enhanced-table *,
+table *,
+td *,
+th *,
+input[type="number"] {
+    background: transparent !important;
+}
+
+/* Matrix table cell overrides */
+.matrix-table td.diagonal,
+.diagonal {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+.matrix-table td.calculated,
+.calculated {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Input field specific overrides */
+input[type="number"].matrix-input,
+.matrix-input {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Table cell overrides */
+table td,
+table th {
+    background: transparent !important;
+    border-color: var(--bg-tertiary) !important;
+}
+
+/* Alternative matrix card styling */
+.alternative-matrix-card {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--space-lg) !important;
+    margin-bottom: var(--space-lg) !important;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+/* Force all matrix inputs to use light theme */
+input[data-criterion],
+input[data-i],
+input[data-j] {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 1.4rem;
+}
+
+/* Override any generic classes that might still have white backgrounds */
+.w-full, .p-1, .text-center, .border, .rounded, .focus\:ring-2, .transition-all {
+    background: transparent !important;
+}
+
+/* Specific input styling for matrix elements */
+input[type="number"][data-criterion] {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    width: 100% !important;
+    max-width: 8rem !important;
+    text-align: center !important;
+    padding: 0.375rem 0.75rem !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 1.4rem;
+}
+
+@media (max-width: 480px) {
+    input[type="number"][data-criterion] {
+        max-width: 5rem !important;
+        padding: 0.2rem 0.4rem !important;
+        font-size: 1.2rem;
+    }
+}
+
+input[type="number"][data-criterion]:focus {
+    border-color: var(--accent-blue) !important;
+    background: var(--bg-tertiary) !important;
+    box-shadow: 0 0 0 0.3rem rgba(66, 133, 244, 0.2) !important;
+}
+
+/* Fix any remaining table elements */
+.matrix-table tbody tr,
+.luxury-table tbody tr,
+.enhanced-table tbody tr {
+    background: transparent !important;
+}
+
+.matrix-table tbody tr:hover,
+.luxury-table tbody tr:hover,
+.enhanced-table tbody tr:hover {
+    background: var(--bg-tertiary) !important;
+}
+
+/* Override any dynamically added white backgrounds */
+[style*="background-color: white"],
+[style*="background-color: #ffffff"],
+[style*="background-color: #fff"],
+[style*="background-color: rgb(255, 255, 255)"] {
+    background: var(--bg-primary) !important;
+}
+
+/* Final comprehensive override for any remaining issues */
+*[class*="bg-white"],
+*[class*="bg-gray-"],
+*[class*="bg-blue-"],
+*[class*="bg-green-"],
+*[class*="bg-yellow-"],
+*[class*="bg-red-"] {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Border accent classes for alternative matrix cards */
+.border-l-4 {
+    border-left-width: 0.4rem !important;
+}
+
+.border-accent-green {
+    border-left-color: var(--accent-green) !important;
+}
+
+/* Criteria and Alternative List Items - Enhanced Visibility */
+.criteria-item, .alternative-item, .luxury-list-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.08);
+    font-size: 1.4rem;
+    flex-wrap: wrap;
+}
+
+.criteria-item:hover, .alternative-item:hover, .luxury-list-item:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-blue);
+    transform: translateY(-0.2rem);
+    box-shadow: 0 0.4rem 1.2rem rgba(66, 133, 244, 0.2);
+}
+
+/* Input fields inside list items */
+.luxury-list-item input[type="text"] {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    font-size: 1.4rem !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.3s ease !important;
+    box-shadow: none !important;
+    flex-grow: 1;
+    min-width: 10rem;
+}
+
+.luxury-list-item input[type="text"]:focus {
+    background: var(--bg-tertiary) !important;
+    border: 1px solid var(--accent-blue) !important;
+    box-shadow: 0 0 0 0.2rem rgba(66, 133, 244, 0.2) !important;
+}
+
+.luxury-list-item input[type="text"]:hover {
+    background: var(--bg-tertiary) !important;
+}
+
+.criteria-item .remove-btn, .alternative-item .remove-btn, .luxury-list-item .remove-btn {
+    background: var(--gemini-red);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.4rem;
+    height: 2.4rem;
+    min-width: 2.4rem;
+    min-height: 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.6rem;
+    transition: all 0.3s ease;
+    margin-left: var(--space-sm);
+}
+
+.criteria-item .remove-btn:hover, .alternative-item .remove-btn:hover, .luxury-list-item .remove-btn:hover {
+    background: var(--gemini-red);
+    box-shadow: 0 0 0 0.4rem rgba(234, 67, 53, 0.3);
     transform: scale(1.1);
 }
 
-.edit-icon {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
+/* --- Custom Font Size Enhancements --- */
 
-.edit-icon i {
-    color: #fff;
-    font-size: 20px;
+/* Studi Kasus Heading */
+.luxury-card h2 {
+    font-size: 2.4rem; /* Base for mobile */
 }
-
-#profileImageUpload {
-    display: none;
-}
-
-button {
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #00c3ff;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0086cc;
-}
-
-/* Profil menu untuk tampilan mobile */
-.profile-menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #444;
-    padding: 10px;
-    width: 100%;
-    text-align: center;
-}
-
-.profile-menu p {
-    color: white;
-    margin: 0;
-}
-
-footer {
-    text-align: center;
-    padding: 10px ;
-    background-color: #050303c7;
-    color: white;
-    position: fixed; /* Pastikan footer tetap di bawah */
-    bottom: 0; /* Tetap di bagian bawah layar */
-    left: 0;
-    width: 100%; /* Pastikan footer mencakup seluruh lebar layar */
-    z-index: 10; /* Pastikan footer di atas elemen lainnya */
-}
-
-.pageS {
-    margin-top: 90px;
-    text-align: center;
-    font-size: 2.5rem;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    padding: 10px; /* Memberikan ruang di sekitar teks */
-    border-radius: 10px; /* Membuat sudut melengkung */
-    display: inline-block; /* Supaya padding berlaku */
-    animation: fadeIn 2s ease-in-out; /* Animasi masuk */
-    background: transparent; /* Memastikan background tetap transparan */
-    
-    color: transparent; /* Membuat warna teks transparan untuk animasi gradasi */
-    background-image: linear-gradient(45deg, #ff0066, #ffcc00, #00ccff, #6600ff); /* Gradasi warna */
-    background-clip: text; /* Menggunakan gradasi sebagai warna teks */
-    -webkit-background-clip: text; /* Untuk browser Webkit */
-    animation: gradientAnimation 3s ease infinite; /* Animasi kelap-kelip gradasi */
-}
-
-@keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
+@media (min-width: 768px) {
+    .luxury-card h2 {
+        font-size: 3.2rem; /* Larger for desktop */
     }
 }
 
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
+/* Studi Kasus Paragraph */
+.luxury-card p.text-primary-light {
+    font-size: 1.8rem; /* Base for mobile */
+}
+@media (min-width: 768px) {
+    .luxury-card p.text-primary-light {
+        font-size: 2rem; /* Larger for desktop */
     }
-    100% {
-        opacity: 1;
+}
+
+/* Manajemen Kriteria & Alternatif Headings */
+.luxury-card h3 {
+    font-size: 2.4rem; /* Base for mobile */
+}
+@media (min-width: 768px) {
+    .luxury-card h3 {
+        font-size: 3rem; /* Larger for desktop */
+    }
+}
+/* Styling for H4 titles within the alternative matrix cards */
+.alternative-matrix-card h4 {
+    /* The 'text-lg' class from Tailwind makes it 1.125rem by default.
+       Let's override it to make it significantly larger. */
+    font-size: 2rem; /* Ukuran font yang lebih besar untuk judul H4 matriks alternatif */
+    font-weight: 800; /* Pastikan tebal dan menonjol */
+    line-height: 1.3; /* Sesuaikan line-height agar tidak terlalu rapat jika teks panjang */
+}
+
+/* Optional: Untuk layar yang lebih besar, bisa lebih besar lagi */
+@media (min-width: 768px) {
+    .alternative-matrix-card h4 {
+        font-size: 3rem; /* Ukuran font yang lebih besar untuk desktop */
+    }
+}
+/* Labels for Criteria & Alternatives */
+label.block.text-sm.font-medium.text-primary-light {
+    font-size: 1.8rem; /* Base for mobile */
+}
+@media (min-width: 768px) {
+    label.block.text-sm.font-medium.text-primary-light {
+        font-size: 2rem; /* Larger for desktop */
+    }
+}
+/* Styling for H4 titles within the alternative matrix cards */
+
+
+/* Criteria and Alternatives List Items */
+#criteriaList div,
+#alternativesList div {
+    font-size: 1.8rem; /* Base for mobile */
+}
+@media (min-width: 768px) {
+    #criteriaList div,
+    #alternativesList div {
+        font-size: 2rem; /* Larger for desktop */
     }
 }
 
 
-
-/* Konten */
-.content-section {
-    background-color: rgba(0, 0, 0, 0.739);
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(151, 138, 138, 0.45);
-    width: 80%;
-    max-width: 900px;
-    margin: 15px auto;
-    margin-bottom: 70px;
-
+/* Input fields in Management sections */
+input.luxury-input {
+    font-size: 1.8rem !important; /* Larger input font */
 }
-
-h1, h2 {
-    text-align: center;
-    font-size: 2rem;
-    color: #ffffff;
-}
-a {
-    color: rgb(22, 92, 197);
-}
-a :hover{
-color: rgb(5, 50, 117);
-}
-
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-form label {
-    font-size: 1.2rem;
-    color: #ffffff;
-}
-
-form input, form select, form textarea {
-    padding: 10px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-    background-color: #ffffff;
-    color: #000000;
-}
-
-form input[type="file"] {
-    border: 10px solid #ffffff;
-}
-
-form input[type="submit"] {
-    background-color: #0099ff;
-    color: #ffffff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-form input[type="submit"]:hover {
-    background-color: #0066cc;
-}
-
-
-/* Daftar Buku yang Diupload */
-.book-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Gap antara item buku */
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.book-item {
-    display: flex;
-    flex-direction: column;
-    background-color: #000000;
-    width: 210px;
-    border-radius: 5px 15px 15px 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(255, 253, 253, 0.3);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-}
-
-.book-item:hover {
-    transform: scale(1.05);  /* Efek hover pada perangkat besar */
-    box-shadow: 0 6px 15px rgba(145, 130, 130, 0.5);
-}
-
-.book-cover {
-    width: 210px;
-    height: 252px;
-    display: flex;
-    justify-content: center;
-    border-radius: 5px 15px 15px 5px;
-    align-items: center;
-    background-color: #333;
-}
-
-.book-cover img {
-    width: 210px;
-    height: 252px;
-    object-fit: cover;
-    display: block;
-}
-
-.book-details {
-    margin-top: -7px;
-    padding: 10px;
-    color: white;
-    text-align: center;
-    font: 1em sans-serif;
-}
-
-.book-details strong {
-    font-size: 1.6em;  /* Ukuran font lebih besar di layar besar */
-    color: #fff;
-    text-transform: capitalize;
-}
-
-.book-details .genre, .book-details .author {
-    font-size: 1em;  /* Ukuran font untuk genre dan author */
-    color: #ccc;
-}
-
-.book-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    background-color: #333;
-    border-top: 1px solid #444;
-}
-
-.book-buttons button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: none;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.view-button {
-    background-color: #007BFF;
-}
-
-.view-button:hover {
-    background-color: #0056b3;
-}
-
-.delete-button {
-    background-color: #FF3B30;
-}
-
-.delete-button:hover {
-    background-color: #D32F2F;
-}
-
-.book-buttons button:focus {
-    outline: none;
-}
-
-/* Responsif - Mengatur ukuran teks untuk layar kecil */
-@media (max-width: 768px) {
-    .book-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* Gap antara item buku */
-        justify-content: center;
-    }
-
-    .book-item {
-        width: 150px; /* Mengurangi lebar buku di layar kecil */
-    }
-
-    .book-cover {
-        width: 150px;
-        height: 180px; /* Menyesuaikan tinggi buku */
-       
-    }
-
-    .book-details strong {
-        font-size: 1.4em; /* Ukuran font lebih kecil pada layar lebih kecil */
-    }
-
-    .book-details{
-        font: 0.7em sans-serif;
+@media (min-width: 768px) {
+    input.luxury-input {
+        font-size: 2rem !important; /* Even larger for desktop */
     }
 }
 
-/* Responsif - Mengatur ukuran teks dan elemen untuk layar lebih kecil (misalnya pada ponsel) */
+/* Skala Perbandingan AHP text */
+.luxury-card .space-y-4 > div {
+    font-size: 1.8rem; /* Base for mobile */
+}
+@media (min-width: 768px) {
+    .luxury-card .space-y-4 > div {
+        font-size: 2rem; /* Larger for desktop */
+    }
+}
+
+/* Skala Perbandingan AHP H4 */
+.luxury-card h4.font-semibold.text-accent-blue {
+    font-size: 1.8rem; /* Base for mobile */
+}
+@media (min-width: 768px) {
+    .luxury-card h4.font-semibold.text-accent-blue {
+        font-size: 2.2rem; /* Larger for desktop */
+    }
+}
+
+/* Table Headers (th) */
+.luxury-table th, .matrix-table th {
+    font-size: 1.8rem !important; /* Larger table header font */
+}
+@media (min-width: 768px) {
+    .luxury-table th, .matrix-table th {
+        font-size: 2rem !important; /* Even larger for desktop */
+    }
+}
+
+/* Table Data Cells (td) */
+.luxury-table td, .matrix-table td {
+    font-size: 1.8rem !important; /* Larger table cell font */
+}
+@media (min-width: 768px) {
+    .luxury-table td, .matrix-table td {
+        font-size: 2rem !important; /* Even larger for desktop */
+    }
+}
+
+/* Matrix Input Cells */
+.matrix-input {
+    font-size: 1.8rem !important; /* Larger input font in matrix */
+}
 @media (max-width: 480px) {
-    .book-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px; /* Gap lebih kecil */
-        justify-content: center;
+    .matrix-input {
+        font-size: 1.6rem !important; /* Slightly smaller for very small screens */
     }
-
-    .book-item {
-        width: 120px; /* Lebar buku lebih kecil di ponsel */
-    }
-
-    .book-cover {
-        width: 120px;
-        height: 140px; /* Menyesuaikan ukuran cover buku */
-    }
-
-    .book-details strong {
-        font-size: 1.2em; /* Ukuran font lebih kecil pada ponsel */
-    }
-
-    .book-details .genre, .book-details .author {
-        font-size: 0.5em; /* Ukuran font lebih kecil untuk genre dan author */
+}
+@media (min-width: 768px) {
+    .matrix-input {
+        font-size: 2rem !important; /* Even larger for desktop */
     }
 }
 
-/* Gaya untuk select dropdown */
-.filters {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+/* Consistency Results Text */
+#consistencyResults div {
+    font-size: 1.8rem; /* Base for mobile */
 }
-
-.filters select {
-    padding: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #2266cb;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.filters select:hover {
-    background-color: #226fc1;
-}
-
-.filters input {
-    padding: 10px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-    background-color: #ffffff;
-    color: #060101;
-    width: 360px;
-}
-
-/* Responsif - Mengurangi jarak antar elemen untuk input dan tombol */
-@media (max-width: 768px) {
-    .filters {
-        gap: 0.5rem; /* Mengurangi jarak antar dropdown dan input */
-    }
-
-    .filters select, .filters input {
-        padding: 8px; /* Mengurangi padding */
-    }
-    
-    .content-section {
-        width: 90%; /* Mengurangi lebar konten */
-        padding: 12px; /* Mengurangi padding */
+@media (min-width: 768px) {
+    #consistencyResults div {
+        font-size: 2rem; /* Larger for desktop */
     }
 }
+
+/* Consistency Indicators */
+.consistency-good, .consistency-warning {
+    font-size: 1.8rem !important; /* Larger font for consistency messages */
+    padding: 0.8rem 1.5rem; /* Adjust padding for larger text */
+}
+@media (min-width: 768px) {
+    .consistency-good, .consistency-warning {
+        font-size: 2rem !important; /* Even larger for desktop */
+    }
+}
+
+/* Footer text */
+.luxury-footer p {
+    font-size: 1.6rem; /* Slightly larger footer font */
+}
+@media (min-width: 768px) {
+    .luxury-footer p {
+        font-size: 1.8rem; /* Even larger for desktop */
+    }
+}
+/* New responsive class for section titles - Ensure this is still at the bottom or higher specificity */
+.luxury-section-title {
+    font-size: 2.4rem; /* Default font size for mobile (24px) */
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+}
+
+@media (min-width: 768px) {
+    .luxury-section-title {
+        font-size: 3.2rem; /* Larger font size for desktop (32px) */
+    }
+}
+
