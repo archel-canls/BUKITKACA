@@ -1,257 +1,514 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>OPTITALENT - Cover Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUKITKACA - BUKITKACA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
     <style>
-        /* Gaya font kustom */
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap'); /* Font Oswald untuk teks modern */
-
-        body {
-            /* Background gradasi baru: biru ke hijau */
-            background: linear-gradient(135deg, #2563eb, #10b981, #2563eb, #10b981, #2563eb); /* Ulangi warna untuk efek gelombang */
-            background-size: 150% 150%;
-            animation: gradientWaveAnimation 8s ease infinite;
-            font-family: 'Oswald', sans-serif; /* Font modern untuk seluruh teks */
-            color: #ffffff; /* Warna teks utama tetap putih untuk kontras umum */
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            overflow-y: auto;
-            overflow-x: hidden;
+#bookCarousel {
             position: relative;
-            padding: 5vh 2rem; /* Padding lebih sedikit di atas dan bawah */
-        }
-
-        /* Animasi gradasi bergelombang */
-        @keyframes gradientWaveAnimation {
-            0% { background-position: 0% 50%; }
-            25% { background-position: 100% 50%; }
-            50% { background-position: 0% 50%; }
-            75% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Overlay untuk menambah kontras teks */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.45); /* **PERUBAHAN: Overlay lebih gelap untuk kontras** */
-            z-index: 0;
-        }
-
-        body > *:not(script) {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
+            height: 360px;
             width: 100%;
-        }
-
-        /* Jarak logo dengan judul diatur menjadi sangat dekat */
-        .logo-header-container {
-            margin-bottom: 0.5rem; /* Jarak sangat dekat */
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif; /* Font judul tetap Playfair Display */
-            color: #ffffff; /* **PERUBAHAN: Warna judul putih solid** */
-            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7); /* **PERUBAHAN: Bayangan lebih kuat dan gelap** */
-            letter-spacing: 0.1em; /* Spasi huruf lebih lebar */
-            margin-bottom: 1rem; /* Jarak dengan deskripsi */
-        }
-
-        p {
-            color: #e0f2f7; /* **PERUBAHAN: Warna deskripsi sedikit kebiruan sangat pucat** */
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5); /* **PERUBAHAN: Bayangan lebih jelas** */
-            font-size: 1.1rem; /* Ukuran font lebih besar */
-        }
-
-        h2 {
-            color: #87ceeb; /* **PERUBAHAN: Warna judul sub-bagian biru langit** */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* **PERUBAHAN: Bayangan lebih jelas** */
-            margin-top: 1.5rem; /* Jarak atas lebih besar */
-        }
-
-        ul li {
-            color: #f8f8f8; /* **PERUBAHAN: Warna list mendekati putih** */
-            font-weight: 500;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Tambahkan bayangan ringan */
-        }
-
-        /* Warna khusus untuk Dosen Pembimbing */
-        ul li.dosen-color {
-            color: #ffeb3b; /* **PERUBAHAN: Kuning cerah untuk dosen** */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* Bayangan lebih kuat */
-        }
-
-        .cta-button {
-            background: linear-gradient(45deg, #FF6B6B 0%, #FFA07A 100%); /* Merah muda ke oranye peach */
-            border: none;
-            color: #fff;
-            padding: 1.2rem 3rem; /* Ukuran tombol lebih besar lagi */
-            font-size: 1.3rem; /* Ukuran font tombol lebih besar */
-            font-weight: 700; /* Tebal */
-            border-radius: 50px; /* Sangat bulat */
+            margin: 20px auto;
+            overflow: hidden;
+            border: 1px solid #dddddd; /* Border around the carousel */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
             cursor: pointer;
-            position: relative;
-            overflow: hidden; /* Penting untuk efek kilau */
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6); /* Bayangan lebih menonjol */
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transisi halus dan cepat */
-            text-transform: uppercase; /* Huruf besar semua */
-            letter-spacing: 0.05em; /* Spasi antar huruf */
+        }
+        .carousel-inner {
+            display: flex;
+            transition: transform 1s ease;
         }
 
-        /* Efek kilau saat hover */
-        .cta-button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        .carousel-inner .item {
+            min-width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: flex-start; /* Align content to the left */
+            align-items: flex-start; /* Align content to the top */
+        }
+
+        .bookCarousel-item {
+            display: flex;
+            flex-direction: row; /* Horizontal layout */
+            align-items: flex-start; /* Align items at the start */
+            justify-content: flex-start; /* Align items to the left */
             width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2); /* Kilau putih transparan */
-            transform: skewX(-20deg); /* Bentuk kilau miring */
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 8px;
         }
 
-        .cta-button:hover {
-            transform: translateY(-7px) scale(1.05); /* Sedikit naik dan membesar */
-            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.8); /* Bayangan lebih intens */
-            background: linear-gradient(45deg, #FFA07A 0%, #FF6B6B 100%); /* Balik gradien */
+     
+        .bookCarousel-item img {
+            flex-shrink: 0; /* Mencegah gambar mengecil */
+    width: 210px;
+    height: 250px;
+    background-color: #222;
+    border-radius: 3px 15px 15px 3px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin-right: 20px;
+}
+
+.bookCarousel-description {
+    font-size: 16px;
+    line-height: 1;
+    color: #ffffff;
+    text-align: justify;
+    flex-grow: 1;
+    overflow: hidden;  /* Menyembunyikan teks yang berlebih */
+    white-space: nowrap; /* Agar teks tetap berada dalam satu baris */
+    text-overflow: ellipsis; /* Menampilkan elipsis jika teks terpotong */
+    white-space: normal; /* Allow wrapping to next line */
+    word-wrap: break-word; /* Ensure long words break and wrap */
+}
+
+
+/* If you want a "read more" option when the description is cut off */
+.bookCarousel-description.read-more {
+    height: auto; /* Allow it to expand when clicked */
+    overflow: visible;
+}
+
+
+        .bookCarousel-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+            text-align: left;
+            margin-bottom: 15px; /* Reduced space between title and description */
+            overflow: hidden;  /* Menyembunyikan teks yang berlebih */
+            text-transform: capitalize;
         }
 
-        .cta-button:hover::after {
-            left: 100%; /* Kilau bergerak ke kanan */
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0);
+            color: rgba(255, 255, 255, 0.55);
+            border: none;
+            font-size: 30px;
+            padding: 10px;
+            cursor: pointer;
+            transform: translateY(-50%);
         }
 
-        .cta-button:active {
-            transform: translateY(-2px) scale(1.02); /* Sedikit menekan saat diklik */
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5);
+        .carousel-control.left {
+            left: 10px;
         }
 
-        .logo-upgris-header {
-            width: 70px;
-            height: 80px;
+        .carousel-control.right {
+            right: 10px;
         }
 
-        .logo-informatika-header {
-            width: 120px;
-            height: 45px;
+        .carousel-indicators {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
         }
 
-        /* Responsivitas untuk ukuran layar yang lebih kecil */
+        .carousel-indicators li {
+            display: inline-block;
+            margin: 0 5px;
+            background-color: rgba(12, 11, 11, 0.473);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .carousel-indicators .active {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .carousel-control:hover {
+            background-color: rgba(0, 0, 0, 0);
+            color: rgba(255, 255, 255, 0.259);
+        }
+
         @media (max-width: 768px) {
-            body {
-                padding: 3vh 1.5rem;
-            }
-            h1 {
-                font-size: 2.5rem;
-            }
-            p {
-                font-size: 1rem;
-            }
-            .cta-button {
-                padding: 1rem 2.5rem;
-                font-size: 1.1rem;
-            }
-            .logo-upgris-header {
-                width: 50px;
-                height: 60px;
-            }
-            .logo-informatika-header {
-                width: 80px;
-                height: 30px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 2vh 1rem;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            p {
-                font-size: 0.9rem;
-            }
-            .cta-button {
-                padding: 0.8rem 2rem;
-                font-size: 1rem;
-            }
-            .logo-image {
-                width: 120px;
-                height: 120px;
-            }
-            .logo-upgris-header {
-                width: 40px;
-                height: 50px;
-            }
-            .logo-informatika-header {
-                width: 60px;
-                height: 20px;
-            }
-        }
-
-        .logo-image { /* Ukuran awal, diperbesar */
-            width: 200px; /* Ukuran lebih besar */
+    #bookCarousel {
+            position: relative;
             height: 200px;
+            width: 100%;
+            margin: 20px auto;
+            overflow: hidden;
+            border: 1px solid #dddddd; /* Border around the carousel */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+            cursor: pointer;
         }
-        .dosen-pembimbing, .kelompok { /* Gaya untuk font yang lebih besar */
-            font-size: 1.8rem; /* Ukuran font lebih besar */
-            font-weight: bold; /* Teks ditebalkan */
+.bookCarousel-item img {
+    flex-shrink: 0; /* Mencegah gambar mengecil */
+    width: 120px;
+    height: 150px;
+    background-color: #222;
+    border-radius: 3px 15px 15px 3px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin-right: 20px;
+    margin-top: 8px;
+
+}
+
+.bookCarousel-item {
+            display: flex;
+            line-height: 1;
+            flex-direction: row; /* Horizontal layout */
+            align-items: flex-start; /* Align items at the start */
+            justify-content: flex-start; /* Align items to the left */
+            width: 100%;
+            padding: 4px;
         }
+
+        .bookCarousel-title {
+    font-size: 14px; /* Reduced font size for the title */
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    text-align: left;
+    margin-bottom: 10px; /* Reduced space between title and description */
+    text-transform: capitalize;
+}
+.bookCarousel-description {
+    font-size: 8px;
+    line-height: 1;
+    color: #ffffff;
+    text-align: justify; /* Align text to both left and right */
+    flex-grow: 1; /* Make the description take the remaining space */
+    overflow: hidden; /* Hide overflowing text */
+    text-overflow: ellipsis; /* Add "..." when text overflows */
+    white-space: normal; /* Allow wrapping to next line */
+    word-wrap: break-word; /* Ensure long words break and wrap */
+}
+}
+.tap-to-read {
+            color: #2ac61c;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* Added hover effect */
+        .tap-to-read:hover {
+            text-decoration: underline;
+        }
+.book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 5px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+
+.book-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 210px;
+    border-radius: 5px 15px 15px 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+
+    .book-item {
+        width: 150px; /* Mengurangi lebar buku di layar kecil */
+    }
+    .book-cover img {
+    width: 150px;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+}
+    @media (max-width: 480px) {
+
+    .book-item {
+        width: 120px; /* Lebar buku lebih kecil di ponsel */
+    }
+    .book-cover {
+        width: 120px;
+        height: 140px; /* Menyesuaikan ukuran cover buku */
+    }
+
+    .book-cover img {
+    width: 120px;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+}
     </style>
 </head>
-<body class="font-sans">
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="logo">BUKITKACA</div>
+        <nav id="navMenu">
+            <a href="index.html" class="active">Beranda</a>
+            <a href="pojokbaca.html">Pojok Baca</a>
+            <a href="pusatinformasi.html">Pusat Informasi</a>
+            <a href="upload.html">Upload</a>
+            <a href="rakbuku.html">Rak Buku</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="#" id="auth-link" class="active" onclick="toggleAuthButton()">Login</a>
+        </nav>
+        <div class="header-profile-pic" id="headerProfilePic" onclick="window.location.href='profile.html'"></div>
+    </header>
 
-    <div class="logo-header-container flex justify-center items-center space-x-6">
-        <img src="logo_upgris.png" alt="Logo UPGRIS" class="logo-upgris-header">
-        <img src="logo_informatika.png" alt="Logo Informatika" class="logo-informatika-header">
-    </div>
+    <section class="pageS">BUKU KITA KALIAN BACA</section>
+    <section class="content-section">
+        <main>
+            <div id="bookCarousel" class="carousel">
+                <ol class="carousel-indicators" id="carouselIndicators"></ol>
+                <div class="carousel-inner" id="carouselContent"></div>
+                <button class="carousel-control left" id="prevBtn">&#10094;</button>
+                <button class="carousel-control right" id="nextBtn">&#10095;</button>
+            </div>
 
-    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
-    OPTITALENT
-    </h1>
+            <h2>Update Terbaru</h2>
+            <div id="bookList" class="book-list"></div>
+        </main>
+    </section>
 
-    <p class="text-lg md:text-2xl">
-        Pemilihan Karyawan Terbaik Bermetode AHP  
-    </p>
-
-    <img src="logo.png" alt="Logo Smart Garden" class="logo-image transform transition-transform duration-500 hover:scale-110 mx-auto">
+    <footer>
+        <p>&copy; 2024 BUKITKACA. Semua Hak Dilindungi.</p>
+        <a href="mailto:arifalfiancanls@gmail.com">kontak@bukitkaca.com</a>.</p>
+    </footer>
     
-    <div class="mb-10 text-base md:text-xl">
-        <ul class="list-none p-0 m-0 space-y-2 mb-4">
-            <li class="font-bold text-xl md:text-2xl dosen-color dosen-pembimbing">Dosen Pembimbing:
-                    </li>
-                    <p class="text-lg md:text-2xl">
-                         Setyoningsih Wibowo, ST., M. Kom
-                    </p>
-        </ul>
-        <ul class="list-none p-0 m-0 space-y-2 mb-4">
-        <li class="font-bold text-xl md:text-2xl dosen-color kelompok">Kelompok 3(4E):</li>
-        </ul>
-        <ul class="list-none p-0 m-0 space-y-2">
-            <li>Arif Alfian Choirul Anwar (23670119)</li>
-            <li>Kelvin Bintang Ardiansyah (23670148)</li>
-            <li>Alivia Nuraida (23670132)</li>
-            <li>Rahardiana Fauziatun Nufus (23670110)</li>
-        </ul>
-    </div>
-    
-    <a href="ahp.html" class="cta-button">
-        Masuk Ke Aplikasi
-    </a>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref as dbRef, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2VBOHY24RLpCL9WnEkQp3FE9ydpAdrgk",
+            authDomain: "bukitkaca-65e92.firebaseapp.com",
+            databaseURL: "https://bukitkaca-65e92-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bukitkaca-65e92",
+            storageBucket: "bukitkaca-65e92.firebasestorage.app",
+            messagingSenderId: "848017575081",
+            appId: "1:848017575081:web:756445e54749aa261cadb8",
+            measurementId: "G-YLP8GC5T3J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+
+      // Populate the carousel with books from Firebase
+      async function populateCarousel() {
+    const carouselContent = document.getElementById('carouselContent');
+    const carouselIndicators = document.getElementById('carouselIndicators');
+    carouselContent.innerHTML = '';
+    carouselIndicators.innerHTML = '';
+
+    // Determine the max description length based on the screen width
+    let maxDescriptionLength = 330; // Default for larger screens
+    if (window.innerWidth <= 480) {
+        maxDescriptionLength = 120; // For screens smaller than 480px
+    } else if (window.innerWidth <= 768) {
+        maxDescriptionLength = 360; // For screens smaller than or equal to 768px
+    }
+
+    const bookDataRef = dbRef(database, 'books/');
+    try {
+        const snapshot = await get(bookDataRef);
+
+        if (snapshot.exists()) {
+            const books = snapshot.val();
+            const bookArray = Object.entries(books).slice(0, 7);
+
+            bookArray.forEach(([bookKey, book], index) => {
+                const item = document.createElement('div');
+                item.classList.add('item', 'bookCarousel-item');
+                if (index === 0) item.classList.add('active');
+
+                let description = book.description;
+                if (description.length > maxDescriptionLength) {
+                    description = description.substring(0, maxDescriptionLength) + '... <span class="tap-to-read">TAP UNTUK LEBIH DETAIL</span>';
+                }
+
+                item.innerHTML = `
+                    <div class="bookCarousel-item">
+                        <img src="${book.coverBase64}" alt="Cover Buku">
+                        <div>
+                            <div class="bookCarousel-title">${book.title}</div>
+                            <div class="bookCarousel-description">${description}</div>
+                        </div>
+                    </div>
+                `;
+
+                item.addEventListener('click', () => {
+                    window.location.href = `lihatbuku.html?bookKey=${bookKey}`;
+                });
+
+                carouselContent.appendChild(item);
+
+                const indicator = document.createElement('li');
+                if (index === 0) indicator.classList.add('active');
+                indicator.addEventListener('click', () => moveToSlide(index));
+                carouselIndicators.appendChild(indicator);
+            });
+
+            moveToSlide(0);
+        } else {
+            carouselContent.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+        }
+    } catch (error) {
+                console.error('Error fetching book data:', error);
+                carouselContent.innerHTML = '<p>Tunggu Sebentar sedang memuat ulang :). Jika masalah tetap terjadi, kunjungi halaman lain dan kembali ke sini. Jika masih tidak bisa, silakan hubungi kontak kita dibagian bawah layar...</p>';
+                setTimeout(populateCarousel, 5000);
+            }
+        }
+
+
+  // Fungsi untuk berpindah slide
+  let currentIndex = 0;
+        function moveToSlide(index) {
+            const items = document.querySelectorAll('.carousel-inner .item');
+            if (index >= items.length) currentIndex = 0;
+            else if (index < 0) currentIndex = items.length - 1;
+            else currentIndex = index;
+
+            const newTransformValue = -currentIndex * 100;
+            document.querySelector('.carousel-inner').style.transform = `translateX(${newTransformValue}%)`;
+
+            // Update indikator aktif
+            document.querySelectorAll('.carousel-indicators li').forEach((indicator, i) => {
+                if (i === currentIndex) indicator.classList.add('active');
+                else indicator.classList.remove('active');
+            });
+        }
+
+        // Kontrol tombol
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            moveToSlide(currentIndex + 1);
+            resetAutoScroll();
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            moveToSlide(currentIndex - 1);
+            resetAutoScroll();
+        });
+
+        // Fungsi untuk otomatis menggulir slide setiap 5 detik
+        let autoScroll;
+        function startAutoScroll() {
+            autoScroll = setInterval(() => {
+                moveToSlide(currentIndex + 1);
+            }, 5000); // 5000ms = 5 detik
+        }
+
+        // Reset auto-scroll saat pengguna mengontrol carousel secara manual
+        function resetAutoScroll() {
+            clearInterval(autoScroll);
+            startAutoScroll();
+        }
+
+        // Fungsi untuk memuat daftar buku tanpa login
+        async function loadBookList() {
+    const bookListContainer = document.getElementById('bookList');
+    bookListContainer.innerHTML = ''; // Clear the book list container
+
+    const loadingMessage = document.createElement('p');
+    loadingMessage.textContent = 'Memuat Buku...';
+    bookListContainer.appendChild(loadingMessage);
+
+    const bookDataRef = dbRef(database, 'books/');
+    const snapshot = await get(bookDataRef);
+
+    if (snapshot.exists()) {
+        const books = snapshot.val();
+        bookListContainer.innerHTML = ''; // Clear any previous content
+        let foundBooks = false;
+
+        // Convert the books object to an array of [key, book] pairs
+        const bookArray = Object.entries(books);
+
+        // Sort the books by 'updatedAt' in descending order
+        bookArray.sort((a, b) => new Date(b[1].updatedAt) - new Date(a[1].updatedAt));
+
+        // Display the sorted books
+        for (const [key, book] of bookArray) {
+            const bookItem = document.createElement('div');
+            bookItem.className = 'book-item';
+            bookItem.innerHTML = `
+                <div class="book-cover">
+                    <img src="${book.coverBase64}" alt="Cover Buku">
+                </div>
+                <div class="book-details">
+                    <strong>${book.title}</strong><br>
+                    Genre: ${book.genre.join(', ')}<br>
+                    Pengupload: ${book.uploadedBy}<br>
+                    <em>${timeAgo(book.updatedAt)}</em><br>
+                </div>
+            `;
+            bookItem.addEventListener('click', function() {
+                window.location.href = `lihatbuku.html?bookKey=${key}`;
+            });
+
+            bookListContainer.appendChild(bookItem);
+            foundBooks = true;
+        }
+
+        if (!foundBooks) {
+            bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+        }
+    } else {
+        bookListContainer.innerHTML = '<p>Tidak ada buku yang di-upload.</p>';
+    }
+}
+
+        // Fungsi untuk menghitung waktu yang lalu
+        function timeAgo(date) {
+            const now = new Date();
+            const diff = now - new Date(date); // Selisih dalam milidetik
+
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (seconds < 60) {
+                return `${seconds} detik yang lalu`;
+            } else if (minutes < 60) {
+                return `${minutes} menit yang lalu`;
+            } else if (hours < 24) {
+                return `${hours} jam yang lalu`;
+            } else if (days < 7) {
+                return `${days} hari yang lalu`;
+            } else if (weeks < 4) {
+                return `${weeks} minggu yang lalu`;
+            } else if (months < 12) {
+                return `${months} bulan yang lalu`;
+            } else {
+                return `${years} tahun yang lalu`;
+            }
+        }
+        // Memuat buku saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadHeaderProfilePic);
+        window.onload = toggleAuthButton;
+        document.addEventListener('DOMContentLoaded', loadBookList);
+        document.addEventListener('DOMContentLoaded', populateCarousel);
+        document.addEventListener('DOMContentLoaded', startAutoScroll);
+    </script>
 </body>
 </html>
