@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Digital A3 - Jaga Privasimu</title>
+    <style>
+        /* ================================================= */
+        /* GAYA UTAMA & SETUP POSTER A3 POTRAIT (VERTikal) */
+        /* ================================================= */
+        body {
+            /* Simulasi Rasio A3 Potrait: ~701px x 992px */
+            width: 701px; 
+            height: 992px; 
+            margin: 0;
+            padding: 0;
+            /* Font Keren, bukan polos */
+            font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif; 
+            background-color: #f0f0f0; /* Latar luar */
+            overflow: hidden; /* Pastikan tidak ada scroll */
+        }
+
+        /* Container utama yang memegang semua konten */
+        .poster-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            border: 20px solid #000000; /* Border Utama Hitam Tebal */
+            /* Background gradien yang menarik dan cerah */
+            background: linear-gradient(180deg, #e6f7ff 0%, #ffffff 50%, #f7e6ff 100%);
+            padding: 15px; /* Padding di dalam border */
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Efek Huruf "Tebal Gambar" Sesuai Permintaan */
+        .gambar-tebal {
+            display: inline-block;
+            padding: 1px 3px; /* Padding dikurangi lagi */
+            border-radius: 5px; /* Radius dikurangi lagi */
+            background-color: #ffeb3b; /* Kuning Neon */
+            color: #d32f2f; /* Merah Menyala */
+            font-weight: 900; 
+            box-shadow: 0 1px #1976d2; /* Shadow dikurangi */
+            text-transform: uppercase;
+            letter-spacing: 0.3px; /* Letter spacing dikurangi */
+            border: 1px solid #d32f2f;
+            word-break: break-word; 
+            line-height: 1.2; /* Line height disesuaikan agar tidak makan banyak ruang vertikal */
+        }
+
+        /* Latar Belakang Penuh (Ramein) */
+        .texture-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; 
+            opacity: 0.15; 
+            /* Pola titik-titik (Dot Grid) yang ramai */
+            background-image: radial-gradient(#9e9e9e 1px, transparent 1px);
+            background-size: 8px 8px;
+            z-index: 1; 
+        }
+
+        /* Pastikan elemen konten di atas overlay */
+        .poster-container > * {
+            position: relative;
+            z-index: 5;
+        }
+
+        /* ================================================= */
+        /* HEADER - JUDUL UTAMA */
+        /* ================================================= */
+        .header {
+            text-align: center;
+            padding: 20px 0 10px 0;
+            background-color: #d32f2f; 
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); 
+            margin: -15px -15px 0 -15px; 
+        }
+
+        .header h1 {
+            font-size: 44px; /* Ukuran judul sedikit dikurangi */
+            margin: 0;
+            font-family: 'Impact', 'Arial Black', sans-serif; 
+            letter-spacing: 4px; /* Letter spacing dikurangi */
+            text-shadow: 4px 4px #000; /* Shadow dikurangi */
+            line-height: 1.1;
+        }
+
+        .header p {
+            font-size: 22px; /* Ukuran sub-judul sedikit dikurangi */
+            margin: 5px 0 10px 0;
+            font-style: italic;
+            font-weight: 600;
+            text-shadow: 1px 1px #000;
+        }
+
+        /* ================================================= */
+        /* MAIN CONTENT - KONTEN INTI (AREA PERBAIKAN LEBIH LANJUT) */
+        /* ================================================= */
+        .main-content {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; /* Gap dikurangi lagi menjadi 15px untuk ruang lebih */
+            padding: 20px 8px 10px 8px; /* Padding sisi diperlebar menjadi 8px, atas/bawah dikurangi sedikit */
+        }
+
+        /* Kotak Informasi (Berisi Ikon/Gambar) */
+        .info-box {
+            background-color: #ffffff;
+            border: 5px dashed #1976d2; 
+            padding: 8px; /* Padding kotak dikurangi menjadi 8px */
+            border-radius: 20px;
+            box-shadow: 6px 6px 0px rgba(255, 165, 0, 0.8); /* Shadow dikurangi */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            transition: transform 0.3s;
+        }
+
+        .info-box:hover {
+            transform: translateY(-3px); /* Efek hover dikurangi */
+        }
+
+        .info-box h3 {
+            font-size: 24px; /* Ukuran h3 dikurangi menjadi 24px */
+            color: #d32f2f; 
+            margin-top: 8px; /* Margin atas dikurangi */
+            margin-bottom: 3px; /* Margin bawah dikurangi */
+            font-family: 'Verdana', sans-serif;
+            text-transform: uppercase;
+            text-shadow: 1px 1px #ffeb3b;
+            line-height: 1.2; /* Line height disesuaikan */
+        }
+
+        .info-box p {
+            font-size: 14px; /* UKURAN FONT TEKS DIKECILKAN DARI 15px menjadi 14px */
+            color: #333;
+            line-height: 1.3; /* Line height disesuaikan */
+            text-align: center;
+            margin-bottom: 0;
+            font-weight: 500;
+            padding: 0 3px; /* Padding horizontal di dalam paragraf dikurangi lagi */
+        }
+
+        /* Ikon/Gambar - Menggunakan Emoji (Kesan ramai/bergambar) */
+        .icon-container {
+            width: 80px; /* Ukuran ikon dikurangi menjadi 80px */
+            height: 80px; /* Ukuran ikon dikurangi menjadi 80px */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px; /* Ukuran emoji dikurangi */
+            border: 4px solid #000; /* Border ikon dikurangi */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow ikon dikurangi */
+            margin-bottom: 8px; /* Margin bawah ikon dikurangi */
+        }
+
+        .icon-pass { background-color: #bbdefb; }
+        .icon-lock { background-color: #c8e6c9; }
+        .icon-phish { background-color: #ffccbc; }
+        .icon-social { background-color: #f8bbd0; }
+
+        /* ================================================= */
+        /* FOOTER - CTA & INFO */
+        /* ================================================= */
+        .footer {
+            text-align: center;
+            padding: 12px; /* Padding footer dikurangi sedikit */
+            background-color: #000; 
+            color: #ffeb3b; 
+            font-size: 18px; /* Ukuran font footer dikurangi sedikit */
+            font-family: 'Courier New', monospace; 
+            border-top: 4px double #d32f2f; /* Border footer dikurangi */
+            text-shadow: 1px 1px #d32f2f;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 10px; /* Tambahkan margin atas ke footer agar tidak terlalu rapat */
+        }
+
+        /* Menghilangkan elemen grafis tambahan agar tidak menutupi teks */
+        /* .graphic-dots { display: none; } */ /* Ini juga bisa dilakukan, atau cukup hapus dari HTML */
+        /* Jika ingin ada di tempat lain dan tidak menutupi, pindahkan posisinya */
+    </style>
+</head>
+<body>
+
+    <div class="texture-overlay"></div>
+    
+    <div class="poster-container">
+        
+        <div class="header">
+            <h1>⛔ <span class="gambar-tebal">WARNING!</span> JAGA PRIVASIMU!</h1>
+            <p>Tingkatkan Keamanan Data Pribadimu di Dunia Digital</p>
+        </div>
+
+        <div class="main-content">
+            
+            <div class="info-box">
+                <div class="icon-container icon-pass">🔑</div>
+                <h3><span class="gambar-tebal">PASSWORD</span> UNIK & KUAT</h3>
+                <p>Kombinasikan <span class="gambar-tebal">huruf, angka, dan simbol</span>. Jangan ulangi password. Gunakan Pengelola Kata Sandi (Password Manager). Ganti secara rutin!</p>
+            </div>
+
+            <div class="info-box">
+                <div class="icon-container icon-lock">🛡️</div>
+                <h3>AKTIFKAN <span class="gambar-tebal">2FA / OTP</span></h3>
+                <p>Selalu aktifkan <span class="gambar-tebal">Otentikasi Dua Faktor</span> (2FA) di semua akun penting Anda (Email, Medsos, Perbankan). Ini pertahanan ganda terbaik!</p>
+            </div>
+            
+            <div class="info-box">
+                <div class="icon-container icon-phish">🎣</div>
+                <h3>WASPADA <span class="gambar-tebal">PHISHING</span></h3>
+                <p>Jangan klik tautan atau berikan data pribadi dari pesan/email yang mencurigakan. <span class="gambar-tebal">Periksa alamat pengirim</span> dan URL sebelum bertindak.</p>
+            </div>
+            
+            <div class="info-box">
+                <div class="icon-container icon-social">👤</div>
+                <h3>BATASI <span class="gambar-tebal">SHARING</span> DATA</h3>
+                <p>Atur akun media sosial ke mode <span class="gambar-tebal">PRIVAT</span>. Hindari memposting informasi sensitif seperti tiket, dokumen, atau lokasi rumah Anda secara detail.</p>
+            </div>
+            
+        </div>
+        
+        <div class="footer">
+            <p>🌐 <span class="gambar-tebal">PRIVASI ANDA = TANGGUNG JAWAB ANDA</span> | #AmanDiDuniaDigital</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
