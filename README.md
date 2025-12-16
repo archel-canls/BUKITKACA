@@ -115,3 +115,89 @@ Digunakan untuk otentikasi instan, memanfaatkan perangkat keras keamanan pada *d
 Data biometrik mentah pengguna diubah menjadi template, kemudian dienkripsi menggunakan Kunci Perangkat Keras Unik (`K_hw`) dan disimpan di dalam Secure Enclave.
 ```math
 Penyimpanan = Enkripsi(Template_Biometrik, K_hw)
+
+---
+
+## 📝 Studi Kasus: Simulasi Alur Keamanan Data
+
+Berikut adalah simulasi langkah demi langkah bagaimana data pengguna diolah dan diamankan dalam arsitektur ArchelStore menggunakan nilai konkret dan perhitungan hashing yang disederhanakan.
+
+### 📌 Asumsi Nilai Input
+* **Password Mentah (`P`):** `password123`
+* **PIN Mentah (`P_pin`):** `123456`
+* **User ID (`UID`):** `uid123456789`
+* **Email:** `user@example.com`
+
+---
+
+### 1. 🔑 Pengamanan PASSWORD (SCRYPT Hashing)
+Password diamankan oleh Firebase Authentication menggunakan algoritma **SCRYPT** (sangat kuat).
+
+#### A. Hashing (Penyimpanan)
+| Langkah | Aksi / Data | Konsep Keamanan |
+| :--- | :--- | :--- |
+| **Input** | `P = "password123"` | Dikirim via **TLS/HTTPS**. |
+| **Salt** | Firebase membuat salt unik (misal `S = "ABcxyz123"`) dan menggunakan *Signer Key* rahasia. | Pertahanan terhadap serangan *Rainbow Table*. |
+| **Perhitungan** | Server menghitung Hash Scrypt dengan parameter: <br> `N=14` (mem_cost), `p=8` (rounds). | Memakan Memori & Waktu (Anti Brute-force). |
+| **Hasil** | `Hash_scrypt` ≈ `"4B7F98...E01A"` | **Password mentah tidak dapat dikembalikan.** Disimpan di database. |
+
+#### B. Verifikasi (Saat Login)
+1.  Anda memasukkan input: `"password123"`.
+2.  Server mengambil Salt (`S`) yang tersimpan.
+3.  Server menghitung ulang: `Hash_input = SCRYPT("password123", S, 14, 8)`.
+4.  **Hasil:** Jika `Hash_input == Hash_scrypt`, maka **Login Berhasil**.
+
+---
+
+### 2. 🔐 Pengamanan PIN Keamanan (SHA-256 Hashing Manual)
+PIN diamankan secara manual di sisi aplikasi (Flutter) sebelum dikirim dan disimpan di Realtime Database.
+
+#### A. Hashing (Penyimpanan)
+| Langkah | Aksi / Data | Konsep Keamanan |
+| :--- | :--- | :--- |
+| **Input** | `P_pin = "123456"` | Input dari user. |
+| **Salt UID** | `S_uid = "PinSaltArchel" + "uid12"` | Salt statis digabung dengan 5 karakter awal UID (`uid123456789`). |
+| **Gabungan** | `Raw_pin = "123456PinSaltArcheluid12"` | String gabungan sebelum di-hash. |
+| **Perhitungan** | `Hash_pin = SHA256(Raw_pin)` | Hashing satu arah yang cepat dan standar. |
+| **Hasil** | `Hash_pin` ≈ `"9D42C1...183F"` | Dikirim ke Realtime DB via **TLS/HTTPS**. |
+
+#### B. Verifikasi (Saat Checkout/Transfer)
+1.  Anda memasukkan input: `"123456"`.
+2.  Aplikasi membentuk string gabungan: `"123456PinSaltArcheluid12"`.
+3.  Aplikasi menghitung hash: `Hash_input = SHA256("123456PinSaltArcheluid12")`.
+4.  **Hasil:** Jika `Hash_input == Hash_pin` (yang ada di DB), maka **Transaksi Berhasil**.
+
+---
+
+### 3. 📧 Pengamanan OTP (Email Verification)
+Digunakan untuk memverifikasi bahwa Anda adalah pemilik `user@example.com`.
+
+| Langkah | Aksi | Konsep Keamanan |
+| :--- | :--- | :--- |
+| **Generate** | Firebase membuat kode acak, misal `T = 583192` dengan waktu kadaluwarsa 5 menit. | *Randomness* yang kuat. |
+| **Pengiriman** | Kode `583192` dikirim ke email. | Dilindungi oleh **Enkripsi TLS/HTTPS** pada saluran transfer Email. |
+| **Penyimpanan** | Server menyimpan `Hash(583192)` di *cache*. | Server tidak menyimpan kode plain text dalam jangka panjang. |
+| **Verifikasi** | Anda menginput `583192`. Server menghitung hash input dan mencocokkannya dengan hash di *cache*. | Valid hanya jika hash cocok DAN waktu belum habis. |
+
+---
+
+### 4. 👆 Pengamanan Fingerprint (Biometrik)
+Digunakan untuk verifikasi cepat tanpa mengetik PIN/Password.
+
+| Langkah | Aksi | Konsep Keamanan |
+| :--- | :--- | :--- |
+| **Penyimpanan** | Template Biometrik (`F`) dienkripsi menjadi `E_template` menggunakan **Kunci Hardware Unik** (`K_hw`). | Dilindungi oleh **Enkripsi Hardware** di dalam *Secure Enclave*. |
+| **Verifikasi** | Aplikasi meminta izin verifikasi. Anda menyentuh sensor sidik jari. | OS menangani antarmuka (UI). |
+| **Pengecekan** | *Secure Enclave* mendekripsi `E_template` menggunakan `K_hw` dan membandingkannya dengan scan jari baru. | Proses **Dekripsi** terjadi hanya di dalam chip terisolasi. |
+| **Hasil** | Aplikasi menerima sinyal `True` (jika cocok). | **Tidak ada data biometrik yang pernah keluar dari perangkat.** |
+
+---
+
+## ✅ Kesimpulan Keamanan Siber
+
+Secara umum, ArchelStore menggunakan kombinasi mekanisme keamanan terbaik sesuai standar industri:
+
+1.  **Hashing Kuat (SCRYPT):** Untuk Password (melawan serangan *brute force*).
+2.  **Hashing Standar (SHA-256):** Untuk PIN (melawan pembacaan database langsung).
+3.  **Enkripsi Transport Layer (TLS):** Untuk melindungi semua jalur komunikasi data (Internet).
+4.  **Enkripsi Hardware:** Untuk Biometrik (melawan *spyware* dan pencurian data fisik).
