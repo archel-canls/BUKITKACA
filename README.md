@@ -120,7 +120,11 @@ Penyimpanan = Enkripsi(Template_Biometrik, K_hw)
 
 ## 📝 Studi Kasus: Simulasi Alur Keamanan Data
 
-Berikut adalah simulasi langkah demi langkah bagaimana data pengguna diolah dan diamankan dalam arsitektur ArchelStore menggunakan nilai konkret dan perhitungan hashing yang disederhanakan.
+---
+
+## 📝 Studi Kasus: Simulasi Alur Keamanan Data
+
+Berikut adalah simulasi langkah demi langkah bagaimana data pengguna diolah dan diamankan dalam arsitektur ArchelStore menggunakan nilai konkret dan perhitungan *hashing* yang disederhanakan.
 
 ### 📌 Asumsi Nilai Input
 * **Password Mentah (`P`):** `password123`
@@ -128,16 +132,18 @@ Berikut adalah simulasi langkah demi langkah bagaimana data pengguna diolah dan 
 * **User ID (`UID`):** `uid123456789`
 * **Email:** `user@example.com`
 
+---
+
 ### 1. 🔑 Pengamanan PASSWORD (SCRYPT Hashing)
-Password diamankan oleh Firebase Authentication menggunakan algoritma **SCRYPT** (sangat kuat).
+Password diamankan oleh **Firebase Authentication** menggunakan algoritma **SCRYPT** (sangat kuat terhadap *brute-force*).
 
 #### A. Hashing (Penyimpanan)
 | Langkah | Aksi / Data | Konsep Keamanan |
 | :--- | :--- | :--- |
-| **Input** | `P = "password123"` | Dikirim via **TLS/HTTPS**. |
+| **Input** | `P = "password123"` | Dikirim via **TLS/HTTPS** (Enkripsi Jalur). |
 | **Salt** | Firebase membuat salt unik (misal `S = "ABcxyz123"`) dan menggunakan *Signer Key* rahasia. | Pertahanan terhadap serangan *Rainbow Table*. |
 | **Perhitungan** | Server menghitung Hash Scrypt dengan parameter: <br> `N=14` (mem_cost), `p=8` (rounds). | Memakan Memori & Waktu (Anti Brute-force). |
-| **Hasil** | `Hash_scrypt` ≈ `"4B7F98...E01A"` | **Password mentah tidak dapat dikembalikan.** Disimpan di database. |
+| **Hasil** | `Hash_scrypt` ≈ `"4B7F98...E01A"` | **Password mentah tidak dapat dikembalikan.** Hash ini yang disimpan di database. |
 
 #### B. Verifikasi (Saat Login)
 1.  Anda memasukkan input: `"password123"`.
