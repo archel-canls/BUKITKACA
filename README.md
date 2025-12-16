@@ -1,83 +1,117 @@
 # 🛡️ Implementasi Keamanan Multi-Faktor (MFA) ArchelStore
 
-Dokumen ini merinci mekanisme Keamanan Multi-Faktor (MFA) yang diterapkan dalam proyek ArchelStore sebagai bagian dari demonstrasi praktik Keamanan Siber. Sistem ini mengamankan pengguna dengan empat faktor otentikasi (4FA), menggabungkan teknik Hashing, Enkripsi Transport Layer (TLS), dan Keamanan Hardware.
+Dokumen ini merinci arsitektur keamanan yang diterapkan pada ArchelStore. Sistem ini menggunakan pendekatan **4-Factor Authentication (4FA)** yang mencakup *Knowledge* (Pengetahuan), *Possession* (Kepemilikan), dan *Inherence* (Biometrik), didukung oleh enkripsi transport layer (TLS) dan keamanan berbasis perangkat keras.
 
 ---
 
 ## 🔑 1. Password (Faktor Pengetahuan)
 
-Password adalah kredensial otentikasi utama yang diamankan menggunakan algoritma Hashing modern di sisi server **Firebase Authentication**.
+Password adalah lapisan keamanan utama yang diamankan menggunakan algoritma *hashing* modern di sisi server **Firebase Authentication**.
 
-### A. Algoritma dan Parameter (SCRYPT)
+### A. Algoritma dan Parameter
+Firebase menggunakan algoritma **SCRYPT**, sebuah fungsi derivasi kunci yang memakan memori secara intensif untuk mencegah serangan *brute-force* (terutama yang menggunakan GPU).
 
-Firebase menggunakan fungsi turunan kunci yang memakan memori, **SCRYPT**, untuk mencegah serangan *brute force* skala besar (terutama yang menggunakan GPU).
+| Fitur | Implementasi di ArchelStore |
+| :--- | :--- |
+| **Algoritma** | `SCRYPT` |
+| **Biaya Memori (N)** | `mem_cost: 14` |
+| **Iterasi (p)** | `rounds: 8` |
+| **Salt & Key** | Dikelola otomatis oleh Firebase (`base64_signer_key` + Salt unik per user). |
 
-| Parameter | Konsep | Nilai Implementasi |
-| :--- | :--- | :--- |
-| **Algoritma** | Hashing kuat, resisten terhadap GPU. | `SCRYPT` |
-| **Biaya Memori (N)** | Mengatur kebutuhan RAM per perhitungan. | `mem_cost: 14` |
-| **Rounds (p)** | Faktor Paralelisasi/Iterasi. | `rounds: 8` |
-| **Kunci Rahasia** | Kunci unik server untuk verifikasi hash. | `base64_signer_key` (Dikelola Firebase) |
+### B. Proses Keamanan
 
-### B. Proses Keamanan (Hashing)
+#### 1. Enkripsi/Hashing (Saat Registrasi)
+* **Transport:** Password mentah (`P`) dikirim dari aplikasi ke server melalui koneksi aman **TLS/HTTPS**.
+* **Salting:** Server Firebase menghasilkan *salt* unik (`S`) untuk pengguna tersebut.
+* **Perhitungan Matematis:**
+    Server menghitung hash menggunakan rumus berikut:
+    ```math
+    Hash_scrypt = SCRYPT(P, S, N, r, p)
+    ```
+    *Dimana `N` = 14, `r` = block size, dan `p` = 8.*
+* **Penyimpanan:** Firebase menyimpan `Hash_scrypt` dan `S`. Password mentah **tidak pernah** disimpan.
 
-1.  **Enkripsi Transport:** Password mentah (`P`) dikirim dari aplikasi Flutter ke server melalui koneksi aman **TLS/HTTPS**.
-2.  **Hashing:** Server menghitung Hash Scrypt menggunakan *salt* (`S`) unik per pengguna.
-    > Rumus: `Hash_scrypt = SCRYPT(Password, Salt, N, r, p)`
-3.  **Verifikasi:** Saat login, server menghitung ulang hash dari input pengguna dan membandingkannya dengan hash yang tersimpan di database.
+#### 2. Dekripsi/Verifikasi (Saat Login)
+* Pengguna memasukkan password input (`P_input`).
+* Server mengambil `S` dan `Hash_scrypt` dari database.
+* Server menghitung ulang hash:
+    ```math
+    Hash_input = SCRYPT(P_input, S, N, r, p)
+    ```
+* **Verifikasi:** Jika `Hash_input == Hash_scrypt`, maka login berhasil.
+* *Catatan:* Ini adalah metode perbandingan hash, bukan dekripsi password.
 
 ---
 
 ## 🔐 2. PIN Keamanan (Faktor Pengetahuan)
 
-PIN digunakan untuk verifikasi transaksi penting (seperti checkout). PIN di-*hash* secara manual di sisi aplikasi (Client-Side) sebelum dikirim dan disimpan di Realtime Database.
+PIN digunakan untuk verifikasi transaksi (checkout/transfer). PIN di-*hash* secara manual di sisi aplikasi (Flutter) sebelum dikirim ke database.
 
-### A. Algoritma dan Strategi
-
+### A. Algoritma Implementasi
 | Fitur | Implementasi |
 | :--- | :--- |
 | **Algoritma** | **SHA-256** (Secure Hash Algorithm 256-bit) |
-| **Strategi Salt** | **Statik + Dinamis:** Menggabungkan string statis `"PinSaltArchel"` dengan sebagian UID pengguna. |
-| **Penyimpanan** | Disimpan sebagai *String Hash* di Firebase Realtime Database. |
+| **Strategi Salt** | **Statik + Dinamis**: Menggabungkan string `"PinSaltArchel"` dengan sebagian UID pengguna. |
 
-### B. Proses Keamanan (SHA-256 Hashing)
+### B. Proses Keamanan
 
-1.  **Input:** Pengguna memasukkan PIN mentah (`PIN_input`).
-2.  **Perhitungan:** Aplikasi menggabungkan PIN dengan *salt* unik (`S_uid`) lalu melakukan hashing.
-    > Rumus: `Hash_pin = SHA256(PIN_input + S_uid)`
-3.  **Verifikasi:** Saat transaksi, aplikasi menghitung ulang hash dari input saat ini dan membandingkannya dengan `Hash_pin` yang tersimpan di database. Jika cocok, transaksi diizinkan.
+#### 1. Enkripsi/Hashing (Saat Membuat/Mengganti PIN)
+* PIN mentah (`P_pin`) diinput di aplikasi.
+* Aplikasi menggabungkan PIN dengan salt unik dari UID (`S_uid`).
+* **Perhitungan Matematis:**
+    ```math
+    Hash_pin = SHA256(P_pin + S_uid)
+    ```
+* **Penyimpanan:** `Hash_pin` dikirim ke Realtime Database melalui koneksi **TLS/HTTPS**.
+
+#### 2. Dekripsi/Verifikasi (Saat Transaksi)
+* Pengguna memasukkan PIN input (`P_input`).
+* Aplikasi mengambil `S_uid` yang sama dan `Hash_pin` yang tersimpan di database.
+* Aplikasi menghitung ulang hash:
+    ```math
+    Hash_input = SHA256(P_input + S_uid)
+    ```
+* **Verifikasi:** Jika `Hash_input == Hash_pin`, transaksi disetujui.
 
 ---
 
-## 📧 3. OTP / Email Verification (Faktor Kepemilikan)
+## 📧 3. OTP (One-Time Password) (Faktor Kepemilikan)
 
-Digunakan untuk memverifikasi kepemilikan akun atau email, dikelola sepenuhnya oleh infrastruktur Firebase.
+Digunakan untuk verifikasi kepemilikan akun atau email, dikelola sepenuhnya oleh infrastruktur Firebase.
 
-| Fitur | Implementasi di ArchelStore |
+### A. Algoritma dan Proses
+| Fitur | Implementasi |
 | :--- | :--- |
-| **Generation** | Kode acak 6 digit dengan waktu hidup terbatas (TTL). |
-| **Keamanan Saluran** | Pengiriman kode (via Email) dilindungi oleh enkripsi **TLS/HTTPS** antara server Firebase dan penyedia Email pengguna. |
-| **Verifikasi** | Server membandingkan hash dari kode yang dimasukkan pengguna dengan hash kode yang tersimpan di *cache* sementara server. |
+| **Algoritma** | **PRNG** (Pseudo-Random Number Generator) yang kuat secara kriptografi. |
+| **Keamanan Transport** | Pengiriman kode via Email dilindungi enkripsi **TLS/HTTPS** *end-to-end*. |
+| **Hashing Server** | Kode OTP yang aktif disimpan dalam bentuk *hash* di server sementara dengan waktu kedaluwarsa (TTL). |
+
+### B. Proses Keamanan
+
+#### 1. Saat Pengiriman
+Kode OTP dikirim melalui saluran email yang terenkripsi (Transport Layer Security).
+
+#### 2. Saat Input (Verifikasi)
+* Pengguna memasukkan kode (`T`).
+* Server Firebase menghitung `Hash(T)` dan membandingkannya dengan hash yang tersimpan di *cache*.
+* Sistem juga memvalidasi apakah waktu saat ini masih dalam rentang waktu berlakunya kode.
 
 ---
 
 ## 👆 4. Fingerprint / Biometrik (Faktor Inheren)
 
-Digunakan untuk otentikasi cepat dan praktis, diaktifkan hanya setelah pengguna berhasil memverifikasi PIN/Password.
+Digunakan untuk otentikasi instan, memanfaatkan perangkat keras keamanan pada *device*.
 
-### A. Mekanisme Keamanan
-
+### A. Algoritma dan Komponen
 | Fitur | Implementasi |
 | :--- | :--- |
-| **Algoritma** | **Enkripsi Hardware (Hardware-Backed Keystore)** |
-| **Penyimpanan** | **Secure Enclave / TEE** (*Trusted Execution Environment*) pada perangkat. |
-| **Akses Data** | Aplikasi **HANYA** menerima hasil Boolean (`True` atau `False`) dari Sistem Operasi. Data sidik jari tidak pernah keluar dari perangkat. |
+| **Algoritma** | **Hardware Encryption** (Enkripsi Perangkat Keras). |
+| **Penyimpanan** | **Secure Enclave / TEE** (Trusted Execution Environment). Data terisolasi dari OS. |
+| **Data Tersimpan** | Template Biometrik yang dienkripsi kunci unik perangkat keras. |
 
 ### B. Proses Keamanan
 
-1.  **Enkripsi Hardware:** Template Biometrik pengguna dienkripsi menggunakan kunci unik perangkat keras (`Hardware Key`) dan disimpan di area memori terisolasi (*Secure Enclave*).
-2.  **Verifikasi:**
-    * Aplikasi meminta OS untuk melakukan verifikasi.
-    * Pengguna memindai jari.
-    * *Chip* keamanan melakukan dekripsi dan perbandingan secara internal.
-    * Hasil dikembalikan ke aplikasi tanpa mengekspos data biometrik mentah.
+#### 1. Enkripsi & Penyimpanan
+Data biometrik mentah pengguna diubah menjadi template, kemudian dienkripsi menggunakan Kunci Perangkat Keras Unik (`K_hw`) dan disimpan di dalam Secure Enclave.
+```math
+Penyimpanan = Enkripsi(Template_Biometrik, K_hw)
