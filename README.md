@@ -128,8 +128,6 @@ Berikut adalah simulasi langkah demi langkah bagaimana data pengguna diolah dan 
 * **User ID (`UID`):** `uid123456789`
 * **Email:** `user@example.com`
 
----
-
 ### 1. 🔑 Pengamanan PASSWORD (SCRYPT Hashing)
 Password diamankan oleh Firebase Authentication menggunakan algoritma **SCRYPT** (sangat kuat).
 
